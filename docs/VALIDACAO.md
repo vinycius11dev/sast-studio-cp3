@@ -12,7 +12,7 @@
 | Fila | Persistência, claim concorrente, lease expirado, falha e limpeza de payload testados |
 | Ollama local | Revisão semântica real e remediação com llama3.2:3b |
 | Ollama no Docker | Inferência real via host.docker.internal, risco externo confirmado como CRITICAL |
-| GitHub | Evidências e status próprios em GITHUB_CP3.md; proteção de branch pública em validação |
+| GitHub | Evidências e status próprios em GITHUB_CP3.md; main protegida e bloqueio de merge comprovado |
 
 ## Evidências de inferência real
 
@@ -61,3 +61,9 @@ interna delimitada, não uma avaliação externa da segurança de qualquer proje
 - As seis telas foram navegadas pelo menu móvel em 390 × 844, sem overflow horizontal.
 - Docker final: dois workers ativos e saudáveis; smoke completo aprovado.
 - GitHub: entrega verde; PR vulnerável vermelho por PY-R001; corrigido verde.
+
+## Publicação pública
+
+A cópia pública passou no CI. Proteção de main aplicada inclusive a administradores,
+com Security Gate e Docker smoke obrigatórios. PR #1: FAILURE/BLOCKED; PR #2:
+SUCCESS/CLEAN. A consulta e os links estão em GITHUB_CP3.md e github-protection.json.
