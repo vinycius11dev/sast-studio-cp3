@@ -22,7 +22,7 @@
 | 5–6 min | Scanner → **Carregar pasta corrigida** → executar. São 3 arquivos, 0 achados nas regras atuais e gate aprovado. Essa versão foi preparada para comparação; a IA não sobrescreve os arquivos do computador. |
 | 6–7 min | Escolha a pasta `demonstracao/03-triagem-semantica`: há dois eval detectados. Revise os dois pela IA: um opera sobre constante e o outro recebe `input()`. Compare o contexto e o filtro de possíveis falsos positivos. Respostas do LLM variam; o gate original permanece rastreável. |
 | 7–8 min | Histórico → reabra a execução vulnerável → exporte JSON, Markdown ou SARIF. Mostre a análise correta e as revisões de IA persistidas. |
-| 8–10 min | GitHub → PR vulnerável com Security Gate vermelho, depois PR corrigido com checks verdes. Mostre o log, a regra detectada e os relatórios. Explique separadamente se a proteção de merge está ativa no plano utilizado. |
+| 8–10 min | GitHub → PR vulnerável com Security Gate vermelho, depois PR corrigido com checks verdes. Mostre o log, a regra detectada e os relatórios. Mostre que main exige os checks: o PR #1 fica bloqueado e o #2 passa. |
 
 Para selecionar uma pasta use **Escolher pasta** e selecione somente a subpasta
 desejada. Os botões de demonstração carregam as mesmas fontes sem usar a janela
