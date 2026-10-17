@@ -153,6 +153,9 @@ Veja [o roteiro de apresentação](docs/APRESENTACAO.md), [a arquitetura](docs/c
 
 A entrega pública está na branch `main` de
 [vinycius11dev/sast-studio-cp3](https://github.com/vinycius11dev/sast-studio-cp3).
-As evidências de checks e proteção de merge estão em [GITHUB_CP3.md](docs/GITHUB_CP3.md).
+A branch main exige os checks **Security Gate** e **Docker smoke**, inclusive
+para administradores. O [PR vulnerável #1](https://github.com/vinycius11dev/sast-studio-cp3/pull/1)
+ficou bloqueado; o [corrigido #2](https://github.com/vinycius11dev/sast-studio-cp3/pull/2)
+passou. Evidências em [GITHUB_CP3.md](docs/GITHUB_CP3.md).
 As credenciais nos exemplos são fictícias. O repositório não contém histórico
 anterior, arquivos enviados pelo usuário, bancos locais ou o PDF do enunciado.
