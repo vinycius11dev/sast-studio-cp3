@@ -1,0 +1,72 @@
+{
+  "verified_at": "2026-10-17T19:42:25.409068+00:00",
+  "repository": "https://github.com/vinycius11dev/sast-studio-cp3",
+  "branch": "main",
+  "enforce_admins": true,
+  "require_up_to_date": true,
+  "required_checks": [
+    {
+      "context": "Security Gate",
+      "app_id": 15368
+    },
+    {
+      "context": "Docker smoke",
+      "app_id": 15368
+    }
+  ],
+  "required_approving_review_count": 0,
+  "vulnerable_pr": {
+    "headRefOid": "d22a1d06d0b7c71668918af5f3af4b849628451e",
+    "mergeStateStatus": "BLOCKED",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T19:41:22Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/vinycius11dev/sast-studio-cp3/actions/runs/39063516829/job/117486252956",
+        "name": "Security Gate",
+        "startedAt": "2026-10-17T19:41:07Z",
+        "status": "COMPLETED",
+        "workflowName": "SAST Studio CP3"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T19:41:40Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/vinycius11dev/sast-studio-cp3/actions/runs/39063516829/job/117486253121",
+        "name": "Docker smoke",
+        "startedAt": "2026-10-17T19:41:07Z",
+        "status": "COMPLETED",
+        "workflowName": "SAST Studio CP3"
+      }
+    ],
+    "url": "https://github.com/vinycius11dev/sast-studio-cp3/pull/1"
+  },
+  "corrected_pr": {
+    "headRefOid": "ccc1c19e0bb0bc60997c35806ddd5c5faaec0087",
+    "mergeStateStatus": "CLEAN",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T19:41:32Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/vinycius11dev/sast-studio-cp3/actions/runs/39063520697/job/117486264769",
+        "name": "Security Gate",
+        "startedAt": "2026-10-17T19:41:11Z",
+        "status": "COMPLETED",
+        "workflowName": "SAST Studio CP3"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-17T19:41:39Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/vinycius11dev/sast-studio-cp3/actions/runs/39063520697/job/117486264582",
+        "name": "Docker smoke",
+        "startedAt": "2026-10-17T19:41:11Z",
+        "status": "COMPLETED",
+        "workflowName": "SAST Studio CP3"
+      }
+    ],
+    "url": "https://github.com/vinycius11dev/sast-studio-cp3/pull/2"
+  }
+}

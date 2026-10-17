@@ -12,6 +12,9 @@ Se estiver com uma versão anterior da tela aberta, atualize com **Ctrl+F5**.
 Para usar o seletor do Windows, abra o endereço do sistema no Chrome ou Edge
 comum. O navegador usado pela automação pode interceptar a janela de seleção.
 
+Os caminhos Windows abaixo correspondem à instalação de demonstração. Em outro
+computador, use a pasta onde clonou ou extraiu o projeto.
+
 ## Selecionar os arquivos do computador
 
 Abra o sistema em http://127.0.0.1:8000/dashboard e entre em **Scanner**.
@@ -24,7 +27,7 @@ executá-los, instalar dependências ou conectar um banco de dados.
 2. Cole este caminho na janela do Windows e confirme a seleção da pasta:
 
    ```text
-   C:\wamp64\www\sast\demonstracao\01-vulneravel
+   C:\wamp64\www\sast-studio-cp3\demonstracao\01-vulneravel
    ```
 
 3. Confira os **3 arquivos selecionados** e mantenha o bloqueio em **Alta**.
@@ -79,7 +82,7 @@ rejeitada, o fallback continua identificado na tela.
 Volte a **Scanner**, clique em **Escolher pasta** e selecione:
 
 ```text
-C:\wamp64\www\sast\demonstracao\02-corrigido
+C:\wamp64\www\sast-studio-cp3\demonstracao\02-corrigido
 ```
 
 Execute a análise. O resultado esperado é **3 arquivos, 0 achados nas regras
