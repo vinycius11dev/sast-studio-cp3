@@ -1,0 +1,23 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local environments and credentials
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Local tooling and generated analysis state
+.playwright-mcp/
+graphify-out/
+data/
+tmp/
+reports/
+
+# Generated reports
+sast-results.sarif
+sast-*-report.md
+relatorio_seguranca.md

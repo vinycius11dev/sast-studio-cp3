@@ -1,0 +1,85 @@
+name: SAST Studio CP3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master, develop, codex/cp3-studio]
+  pull_request:
+    branches: [main, master, develop, codex/cp3-studio]
+
+permissions:
+  contents: read
+
+jobs:
+  security-gate:
+    name: Security Gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.11'
+          cache: pip
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Python tests
+        run: python -m pytest -q -W error::pytest.PytestUnhandledThreadExceptionWarning
+      - name: JavaScript checks
+        run: |
+          node --check static/js/dashboard.js
+          node --check static/js/diff-viewer.js
+          node --test tests/diff-viewer.test.cjs
+      - name: Labeled SAST benchmark
+        run: python -m scripts.benchmark --output reports/benchmark.json --markdown reports/benchmark.md
+      - name: Audit platform and PR demonstration target
+        run: |
+          mkdir -p reports
+          gate_status=0
+          for target in engine api cli.py audit-target; do
+            label=$(basename "$target")
+            python cli.py scan "$target" --fail-on HIGH -f sarif -o "reports/$label.sarif" || gate_status=$?
+          done
+          exit "$gate_status"
+      - name: Publish summary
+        if: always()
+        run: python -m scripts.ci_summary reports >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve reports
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: sast-reports
+          path: reports/
+          if-no-files-found: warn
+
+  docker-smoke:
+    name: Docker smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.11'
+      - name: Build API and worker
+        run: docker compose -p sast-ci up --build -d
+      - name: Exercise queue, AST scanners, gate and exports
+        run: python -m scripts.smoke --output reports/docker-smoke.json
+      - name: Container status and logs
+        if: always()
+        run: |
+          docker compose -p sast-ci ps
+          docker compose -p sast-ci logs --tail=80
+      - name: Preserve smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: docker-smoke
+          path: reports/docker-smoke.json
+          if-no-files-found: warn
+      - name: Release runner resources
+        if: always()
+        run: docker compose -p sast-ci down --volumes

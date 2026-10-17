@@ -1,0 +1,613 @@
+{
+  "scope": "Corpus curado do projeto; métricas não representam todos os códigos ou vulnerabilidades do mercado.",
+  "unit": "par (caso, regra)",
+  "case_count": 53,
+  "safe_cases": 24,
+  "true_positives": 30,
+  "false_positives": 0,
+  "false_negatives": 0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "safe_case_false_positive_rate": 0.0,
+  "exact_case_accuracy": 1.0,
+  "median_ms": 0.1092,
+  "p95_ms": 0.3314,
+  "repeats": 5,
+  "results": [
+    {
+      "id": "py-eval",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R001"
+      ],
+      "detected": [
+        "PY-R001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1582
+    },
+    {
+      "id": "py-exec",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R001"
+      ],
+      "detected": [
+        "PY-R001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1677
+    },
+    {
+      "id": "py-secret",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R002"
+      ],
+      "detected": [
+        "PY-R002"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3087
+    },
+    {
+      "id": "py-command",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R003"
+      ],
+      "detected": [
+        "PY-R003"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.185
+    },
+    {
+      "id": "py-shell",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R003"
+      ],
+      "detected": [
+        "PY-R003"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1835
+    },
+    {
+      "id": "py-sql-flow",
+      "filename": "demo.py",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2928
+    },
+    {
+      "id": "py-path-flow",
+      "filename": "demo.py",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1727
+    },
+    {
+      "id": "py-ssrf-flow",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R004",
+        "PY-T003"
+      ],
+      "detected": [
+        "PY-R004",
+        "PY-T003"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2043
+    },
+    {
+      "id": "py-http-url",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R004"
+      ],
+      "detected": [
+        "PY-R004"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1203
+    },
+    {
+      "id": "py-http-keyword",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R004"
+      ],
+      "detected": [
+        "PY-R004"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1308
+    },
+    {
+      "id": "py-request-method",
+      "filename": "demo.py",
+      "expected": [
+        "PY-R004"
+      ],
+      "detected": [
+        "PY-R004"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1876
+    },
+    {
+      "id": "py-sanitizer-name-collision",
+      "filename": "demo.py",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2754
+    },
+    {
+      "id": "py-html-escape-is-not-sql-binding",
+      "filename": "demo.py",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3288
+    },
+    {
+      "id": "py-string-example",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0802
+    },
+    {
+      "id": "py-comment-example",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0757
+    },
+    {
+      "id": "py-json",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1725
+    },
+    {
+      "id": "py-secret-env",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1733
+    },
+    {
+      "id": "py-argv-array",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1618
+    },
+    {
+      "id": "py-bound-sql",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2053
+    },
+    {
+      "id": "py-int-sanitizer",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.358
+    },
+    {
+      "id": "py-scope-isolation",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2804
+    },
+    {
+      "id": "py-static-url-variable",
+      "filename": "safe.py",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1638
+    },
+    {
+      "id": "js-eval",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.081
+    },
+    {
+      "id": "js-function-constructor",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0541
+    },
+    {
+      "id": "js-secret",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R002"
+      ],
+      "detected": [
+        "JS-R002"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1242
+    },
+    {
+      "id": "js-command",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0867
+    },
+    {
+      "id": "js-shell-option",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0937
+    },
+    {
+      "id": "js-dom",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R004"
+      ],
+      "detected": [
+        "JS-R004"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0627
+    },
+    {
+      "id": "js-sql-template",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0994
+    },
+    {
+      "id": "js-sql-multiline",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0944
+    },
+    {
+      "id": "js-ssrf",
+      "filename": "demo.js",
+      "expected": [
+        "JS-R006"
+      ],
+      "detected": [
+        "JS-R006"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0842
+    },
+    {
+      "id": "ts-typed-secret",
+      "filename": "demo.ts",
+      "expected": [
+        "JS-R002"
+      ],
+      "detected": [
+        "JS-R002"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0983
+    },
+    {
+      "id": "js-string-example",
+      "filename": "safe.js",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0657
+    },
+    {
+      "id": "js-comment-example",
+      "filename": "safe.js",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.052
+    },
+    {
+      "id": "js-json",
+      "filename": "safe.js",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0815
+    },
+    {
+      "id": "js-dom-text",
+      "filename": "safe.js",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0405
+    },
+    {
+      "id": "js-bound-sql",
+      "filename": "safe.js",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.071
+    },
+    {
+      "id": "js-static-sql-concat",
+      "filename": "safe.js",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0611
+    },
+    {
+      "id": "js-static-url",
+      "filename": "safe.js",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0738
+    },
+    {
+      "id": "tsx-safe-markup",
+      "filename": "safe.tsx",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0735
+    },
+    {
+      "id": "java-sql",
+      "filename": "Demo.java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1506
+    },
+    {
+      "id": "java-secret",
+      "filename": "Demo.java",
+      "expected": [
+        "JAVA-R002"
+      ],
+      "detected": [
+        "JAVA-R002"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0826
+    },
+    {
+      "id": "java-command",
+      "filename": "Demo.java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.112
+    },
+    {
+      "id": "java-deserialize",
+      "filename": "Demo.java",
+      "expected": [
+        "JAVA-R004"
+      ],
+      "detected": [
+        "JAVA-R004"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.078
+    },
+    {
+      "id": "java-path",
+      "filename": "Demo.java",
+      "expected": [
+        "JAVA-R005"
+      ],
+      "detected": [
+        "JAVA-R005"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1146
+    },
+    {
+      "id": "java-ssrf",
+      "filename": "Demo.java",
+      "expected": [
+        "JAVA-R006"
+      ],
+      "detected": [
+        "JAVA-R006"
+      ],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1217
+    },
+    {
+      "id": "java-comment-example",
+      "filename": "Safe.java",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0395
+    },
+    {
+      "id": "java-string-example",
+      "filename": "Safe.java",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0682
+    },
+    {
+      "id": "java-secret-env",
+      "filename": "Safe.java",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0807
+    },
+    {
+      "id": "java-bound-sql",
+      "filename": "Safe.java",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1357
+    },
+    {
+      "id": "java-command-array",
+      "filename": "Safe.java",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0776
+    },
+    {
+      "id": "java-static-file",
+      "filename": "Safe.java",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0688
+    },
+    {
+      "id": "java-static-url",
+      "filename": "Safe.java",
+      "expected": [],
+      "detected": [],
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0633
+    }
+  ]
+}

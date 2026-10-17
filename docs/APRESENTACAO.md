@@ -1,0 +1,53 @@
+# Roteiro de defesa — entrega final CP3
+
+## Antes da aula
+
+1. Abra o Ollama e execute `ollama list`: o modelo deve ser `llama3.2:3b`.
+2. Dê dois cliques em `iniciar.bat` e abra http://127.0.0.1:8000/dashboard.
+3. Em **Integrações**, confirme API, worker da fila e Ollama disponíveis.
+4. Gere uma sugestão antes de apresentar para carregar o modelo na memória.
+   A primeira chamada pode ser mais lenta. Inferências têm limite total de 90 segundos.
+5. Abra antecipadamente os Pull Requests e os logs de Actions indicados em
+   `docs/GITHUB_CP3.md` (PR #1 vulnerável e PR #2 corrigido).
+6. Mantenha notebook, carregador, servidor e Ollama ligados. A análise e a IA locais
+   funcionam sem internet depois de instalar dependências e baixar o modelo; o GitHub exige rede.
+
+## Demonstração em 8 a 10 minutos
+
+| Tempo | Ação e explicação |
+| --- | --- |
+| 0–1 min | Explique que SAST inspeciona fontes sem executar o projeto. Mostre a arquitetura: API, fila persistente, worker, parsers, histórico e LLM. Python usa AST; JS/TS e Java usam Tree-sitter. |
+| 1–3 min | Scanner → **Carregar pasta vulnerável** → **Executar análise**. São 3 arquivos, 9 achados (6 críticos e 3 altos), gate bloqueado. A tela envia um job e acompanha o worker. Abra um achado e mostre regra, CWE, arquivo, linha e contexto. |
+| 3–5 min | Selecione **PY-R001** em `backend/servico.py`, clique **Revisar com IA** e mostre a classificação contextual, severidade sugerida, confiança e evidências. Depois clique **Gerar remediação**: mostre o selo Ollama, a sugestão e **Ver alterações (diff)**. Vermelho remove, verde adiciona. **Analisar sugestão** roda novamente o scanner. |
+| 5–6 min | Scanner → **Carregar pasta corrigida** → executar. São 3 arquivos, 0 achados nas regras atuais e gate aprovado. Essa versão foi preparada para comparação; a IA não sobrescreve os arquivos do computador. |
+| 6–7 min | Escolha a pasta `demonstracao/03-triagem-semantica`: há dois eval detectados. Revise os dois pela IA: um opera sobre constante e o outro recebe `input()`. Compare o contexto e o filtro de possíveis falsos positivos. Respostas do LLM variam; o gate original permanece rastreável. |
+| 7–8 min | Histórico → reabra a execução vulnerável → exporte JSON, Markdown ou SARIF. Mostre a análise correta e as revisões de IA persistidas. |
+| 8–10 min | GitHub → PR vulnerável com Security Gate vermelho, depois PR corrigido com checks verdes. Mostre o log, a regra detectada e os relatórios. Explique separadamente se a proteção de merge está ativa no plano utilizado. |
+
+Para selecionar uma pasta use **Escolher pasta** e selecione somente a subpasta
+desejada. Os botões de demonstração carregam as mesmas fontes sem usar a janela
+do Windows. Não selecione `demonstracao` inteira: isso mistura as versões.
+
+## Como testar antes de apresentar
+
+```powershell
+python -m pytest -q -W error::pytest.PytestUnhandledThreadExceptionWarning
+node --test tests/diff-viewer.test.cjs
+python -m scripts.benchmark
+python -m scripts.smoke --require-llm
+```
+
+O smoke exercita a API e a fila e verifica a disponibilidade do modelo. Para
+comprovar uma inferência nova, use **Revisar com IA** ou **Gerar remediação** e
+confira o provedor retornado. Fallback determinístico não deve ser apresentado
+como resposta do LLM.
+
+## Respostas para a defesa
+
+- **Por que AST?** Analisa a estrutura do código e evita tratar texto de comentários e strings como chamadas reais.
+- **Por que fila?** Desacopla o pedido HTTP do processamento, persiste jobs e permite workers concorrentes no mesmo host.
+- **Onde entra a IA?** Revisa contexto, possível falso positivo e severidade; também propõe correções. As regras estáticas continuam sendo a origem dos achados e do gate.
+- **Como mediu?** Testes de regressão, smoke de API/Docker e corpus rotulado com 53 casos e 24 controles seguros. Os números desse corpus não provam precisão universal nem medem a precisão do LLM.
+- **O que significa zero achados?** Nenhuma regra atual detectou risco naquela entrada. Não comprova segurança absoluta.
+- **Limites?** Fluxo Python básico, sem prova completa entre arquivos; LLM pode errar; fila SQLite local; sem autenticação multiusuário.
+- **Onde roda?** Localmente ou em um servidor configurado. GitHub Actions executa a análise e guarda evidências; publicar o código no GitHub não hospeda automaticamente o dashboard.

@@ -1,0 +1,58 @@
+services:
+  sast-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:${SAST_PORT:-8000}:8000"
+    environment:
+      ENVIRONMENT: production
+      ALLOWED_ORIGINS: http://localhost:8000,http://127.0.0.1:8000
+      SAST_EMBEDDED_WORKER: "0"
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
+      OLLAMA_REQUEST_TIMEOUT: ${OLLAMA_REQUEST_TIMEOUT:-90}
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-30m}
+    volumes:
+      - ./samples:/app/samples:ro
+      - sast-data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  sast-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "api.worker"]
+    environment:
+      SAST_EMBEDDED_WORKER: "0"
+    volumes:
+      - sast-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-m", "api.worker", "--health-check"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Serviço para execução da CLI sob demanda via Docker
+  sast-cli-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./samples:/app/samples:ro
+    entrypoint: ["python", "cli.py"]
+    profiles:
+      - cli
+
+volumes:
+  sast-data:

@@ -1,0 +1,379 @@
+[
+  {
+    "id": "py-eval",
+    "filename": "demo.py",
+    "code": "eval(value)",
+    "expected_rules": [
+      "PY-R001"
+    ]
+  },
+  {
+    "id": "py-exec",
+    "filename": "demo.py",
+    "code": "exec(value)",
+    "expected_rules": [
+      "PY-R001"
+    ]
+  },
+  {
+    "id": "py-secret",
+    "filename": "demo.py",
+    "code": "password = \"DEMO_ONLY_1234\"",
+    "expected_rules": [
+      "PY-R002"
+    ]
+  },
+  {
+    "id": "py-command",
+    "filename": "demo.py",
+    "code": "import os\nos.system(command)",
+    "expected_rules": [
+      "PY-R003"
+    ]
+  },
+  {
+    "id": "py-shell",
+    "filename": "demo.py",
+    "code": "import subprocess\nsubprocess.run(command, shell=True)",
+    "expected_rules": [
+      "PY-R003"
+    ]
+  },
+  {
+    "id": "py-sql-flow",
+    "filename": "demo.py",
+    "code": "value = input()\nquery = \"SELECT * FROM u WHERE id=\" + value\ndb.execute(query)",
+    "expected_rules": [
+      "PY-T001"
+    ]
+  },
+  {
+    "id": "py-path-flow",
+    "filename": "demo.py",
+    "code": "path = input()\nopen(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-ssrf-flow",
+    "filename": "demo.py",
+    "code": "url = input()\nrequests.get(url)",
+    "expected_rules": [
+      "PY-T003",
+      "PY-R004"
+    ]
+  },
+  {
+    "id": "py-http-url",
+    "filename": "demo.py",
+    "code": "httpx.get(target)",
+    "expected_rules": [
+      "PY-R004"
+    ]
+  },
+  {
+    "id": "py-http-keyword",
+    "filename": "demo.py",
+    "code": "httpx.get(url=target)",
+    "expected_rules": [
+      "PY-R004"
+    ]
+  },
+  {
+    "id": "py-request-method",
+    "filename": "demo.py",
+    "code": "requests.request(\"GET\", target)",
+    "expected_rules": [
+      "PY-R004"
+    ]
+  },
+  {
+    "id": "py-sanitizer-name-collision",
+    "filename": "demo.py",
+    "code": "value = input()\nquery = printable(value)\ndb.execute(query)",
+    "expected_rules": [
+      "PY-T001"
+    ]
+  },
+  {
+    "id": "py-html-escape-is-not-sql-binding",
+    "filename": "demo.py",
+    "code": "value = input()\nquery = html.escape(value)\ndb.execute(query)",
+    "expected_rules": [
+      "PY-T001"
+    ]
+  },
+  {
+    "id": "py-string-example",
+    "filename": "safe.py",
+    "code": "example = \"eval(input)\"",
+    "expected_rules": []
+  },
+  {
+    "id": "py-comment-example",
+    "filename": "safe.py",
+    "code": "# eval(input)\nvalue = 1",
+    "expected_rules": []
+  },
+  {
+    "id": "py-json",
+    "filename": "safe.py",
+    "code": "import json\nvalue = json.loads(data)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-secret-env",
+    "filename": "safe.py",
+    "code": "import os\npassword = os.getenv(\"DB_PASSWORD\")",
+    "expected_rules": []
+  },
+  {
+    "id": "py-argv-array",
+    "filename": "safe.py",
+    "code": "import subprocess\nsubprocess.run([\"ping\", \"127.0.0.1\"], shell=False)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-bound-sql",
+    "filename": "safe.py",
+    "code": "value = input()\ndb.execute(\"SELECT * FROM u WHERE id=?\", (value,))",
+    "expected_rules": []
+  },
+  {
+    "id": "py-int-sanitizer",
+    "filename": "safe.py",
+    "code": "value = int(input())\nquery = f\"SELECT * FROM u WHERE id={value}\"\ndb.execute(query)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-scope-isolation",
+    "filename": "safe.py",
+    "code": "def source():\n    path = input()\ndef safe(path):\n    open(path)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-static-url-variable",
+    "filename": "safe.py",
+    "code": "url=\"https://example.org/health\"\nrequests.get(url)",
+    "expected_rules": []
+  },
+  {
+    "id": "js-eval",
+    "filename": "demo.js",
+    "code": "eval(value);",
+    "expected_rules": [
+      "JS-R001"
+    ]
+  },
+  {
+    "id": "js-function-constructor",
+    "filename": "demo.js",
+    "code": "new Function(code);",
+    "expected_rules": [
+      "JS-R001"
+    ]
+  },
+  {
+    "id": "js-secret",
+    "filename": "demo.js",
+    "code": "const apiKey=\"DEMO_ONLY_1234\";",
+    "expected_rules": [
+      "JS-R002"
+    ]
+  },
+  {
+    "id": "js-command",
+    "filename": "demo.js",
+    "code": "child_process.exec(command);",
+    "expected_rules": [
+      "JS-R003"
+    ]
+  },
+  {
+    "id": "js-shell-option",
+    "filename": "demo.js",
+    "code": "spawn(command, [], {shell:true});",
+    "expected_rules": [
+      "JS-R003"
+    ]
+  },
+  {
+    "id": "js-dom",
+    "filename": "demo.js",
+    "code": "node.innerHTML = input;",
+    "expected_rules": [
+      "JS-R004"
+    ]
+  },
+  {
+    "id": "js-sql-template",
+    "filename": "demo.js",
+    "code": "db.query(`SELECT * FROM u WHERE id=${id}`);",
+    "expected_rules": [
+      "JS-R005"
+    ]
+  },
+  {
+    "id": "js-sql-multiline",
+    "filename": "demo.js",
+    "code": "db.query(\n \"SELECT * FROM u WHERE id=\" + id\n);",
+    "expected_rules": [
+      "JS-R005"
+    ]
+  },
+  {
+    "id": "js-ssrf",
+    "filename": "demo.js",
+    "code": "fetch(`https://${host}/`);",
+    "expected_rules": [
+      "JS-R006"
+    ]
+  },
+  {
+    "id": "ts-typed-secret",
+    "filename": "demo.ts",
+    "code": "const password: string = \"DEMO_ONLY_1234\";",
+    "expected_rules": [
+      "JS-R002"
+    ]
+  },
+  {
+    "id": "js-string-example",
+    "filename": "safe.js",
+    "code": "const example=\"eval(input); node.innerHTML = user\";",
+    "expected_rules": []
+  },
+  {
+    "id": "js-comment-example",
+    "filename": "safe.js",
+    "code": "/* child_process.exec(input);\n eval(user); */\nconst n=1;",
+    "expected_rules": []
+  },
+  {
+    "id": "js-json",
+    "filename": "safe.js",
+    "code": "const data = JSON.parse(input);",
+    "expected_rules": []
+  },
+  {
+    "id": "js-dom-text",
+    "filename": "safe.js",
+    "code": "node.textContent = input;",
+    "expected_rules": []
+  },
+  {
+    "id": "js-bound-sql",
+    "filename": "safe.js",
+    "code": "db.query(\"SELECT * FROM u WHERE id=?\", [id]);",
+    "expected_rules": []
+  },
+  {
+    "id": "js-static-sql-concat",
+    "filename": "safe.js",
+    "code": "db.query(\"SELECT * FROM u WHERE id=\" + \"1\");",
+    "expected_rules": []
+  },
+  {
+    "id": "js-static-url",
+    "filename": "safe.js",
+    "code": "const url=\"https://example.org\"; fetch(url);",
+    "expected_rules": []
+  },
+  {
+    "id": "tsx-safe-markup",
+    "filename": "safe.tsx",
+    "code": "const View = () => <div>eval(user)</div>;",
+    "expected_rules": []
+  },
+  {
+    "id": "java-sql",
+    "filename": "Demo.java",
+    "code": "class Demo { void run() { stmt.executeQuery(\"SELECT * FROM u WHERE id=\" + id); } }",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-secret",
+    "filename": "Demo.java",
+    "code": "class Demo { String password=\"DEMO_ONLY_1234\"; }",
+    "expected_rules": [
+      "JAVA-R002"
+    ]
+  },
+  {
+    "id": "java-command",
+    "filename": "Demo.java",
+    "code": "class Demo { void run() { Runtime.getRuntime().exec(command); } }",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-deserialize",
+    "filename": "Demo.java",
+    "code": "class Demo { void run() { in.readObject(); } }",
+    "expected_rules": [
+      "JAVA-R004"
+    ]
+  },
+  {
+    "id": "java-path",
+    "filename": "Demo.java",
+    "code": "class Demo { void run() { new File(base, userPath); } }",
+    "expected_rules": [
+      "JAVA-R005"
+    ]
+  },
+  {
+    "id": "java-ssrf",
+    "filename": "Demo.java",
+    "code": "class Demo { void run() { new URL(\"https://\" + host); } }",
+    "expected_rules": [
+      "JAVA-R006"
+    ]
+  },
+  {
+    "id": "java-comment-example",
+    "filename": "Safe.java",
+    "code": "class Safe { /* input.readObject(); */ }",
+    "expected_rules": []
+  },
+  {
+    "id": "java-string-example",
+    "filename": "Safe.java",
+    "code": "class Safe { String message=\"Runtime.getRuntime().exec(input)\"; }",
+    "expected_rules": []
+  },
+  {
+    "id": "java-secret-env",
+    "filename": "Safe.java",
+    "code": "class Safe { String password=System.getenv(\"PASSWORD\"); }",
+    "expected_rules": []
+  },
+  {
+    "id": "java-bound-sql",
+    "filename": "Safe.java",
+    "code": "class Safe { void run() { var stmt=conn.prepareStatement(\"SELECT * FROM u WHERE id=?\"); stmt.setString(1, id); stmt.executeQuery(); } }",
+    "expected_rules": []
+  },
+  {
+    "id": "java-command-array",
+    "filename": "Safe.java",
+    "code": "class Safe { void run() { new ProcessBuilder(\"ping\", \"127.0.0.1\"); } }",
+    "expected_rules": []
+  },
+  {
+    "id": "java-static-file",
+    "filename": "Safe.java",
+    "code": "class Safe { void run() { new File(base, \"readme.txt\"); } }",
+    "expected_rules": []
+  },
+  {
+    "id": "java-static-url",
+    "filename": "Safe.java",
+    "code": "class Safe { void run() { new URL(\"https://example.org\"); } }",
+    "expected_rules": []
+  }
+]
