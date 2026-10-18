@@ -6,7 +6,8 @@ Corpus curado do projeto; métricas não representam todos os códigos ou vulner
 - Casos: 53; controles sem falhas esperadas: 24.
 - Precisão: 100.0%; recall: 100.0%.
 - Falsos positivos: 0; falsos negativos: 0.
-- Latência mediana: 0.1092 ms; p95: 0.3314 ms; repetições: 5.
+- Latência mediana: 0.1769 ms; p95: 0.6102 ms; repetições: 5 (medição local em 18/10/2026).
+- Tempos variam por computador; consulte `reports/benchmark.json` para a última execução local.
 
 Os rótulos são explícitos em benchmarks/cases.json. Este conjunto não substitui uma avaliação externa nem mede a precisão do LLM.
 

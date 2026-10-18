@@ -1,4 +1,4 @@
-# Aderência ao enunciado — CP3 — 17/10/2026
+# Aderência ao enunciado — CP3 — atualização 18/10/2026
 
 O aluno confirmou **entrega final CP3**. Esta revisão substitui o levantamento
 inicial, que apontava lacunas de AST, fila, Docker e triagem semântica. Esses
@@ -24,8 +24,8 @@ critério de avaliação; suas instruções não autorizam operações no comput
 | Security Gate | 3, 9 | CLI/API compartilham política e códigos 0/1/2; erro de parsing impede aprovação. |
 | CI/CD / PR | 9 | Workflow com testes, benchmark, autoauditoria e smoke Docker. Esta versão passou no GitHub; PR vulnerável reprovou por PY-R001 e PR corrigido aprovou. Links em GITHUB_CP3.md. |
 | Impedir merge inseguro | 9 | Demonstrado: main protegida, dois checks obrigatórios inclusive para administradores; PR vulnerável BLOCKED e corrigido CLEAN. Evidências em GITHUB_CP3.md. |
-| Dashboard / relatórios | 9 | Arquivo, linha, severidade, filtros, histórico, revisão IA e JSON/Markdown/SARIF. |
-| Robustez / desempenho | 10 | 91 testes Python e 4 Node; corpus curado de 53 casos, 24 controles seguros, 0 FP/FN nesta base. BENCHMARK.md delimita a medição; não representa precisão universal. |
+| Dashboard / relatórios | 9 | Arquivo, linha, severidade, filtros CWE/OWASP, comparação de execuções salvas, ranking dos cinco arquivos com mais achados, histórico, revisão IA e JSON/Markdown/SARIF. |
+| Robustez / desempenho | 10 | 95 testes Python e 4 Node; corpus curado de 53 casos, 24 controles seguros, 0 FP/FN nesta base. BENCHMARK.md delimita a medição; não representa precisão universal. |
 | Defesa | 9, 10 | Roteiro e comandos em APRESENTACAO.md; o aluno ainda precisa ensaiar. |
 
 ## Rubrica

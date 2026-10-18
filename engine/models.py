@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Dict, Optional, Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+from engine.owasp import OwaspCategory, owasp_category_for_cwe
 
 
 class Severity(str, Enum):
@@ -22,6 +23,13 @@ class Finding(BaseModel):
     column_number: int = Field(..., description="Número da coluna do nó (0-indexed)")
     code_snippet: str = Field(..., description="Trecho de código com a violação")
     remediation_advice: str = Field(..., description="Orientação de como corrigir a falha de forma segura")
+    owasp: Optional[OwaspCategory] = Field(default=None, description="Categoria OWASP Top 10:2025 associada ao CWE")
+
+    @model_validator(mode="after")
+    def map_owasp_category(self):
+        # Recompute on load too, so older SQLite scans gain the versioned tag.
+        self.owasp = owasp_category_for_cwe(self.cwe)
+        return self
 
 
 class RuleMetadata(BaseModel):
@@ -31,6 +39,12 @@ class RuleMetadata(BaseModel):
     cwe: str
     description: str
     remediation: str
+    owasp: Optional[OwaspCategory] = Field(default=None, description="Categoria OWASP Top 10:2025 associada ao CWE")
+
+    @model_validator(mode="after")
+    def map_owasp_category(self):
+        self.owasp = owasp_category_for_cwe(self.cwe)
+        return self
 
 
 class SecurityGate(BaseModel):
