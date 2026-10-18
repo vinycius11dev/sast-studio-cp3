@@ -29,6 +29,11 @@ def test_saved_scan_can_be_reopened_with_source(tmp_path, monkeypatch):
     history = client.get("/api/v1/scans").json()["items"]
     assert history[0]["project_name"] == "Projeto persistente"
     assert history[0]["findings"] == []  # resumo, sem transferir todos os achados
+    assert history[0]["top_files"] == [{
+        "path": "src/service.py",
+        "total_findings": 1,
+        "summary_by_severity": {"CRITICAL": 1, "HIGH": 0, "MEDIUM": 0, "LOW": 0, "INFO": 0},
+    }]
     assert history[0]["files"][0]["path"] == "src/service.py"
 
 
@@ -38,12 +43,16 @@ def test_reports_are_bound_to_selected_scan():
     first = client.get(f"/api/v1/scans/{vulnerable['scan_id']}/report?format=sarif").json()
     second = client.get(f"/api/v1/scans/{safe['scan_id']}/report?format=sarif").json()
     assert len(first["runs"][0]["results"]) == 1
+    assert first["runs"][0]["results"][0]["properties"]["owaspTop10"]["id"] == "A05:2025"
     assert first["runs"][0]["results"][0]["locations"][0]["physicalLocation"]["artifactLocation"]["uri"] == "src/service.py"
     assert second["runs"][0]["results"] == []
     assert client.get("/api/v1/report/sarif").json()["runs"][0]["results"] == []
     markdown = client.get(f"/api/v1/scans/{vulnerable['scan_id']}/report?format=markdown")
     assert vulnerable["scan_id"] in markdown.text
+    assert "OWASP Top 10:2025" in markdown.text
     assert "attachment;" in markdown.headers["content-disposition"]
+    json_report = client.get(f"/api/v1/scans/{vulnerable['scan_id']}/report?format=json").json()
+    assert json_report["findings"][0]["owasp"]["id"] == "A05:2025"
 
 
 def test_parser_error_prevents_gate_approval():

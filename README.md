@@ -1,90 +1,114 @@
 # SAST Studio
 
-Workspace de segurança de código com parsers estruturais, fila persistente, triagem semântica, histórico, relatórios e remediação assistida por Ollama. Projeto acadêmico de Engenharia de Software — FIAP, CP3, 2026. Versão 3.0.0.
+Workspace de análise estática de segurança de código feito como projeto acadêmico de Engenharia de Software — FIAP, entrega CP3. O SAST Studio encontra padrões de risco sem executar o código, organiza os resultados no histórico, aplica uma política de bloqueio e oferece revisão e remediação assistidas por IA local.
 
-## Iniciar
+**Versão 3.0.0 · Python · JavaScript/TypeScript · Java · Ollama · Docker · GitHub Actions**
+
+<p align="center">
+  <img src="docs/screenshots/readme/01-visao-geral.png" alt="Visão geral do SAST Studio com comparação entre análises vulnerável e corrigida" width="100%">
+</p>
+
+<p align="center"><em>Visão geral real do sistema: comparação entre 9 achados bloqueantes e uma análise corrigida com 0 achados pelas regras atuais.</em></p>
+
+## Demonstração em imagens
+
+As capturas abaixo foram feitas na interface local do projeto. A análise de IA mostrada foi retornada pelo Ollama com o modelo `llama3.2:3b`; não é uma resposta escrita para ilustrar a tela.
+
+| Fluxo | Captura |
+| --- | --- |
+| Projeto vulnerável: achados e gate bloqueado | ![Achados do exemplo vulnerável e gate bloqueado](docs/screenshots/readme/02-achados-vulneraveis.png) |
+| Revisão semântica real: risco confirmado e evidências | ![Revisão semântica respondida pelo Ollama llama3.2:3b](docs/screenshots/readme/03-triagem-ollama.png) |
+| Remediação sugerida pelo Ollama (`llama3.2:3b`) | ![Sugestão de remediação real identificada como Ollama](docs/screenshots/readme/04-remediacao-ollama.png) |
+| Diff com linhas removidas e adicionadas | ![Diff da sugestão de remediação](docs/screenshots/readme/05-diff-remediacao.png) |
+| Projeto corrigido: zero achados atuais e gate aprovado | ![Análise do exemplo corrigido](docs/screenshots/readme/06-projeto-corrigido.png) |
+
+> As telas demonstram exemplos controlados incluídos no repositório. Zero achados quer dizer que as regras aplicadas não encontraram os padrões cobertos; isso não comprova segurança absoluta.
+
+## O que o sistema faz
+
+- Analisa arquivos, pastas e trechos de código com regras estruturais e análise de fluxo Python básica.
+- Envia trabalhos para uma fila persistente, acompanha o worker e guarda execuções e revisões em SQLite.
+- Aplica um gate configurável para aprovar ou bloquear uma análise conforme a severidade dos achados.
+- Exibe evidências por regra, CWE, arquivo, linha, contexto e categoria OWASP Top 10:2025 quando há mapeamento documentado.
+- Usa Ollama local para contextualizar achados e sugerir correções. A IA não altera os arquivos automaticamente nem decide o gate original.
+- Reanalisa uma sugestão e mostra o diff antes de qualquer aplicação manual.
+- Exporta resultados em JSON, SARIF e Markdown.
+- Oferece dashboard com gráficos, histórico e comparação de execuções salvas.
+- Inclui CLI, API, Docker Compose e GitHub Actions para validar alterações em Pull Requests.
+
+## Fluxo demonstrável
+
+1. Em **Scanner**, carregue a pasta vulnerável de demonstração e execute a análise.
+2. Abra **Achados**: o exemplo tem 3 arquivos e 9 achados (6 críticos e 3 altos); o gate fica bloqueado pelo limiar `HIGH`.
+3. Selecione `PY-R001` e use **Revisar com IA**. Confira o selo `Ollama (llama3.2:3b)`, a avaliação, a confiança e as evidências.
+4. Gere uma remediação e abra **Ver alterações (diff)**. Revise o patch; **Analisar sugestão** verifica estaticamente o código proposto.
+5. Carregue o projeto corrigido e rode outra análise. São 3 arquivos, 0 achados pelas regras atuais e gate aprovado.
+6. Em **Visão geral**, compare as duas execuções salvas. Em **Histórico**, reabra resultados e exporte os relatórios.
+
+Os exemplos vulnerável e corrigido são propositalmente pequenos e não executam as funções vulneráveis. Para demonstrar a IA, mostre o identificador do provedor na própria interface; uma resposta do **Motor determinístico (Fallback)** não é uma inferência do LLM.
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+    UI[Dashboard no navegador] --> API[FastAPI]
+    CLI[CLI] --> ENGINE[Motor SAST compartilhado]
+    API --> Q[Fila SQLite persistente]
+    Q --> W[Worker de análise]
+    W --> ENGINE
+    ENGINE --> PARSERS[Python AST · Tree-sitter JS/TS/Java]
+    ENGINE --> DB[(SQLite: análises e achados)]
+    DB --> API
+    API --> OLLAMA[Ollama local: revisão e remediação]
+    API --> REPORTS[JSON · SARIF · Markdown]
+    GH[GitHub Actions] --> CHECKS[Testes · Security Gate · Docker smoke]
+```
+
+No modo local, a API inicia um worker embutido para facilitar o uso no Windows. No Docker, a API e os workers são serviços separados que compartilham um volume persistente. A fila SQLite atende uma instalação em um host; não é um broker distribuído entre vários servidores.
+
+## Linguagens e cobertura
+
+| Linguagem | Técnica | Observação |
+| --- | --- | --- |
+| Python (`.py`) | AST nativa e análise básica de fluxo de dados | A cobertura de fluxo é limitada; não há análise completa entre arquivos. |
+| JavaScript/TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`) | AST Tree-sitter e regras estruturais | Gramáticas JS, TS e TSX. |
+| Java (`.java`) | AST Tree-sitter e regras estruturais | A análise não substitui compilação ou resolução de tipos/dependências. |
+
+O catálogo pode ser consultado na tela **Regras de análise** ou por `python cli.py rules`. As regras disponíveis abrangem, conforme linguagem, execução dinâmica, segredos, comandos, SQL Injection, XSS, SSRF e operações inseguras com arquivos. O mapeamento CWE → OWASP Top 10:2025 só é exibido para categorias cobertas por vínculo documentado; os demais CWEs aparecem sem mapeamento.
+
+## Instalação no Windows
+
+### Pré-requisitos
+
+- Windows 10 ou 11 e Python 3.11 instalado.
+- Ollama instalado e o modelo `llama3.2:3b` baixado para habilitar a IA local.
+- Internet necessária na primeira instalação e para acessar o GitHub. Depois de instalar dependências e baixar o modelo, a análise local pode funcionar sem internet.
+
+### Preparar e iniciar
 
 ```powershell
 git clone https://github.com/vinycius11dev/sast-studio-cp3.git
 cd sast-studio-cp3
-```
-
-
-Instale as dependências uma vez:
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-No Windows, dê dois cliques em **iniciar.bat** ou execute **python iniciar.py**. O inicializador abre o navegador e reutiliza o servidor quando a aplicação já está na porta 8000. Mantenha a janela do servidor aberta durante a apresentação.
-
-- Workspace: http://127.0.0.1:8000/dashboard
-- API: http://127.0.0.1:8000/docs
-- Saúde: http://127.0.0.1:8000/health
-
-Para desenvolvimento:
-
-```powershell
-python -m uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
-```
-
-## Fluxo da interface
-
-1. No Scanner, escolha pasta, arquivo ou Editor. Confira a seleção e o limiar do gate.
-2. Clique em Executar análise.
-3. Em Achados, filtre por severidade, arquivo, regra ou CWE. Selecione um item para ver o contexto e a linha.
-4. Use **Revisar com IA** para avaliar severidade e possíveis falsos positivos com evidências. Os filtros de revisão usam a avaliação mais recente. O achado e o gate originais são preservados.
-5. Gere uma remediação e abra **Ver alterações (diff)**. Vermelho indica remoção; verde indica adição. Há download .patch e .txt. Analisar sugestão executa as regras sobre o código proposto.
-6. Exporte SARIF, JSON ou Markdown da análise selecionada, incluindo as revisões semânticas registradas.
-7. Reabra execuções no Histórico. A visão geral usa os dados dessas execuções.
-
-O código não é executado. Limites: 200 arquivos, 25 MB por projeto e 5 MB por arquivo. Dependências, caches e builds são ignorados no navegador e na API.
-
-Fontes, resultados e revisões ficam em **data/scans.sqlite3**. A fila usa **data/jobs.sqlite3**. O diretório é ignorado pelo Git e pelo build Docker. Os testes usam bancos temporários.
-
-## Fila e workers
-
-A interface envia análises com `?queued=true`, recebe HTTP 202 com um job_id e consulta o andamento até obter o scan_id. A fila é persistente, com reserva atômica, lease renovável e recuperação de jobs de workers interrompidos.
-
-Na execução local, a API inicia um worker embutido para permitir o uso de iniciar.bat. No Docker, **API e worker são processos em contêineres separados** e compartilham um volume persistente. Para outro worker local, use `python -m api.worker`; configure `SAST_EMBEDDED_WORKER=0` se quiser desativar o consumidor embutido. Integrações mostra workers ativos e contagens da fila.
-
-## IA local
-
-Deixe o aplicativo Ollama em execução. Para uma nova instalação:
-
-```powershell
+py -3.11 -m pip install -r requirements.txt
 ollama pull llama3.2:3b
 ollama list
 ```
 
-Integrações consulta a disponibilidade do serviço e do modelo. Na remediação, **Ollama (llama3.2:3b)** identifica uma resposta real do modelo; **Motor determinístico (Fallback)** identifica orientação por regras e explica o motivo da contingência.
+Abra o aplicativo Ollama, depois dê dois cliques em **`iniciar.bat`** ou execute:
 
-A primeira geração pode demorar. Gere uma revisão ou sugestão antes da aula para carregar o modelo. As respostas são recomendações para revisão, sem aplicação automática. A detecção usa as regras SAST; o LLM faz triagem contextual e sugere remediações. No caso JDBC, a sugestão pode conter o arquivo completo. Respostas inválidas recebem uma segunda tentativa dentro do mesmo limite total de tempo. Falhas de triagem permanecem identificadas como indisponíveis e não alteram o gate.
+```powershell
+python iniciar.py
+```
 
-| Variável | Padrão |
-| --- | --- |
-| OLLAMA_BASE_URL | http://localhost:11434 |
-| OLLAMA_MODEL | llama3.2:3b |
-| OLLAMA_REQUEST_TIMEOUT | 90 segundos |
-| OLLAMA_KEEP_ALIVE | 30m |
-| SAST_DATA_DIR | ./data |
-| SAST_EMBEDDED_WORKER | 1 local; 0 nos serviços Docker |
-| SAST_PORT | 8000 (porta publicada pelo Compose) |
-| ALLOWED_ORIGINS | localhost/127.0.0.1:8000 |
+O navegador abre o workspace em <http://127.0.0.1:8000/dashboard>. Mantenha a janela do servidor aberta. A documentação interativa da API fica em <http://127.0.0.1:8000/docs>; a verificação de saúde fica em <http://127.0.0.1:8000/health>.
 
-## Motor e cobertura
+Antes da apresentação, execute **`verificar_apresentacao.bat`** com o servidor e o Ollama abertos. Ele percorre os fluxos vulnerável/corrigido, confere os relatórios e exige duas inferências reais quando usa `--require-llm`. O resumo é gravado em `reports/smoke-result.json`, pasta local ignorada pelo Git.
 
-| Linguagem | Extensões | Técnica |
-| --- | --- | --- |
-| Python | .py | AST nativa e fluxo de dados básico |
-| JavaScript / TypeScript | .js .jsx .ts .tsx | AST Tree-sitter com gramáticas JS/TS/TSX e regras estruturais |
-| Java | .java | AST Tree-sitter e regras estruturais |
+### Sem Ollama
 
-Consulte o catálogo da interface ou **python cli.py rules** para a cobertura exata. Há regras para execução dinâmica, segredos, comandos, SQL Injection, XSS, SSRF e arquivos inseguros, conforme a linguagem.
+O scanner estático continua disponível. A revisão e a remediação por modelo ficam indisponíveis ou usam o fallback determinístico, identificado na interface. Para demonstrar que a IA está funcionando, instale/abra Ollama, confirme `ollama list` e mostre que a resposta indica `Ollama (llama3.2:3b)`.
 
-Limites acadêmicos: o fluxo de dados é básico e não há análise completa entre arquivos. Tree-sitter verifica estrutura sintática, sem substituir a compilação ou a resolução de tipos/dependências. A triagem do LLM pode errar, é contextual e não suprime achados automaticamente. A fila SQLite atende uma instalação em um host; não é um broker para distribuição entre vários servidores. Ausência de achados significa que as regras aplicadas não encontraram um padrão de risco.
-
-## CLI e gate
+## Uso pela linha de comando
 
 ```powershell
 python cli.py rules
@@ -94,21 +118,50 @@ python cli.py scan ./samples -f sarif -o sast-results.sarif --fail-on HIGH
 python cli.py scan ./samples/vulnerable_sample.py --ai -f json -o resultado.json
 ```
 
-A API e a CLI compartilham a decisão do gate. A API usa HIGH por padrão; use --fail-on HIGH na CLI para a mesma política.
-
-| Saída | Significado |
+| Código de saída | Significado |
 | --- | --- |
-| 0 | Concluída sem achados bloqueantes |
-| 1 | Achados no limiar ou acima |
-| 2 | Erro de leitura, sintaxe ou processamento incompleto |
+| `0` | Análise concluída sem achados bloqueantes. |
+| `1` | Foram encontrados achados no limiar ou acima dele. |
+| `2` | Erro de leitura, sintaxe ou processamento incompleto. Erros não aprovam o gate. |
 
-Erros impedem a aprovação. JSON e SARIF continuam estruturados quando usados com --ai.
+A API e a CLI compartilham a política de gate. O padrão da API é `HIGH`; use `--fail-on HIGH` na CLI para aplicar a mesma política. JSON e SARIF podem incluir as revisões semânticas quando a opção de IA for usada.
 
-## GitHub Actions e Docker
+## API
 
-O workflow **.github/workflows/sast_security_gate.yml** cobre main, master, develop e a branch de entrega codex/cp3-studio. O check **Security Gate** executa testes Python/JavaScript, benchmark e auditoria de engine/, api/, cli.py e audit-target/. O check **Docker smoke** constrói os contêineres e exercita a API/fila/relatórios. Os relatórios ficam como artifacts e resumo do job. Para impedir merges, configure ambos como obrigatórios. A disponibilidade de proteção em repositórios privados depende do plano do GitHub.
+Rotas principais sob `/api/v1`:
 
-A tela Integrações oferece o workflow e o comando CLI. Para outro repositório, inclua o motor e suas dependências e ajuste os caminhos do alvo. A prévia local não altera Pull Requests.
+| Rota | Uso |
+| --- | --- |
+| `POST /scan/code`, `POST /scan/file`, `POST /scan/project` | Analisar trecho, arquivo ou projeto. |
+| `GET /scans` e `GET /scans/{id}` | Listar o histórico e reabrir uma análise. |
+| `GET /scans/{id}/source` | Consultar fontes guardadas para aquela análise. |
+| `GET /scans/{id}/report` | Exportar o resultado selecionado. |
+| `/remediate` | Gerar uma sugestão assistida. |
+| `/ai/status` | Consultar a disponibilidade do serviço e do modelo. |
+| `/rules` | Consultar o catálogo de regras. |
+
+Para os contratos e os exemplos de payload, execute a aplicação e abra `/docs`.
+
+## IA local e configurações
+
+O serviço usa Ollama local. Uma análise estática produz os achados; o LLM faz triagem contextual e sugere uma possível remediação. As respostas são consultivas, podem estar incorretas e não removem achados nem mudam o gate original. A geração pode demorar mais na primeira chamada enquanto o modelo carrega. Respostas em formato inválido recebem uma tentativa adicional dentro do limite total.
+
+| Variável | Padrão |
+| --- | --- |
+| `OLLAMA_BASE_URL` | `http://localhost:11434` |
+| `OLLAMA_MODEL` | `llama3.2:3b` |
+| `OLLAMA_REQUEST_TIMEOUT` | 90 segundos |
+| `OLLAMA_KEEP_ALIVE` | `30m` |
+| `SAST_DATA_DIR` | `./data` |
+| `SAST_EMBEDDED_WORKER` | `1` local; `0` nos serviços Docker |
+| `SAST_PORT` | `8000` |
+| `ALLOWED_ORIGINS` | localhost e 127.0.0.1 na porta 8000 |
+
+Limites de entrada: 200 arquivos por projeto, 25 MB por projeto e 5 MB por arquivo. Dependências, caches e diretórios de build são ignorados. O conteúdo analisado não é executado. O histórico local fica em `data/scans.sqlite3` e a fila em `data/jobs.sqlite3`; esses dados são ignorados pelo Git.
+
+## Docker
+
+Docker é opcional para rodar o workspace no Windows. Use-o para demonstrar o serviço conteinerizado e os workers separados:
 
 ```powershell
 docker compose up --build
@@ -116,46 +169,45 @@ docker compose up -d --scale sast-worker=2
 docker compose --profile cli run --rm sast-cli-runner scan /app/samples --fail-on HIGH
 ```
 
-O contêiner roda sem root. O volume sast-data preserva o histórico. O Ollama do host é acessado por host.docker.internal:11434; altere OLLAMA_BASE_URL para outro serviço.
+O contêiner executa sem root e o volume `sast-data` preserva o histórico. Para um Ollama no host, o Compose usa `host.docker.internal:11434`; altere `OLLAMA_BASE_URL` se o serviço estiver em outro endereço.
 
-## API e estrutura
+## GitHub Actions
 
-As rotas /api/v1/scan/code, /scan/file e /scan/project analisam fontes. /api/v1/scans lista o histórico; /scans/{id} reabre um resultado; /scans/{id}/source consulta apenas fontes daquela análise; /scans/{id}/report exporta o resultado escolhido. /api/v1/remediate gera sugestões, /ai/status diagnostica o modelo e /rules expõe o catálogo. Consulte /docs para os contratos completos.
+O repositório público é [vinycius11dev/sast-studio-cp3](https://github.com/vinycius11dev/sast-studio-cp3). O workflow `.github/workflows/sast_security_gate.yml` executa os testes Python/JavaScript, benchmark e auditoria do motor, e roda o Docker smoke da API, fila e relatórios. Os resultados ficam nos logs, resumo e artifacts da execução. Com os checks **Security Gate** e **Docker smoke** configurados como obrigatórios, um Pull Request vulnerável pode falhar e um corrigido pode passar antes do merge.
 
-- api/main.py: endpoints, validação e orquestração.
-- api/store.py: persistência SQLite.
-- engine/engine.py e languages/: roteamento e scanners.
-- engine/rules/: AST e taint Python.
-- engine/policy.py: política compartilhada.
-- engine/ai_remediation.py: Ollama, validações e fallback.
-- engine/reporter.py: JSON, Markdown e SARIF.
-- static/: workspace web sem etapa de build.
-- tests/: motor, API, histórico, relatórios e gate.
+Esta entrega já mantém exemplos reais de Pull Requests: [PR #1 vulnerável](https://github.com/vinycius11dev/sast-studio-cp3/pull/1) e [PR #2 corrigido](https://github.com/vinycius11dev/sast-studio-cp3/pull/2). Consulte [as evidências da entrega](docs/GITHUB_CP3.md). Publicar o código não hospeda o dashboard: a interface roda localmente ou em um servidor que você configurar.
 
-## Verificação e defesa
+## Testes e verificações
 
 ```powershell
-python -m pytest -q
+python -m pytest -q -W error::pytest.PytestUnhandledThreadExceptionWarning
 node --check static/js/dashboard.js
 node --test tests/diff-viewer.test.cjs
-python -m scripts.benchmark
-python -m scripts.smoke --base-url http://127.0.0.1:8000 --require-llm
+python -m scripts.benchmark --output reports/benchmark.json --markdown reports/benchmark.md
+python -m scripts.smoke
+python -m scripts.smoke --require-llm
 ```
 
-Veja [o roteiro de apresentação](docs/APRESENTACAO.md), [a arquitetura](docs/c4_model.md) e [o benchmark rotulado](docs/BENCHMARK.md). A execução Docker foi validada com API/worker separados, persistência após reinício e acesso ao Ollama do host. Autenticação multiusuário e distribuição entre vários hosts não estão implementadas.
+Inicie primeiro o app com `iniciar.bat`. `python -m scripts.smoke` valida API, worker, exemplos vulnerável/corrigido, gates e formatos de relatório, sem chamar o LLM. `python -m scripts.smoke --require-llm` também faz inferências reais de triagem e remediação e falha se retornar fallback.
 
-## Entrega e demonstração CP3
+Na revalidação local de 18/10/2026: 95 testes Python aprovados; 4 testes Node aprovados; smoke com 9 achados/bloqueado contra 0/aprovado; e triagem/remediação reais por Ollama. O corpus interno tem 53 casos, incluindo 24 controles seguros: obteve precisão e recall de 100% nessa amostra delimitada. Isso não é uma avaliação independente nem garante os mesmos resultados em qualquer projeto. Docker e persistência entre reinícios foram validados em execução anterior, conforme detalhado em [VALIDACAO.md](docs/VALIDACAO.md).
 
-- [Roteiro de apresentação](docs/APRESENTACAO.md)
-- [PRs e evidências reais no GitHub](docs/GITHUB_CP3.md)
+## Limites conhecidos
+
+- A cobertura depende das regras atuais e da linguagem. Fluxo de dados Python é básico; a análise entre arquivos não é completa.
+- Tree-sitter analisa estrutura sintática e não substitui compilação nem resolução de tipos e dependências.
+- Uma análise com zero achados não prova que o projeto é seguro. Revise resultados e correções antes de aplicá-los.
+- A IA pode errar e não toma decisões automáticas sobre o gate.
+- SQLite atende o uso local ou de um host. Autenticação multiusuário e distribuição entre hosts não estão implementadas.
+
+## Documentação da entrega
+
+- [Roteiro de apresentação e perguntas para a defesa](docs/APRESENTACAO.md)
+- [Arquitetura do sistema](docs/c4_model.md)
 - [Aderência ao enunciado](docs/ADERENCIA_AO_ENUNCIADO.md)
-- [Validação e limites](docs/VALIDACAO.md)
+- [Validação, resultados e limites](docs/VALIDACAO.md)
+- [Benchmark e corpus rotulado](docs/BENCHMARK.md)
+- [Demonstração passo a passo](demonstracao/LEIA-ME.md)
+- [Evidências dos Pull Requests e Actions](docs/GITHUB_CP3.md)
 
-A entrega pública está na branch `main` de
-[vinycius11dev/sast-studio-cp3](https://github.com/vinycius11dev/sast-studio-cp3).
-A branch main exige os checks **Security Gate** e **Docker smoke**, inclusive
-para administradores. O [PR vulnerável #1](https://github.com/vinycius11dev/sast-studio-cp3/pull/1)
-ficou bloqueado; o [corrigido #2](https://github.com/vinycius11dev/sast-studio-cp3/pull/2)
-passou. Evidências em [GITHUB_CP3.md](docs/GITHUB_CP3.md).
-As credenciais nos exemplos são fictícias. O repositório não contém histórico
-anterior, arquivos enviados pelo usuário, bancos locais ou o PDF do enunciado.
+As credenciais nos projetos de exemplo são fictícias. O repositório público não inclui banco local, arquivos enviados por usuários ou o PDF do enunciado.

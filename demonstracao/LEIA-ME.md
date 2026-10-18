@@ -1,5 +1,21 @@
 # Pastas para demonstrar o SAST Studio
 
+## Checagem rápida antes da aula
+
+Abra o Ollama e inicie o aplicativo com `iniciar.bat`. Com os dois em execução,
+dê dois cliques em `verificar_apresentacao.bat`, ou rode este comando em outro
+PowerShell na pasta do projeto:
+
+```powershell
+python -m scripts.smoke --require-llm
+```
+
+Espere **SAST smoke: APROVADO**. O comando analisa as versões vulnerável e
+corrigida, confere o gate e os relatórios, e faz uma chamada real para triagem e
+outra para remediação via Ollama. O resultado detalhado é salvo em
+`reports/smoke-result.json`. Se a IA não estiver disponível, abra o Ollama e
+execute `ollama run llama3.2:3b`; então tente novamente.
+
 ## Teste direto, sem janela de seleção
 
 Na tela **Scanner**, clique em **Carregar pasta vulnerável** e depois em
@@ -107,7 +123,14 @@ inteira mistura as versões vulnerável e corrigida em uma mesma análise.
 Use **Histórico** para reabrir as análises e **Exportar** para mostrar
 os resultados em JSON, Markdown ou SARIF.
 
-## Validação realizada em 17/10/2026
+## Validação automatizada realizada em 18/10/2026
+
+- O smoke local aprovou os dois projetos pela API e fila: vulnerável 3/9/bloqueado; corrigido 3/0/aprovado.
+- JSON, SARIF e Markdown foram exportados e conferidos.
+- `python -m scripts.smoke --require-llm` concluiu triagem e remediação via Ollama `llama3.2:3b`.
+- O resumo detalhado está em `reports/smoke-result.json` (arquivo local ignorado pelo Git).
+
+## Validação de interface registrada em 17/10/2026
 
 - As duas pastas foram selecionadas pelo botão **Escolher pasta** e analisadas pelo painel.
 - A API respondeu HTTP 200 nos dois testes: 9 achados/bloqueado e 0 achados/aprovado.

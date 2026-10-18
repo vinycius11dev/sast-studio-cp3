@@ -1,20 +1,25 @@
-# Validação — SAST Studio 3.0 — 17/10/2026
+# Validação — SAST Studio 3.0 — 18/10/2026
+
+Rechecagem local em 18/10/2026: suíte Python, scripts JavaScript, benchmark,
+smoke da API e inferências reais de triagem/remediação via Ollama. Os itens de
+Docker, GitHub e concorrência/persistência da fila abaixo são evidências da
+execução anterior, registradas em 17/10/2026; não foram repetidos nesta rechecagem.
 
 ## Testes e integração
 
 | Verificação | Resultado |
 | --- | --- |
-| Pytest | 91 aprovados; 2 avisos de depreciação de dependências; sem avisos de threads não tratadas |
-| Node | 4 testes de diff aprovados; sintaxe dos dois scripts validada |
-| Corpus rotulado | 53 casos, 24 controles seguros, TP 30, FP 0, FN 0 nesta base; métricas em BENCHMARK.md |
-| Smoke local e Docker | Fila, parsers AST, projetos, gates e exportações exercitados pela API real |
-| Docker | API e worker saudáveis; usuário uid 1001; dados preservados após reiniciar os containers |
-| Fila | Persistência, claim concorrente, lease expirado, falha e limpeza de payload testados |
-| Ollama local | Revisão semântica real e remediação com llama3.2:3b |
-| Ollama no Docker | Inferência real via host.docker.internal, risco externo confirmado como CRITICAL |
-| GitHub | Evidências e status próprios em GITHUB_CP3.md; main protegida e bloqueio de merge comprovado |
+| Pytest — 18/10 | 95 aprovados; 2 avisos de depreciação vindos de dependências; nenhum erro de teste |
+| Node — 18/10 | 4 testes de diff aprovados; sintaxe dos dois scripts validada |
+| Corpus rotulado — 18/10 | 53 casos, 24 controles seguros, TP 30, FP 0, FN 0 nesta base; mediana 0,1769 ms; p95 0,6102 ms |
+| Smoke local — 18/10 | 4 casos de código e projetos vulnerável/corrigido; 9 achados/bloqueado versus 0/aprovado; JSON, SARIF e Markdown |
+| IA local — 18/10 | Triagem e remediação reais via Ollama `llama3.2:3b`; 19,54 s e 13,29 s nesta máquina; modelo carregado ao final |
+| Docker — 17/10 | API e worker saudáveis; usuário uid 1001; dados preservados após reiniciar os containers |
+| Fila — 17/10 | Persistência, claim concorrente, lease expirado, falha e limpeza de payload testados |
+| Ollama no Docker — 17/10 | Inferência real via host.docker.internal, risco externo confirmado como CRITICAL |
+| GitHub — 17/10 | Evidências e status próprios em GITHUB_CP3.md; main protegida e bloqueio de merge comprovado |
 
-## Evidências de inferência real
+## Evidências adicionais de inferência — 17/10
 
 - Dois eval em funções diferentes: a revisão do caso com constante retornou
   possível falso positivo/INFO; input→eval retornou confirmado/CRITICAL/alta confiança.
@@ -23,7 +28,7 @@
   acrescentadas observações AST e validação contra rebaixamento de input→eval.
   As recomendações permanecem consultivas; achado e gate originais são preservados.
 
-## Interface e fluxos
+## Interface e fluxos — conferência de 17/10
 
 Os testes anteriores de upload pelo seletor, editor inválido, filtros,
 paginação, relatórios, diff, navegação e largura de 390 px foram mantidos.
@@ -39,18 +44,23 @@ git apply --check. A correção Java SQL preservou o arquivo e compilou com java
 as outras regras do mesmo arquivo permaneceram visíveis. A validação estática da
 sugestão não substitui testes de comportamento ou revisão humana.
 
-## Reprodução
+## Reprodução local
 
 ```powershell
 python -m pytest -q -W error::pytest.PytestUnhandledThreadExceptionWarning
 node --test tests/diff-viewer.test.cjs
-python -m scripts.benchmark
+python -m scripts.benchmark --output reports/benchmark.json --markdown reports/benchmark.md
+python -m scripts.smoke
 python -m scripts.smoke --require-llm
 ```
 
-O smoke verifica disponibilidade do LLM, sem gastar uma inferência. Use os botões
-de IA para comprovar uma resposta nova. O resultado do corpus é uma medição
-interna delimitada, não uma avaliação externa da segurança de qualquer projeto.
+Inicie o aplicativo com `iniciar.bat` antes dos comandos de smoke. O comando sem
+`--require-llm` verifica a API, a fila, os exemplos, os gates e os relatórios. O
+comando com `--require-llm` também executa inferências novas de triagem e
+remediação e falha se o resultado for fallback. Os arquivos JSON são ignorados
+pelo Git; a evidência detalhada desta execução fica em `reports/smoke-result.json`.
+O tempo de resposta varia conforme o computador. O resultado do corpus é uma
+medição interna delimitada, não uma avaliação externa da segurança de qualquer projeto.
 
 ## Conferência final da interface 3.0
 

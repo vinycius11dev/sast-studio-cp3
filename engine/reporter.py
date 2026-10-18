@@ -53,9 +53,10 @@ class Reporter:
             lines.append(c("\nVULNERABILIDADES DETECTADAS:\n", COLOR_BOLD))
             for i, f in enumerate(result.findings, 1):
                 sev_color = COLOR_RED if f.severity in (Severity.CRITICAL, Severity.HIGH) else COLOR_YELLOW
+                owasp_label = f" | OWASP {f.owasp.id} - {f.owasp.name}" if f.owasp else " | OWASP Top 10:2025 sem mapeamento"
                 lines.append(
                     f"[{i}] {c(f.severity.value, COLOR_BOLD + sev_color)} - "
-                    f"{c(f.rule_name, COLOR_BOLD)} ({c(f.rule_id, COLOR_CYAN)} | {f.cwe})"
+                    f"{c(f.rule_name, COLOR_BOLD)} ({c(f.rule_id, COLOR_CYAN)} | {f.cwe}{owasp_label})"
                 )
                 lines.append(f"    Arquivo: {f.file_path}:{f.line_number}:{f.column_number}")
                 lines.append(f"    Mensagem: {f.message}")
@@ -106,6 +107,10 @@ class Reporter:
             md.append("### 🔍 Detalhamento das Vulnerabilidades\n")
             for idx, f in enumerate(result.findings, 1):
                 md.append(f"#### {idx}. [{f.severity.value}] {f.rule_name} (`{f.rule_id}` / `{f.cwe}`)")
+                if f.owasp:
+                    md.append(f"- **OWASP Top 10:{f.owasp.version}:** [{f.owasp.id} — {f.owasp.name}]({f.owasp.url})")
+                else:
+                    md.append("- **OWASP Top 10:2025:** Sem mapeamento para este CWE.")
                 md.append(f"- **Localização:** `{f.file_path}:{f.line_number}`")
                 md.append(f"- **Descrição:** {f.message}")
                 if f.code_snippet:
@@ -137,6 +142,15 @@ class Reporter:
 
         for f in result.findings:
             if f.rule_id not in rules_map:
+                rule_properties = {
+                    "problem.severity": "error" if f.severity in (Severity.CRITICAL, Severity.HIGH) else "warning",
+                    "security-severity": "9.0" if f.severity == Severity.CRITICAL else ("7.0" if f.severity == Severity.HIGH else "5.0"),
+                    "tags": ["security", f.cwe.lower()],
+                    "cwe": f.cwe,
+                }
+                if f.owasp:
+                    rule_properties["tags"].append(f"owasp-top10:{f.owasp.id.lower()}")
+                    rule_properties["owaspTop10"] = f.owasp.model_dump(mode="json")
                 rules_map[f.rule_id] = {
                     "id": f.rule_id,
                     "name": f.rule_name,
@@ -146,16 +160,12 @@ class Reporter:
                         "text": f"Remediação: {f.remediation_advice}",
                         "markdown": f"### Remediação Segura\n{f.remediation_advice}",
                     },
-                    "properties": {
-                        "problem.severity": "error" if f.severity in (Severity.CRITICAL, Severity.HIGH) else "warning",
-                        "security-severity": "9.0" if f.severity == Severity.CRITICAL else ("7.0" if f.severity == Severity.HIGH else "5.0"),
-                        "tags": ["security", f.cwe.lower()],
-                    },
+                    "properties": rule_properties,
                 }
 
             level = "error" if f.severity in (Severity.CRITICAL, Severity.HIGH) else "warning"
             uri_val = os.path.basename(f.file_path) if os.path.isabs(f.file_path) else f.file_path
-            sarif_results.append({
+            sarif_result = {
                 "ruleId": f.rule_id,
                 "level": level,
                 "message": {"text": f.message},
@@ -174,7 +184,11 @@ class Reporter:
                         }
                     }
                 ],
-            })
+                "properties": {"cwe": f.cwe},
+            }
+            if f.owasp:
+                sarif_result["properties"]["owaspTop10"] = f.owasp.model_dump(mode="json")
+            sarif_results.append(sarif_result)
 
         sarif_data = {
             "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",

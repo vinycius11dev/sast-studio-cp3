@@ -14,6 +14,7 @@
     scans: [], active: null, rules: [], capabilities: null, health: null, aiStatus: null, queueStatus: null,
     view: "overview", mode: "files", pending: [], ignored: 0, selectionType: "file", busy: false,
     selected: null, page: 0, pageSize: 40, sources: new Map(), aiResults: new Map(), aiBusy: null, semanticBusy: null, validations: new Map(),
+    overviewFilesScanId: null, overviewCompareBeforeId: null, overviewCompareAfterId: null,
   };
 
   function size(bytes) {
@@ -27,6 +28,13 @@
   }
   function duration(ms) { return ms < 1000 ? `${number(Math.round(ms))} ms` : `${(ms / 1000).toFixed(1)} s`; }
   function severityBadge(value) { return `<span class="severity-badge ${value.toLowerCase()}">${escape(severityLabels[value] || value)}</span>`; }
+  function owaspBadge(category, linked = true) {
+    if (!category) return '<span class="owasp-tag unmapped" title="Este CWE não possui mapeamento explícito na tabela OWASP Top 10:2025">OWASP 2025 · sem mapeamento</span>';
+    const label = `${category.id} · ${category.name}`;
+    return linked
+      ? `<a class="owasp-tag" href="${escape(category.url)}" target="_blank" rel="noopener noreferrer" title="Abrir categoria oficial OWASP Top 10:2025">${escape(label)} ${icon("external", "small")}</a>`
+      : `<span class="owasp-tag" title="${escape(label)}">${escape(category.id)}</span>`;
+  }
   function gateBadge(gate) {
     const status = gate?.status || "none";
     const label = { passed: "Gate aprovado", blocked: "Gate bloqueado", error: "Análise incompleta", none: "Sem análise" }[status];
@@ -99,13 +107,67 @@
     if (!items.length) return empty("Nenhuma análise por aqui", "Selecione um projeto no Scanner para começar a criar seu histórico.", '<a class="button primary small-button" href="#scanner">Nova análise</a>');
     return `<div class="table-scroll"><table class="data-table"><thead><tr><th>Projeto / análise</th><th>Política</th><th>Achados</th><th>Arquivos</th><th>Executada em</th><th></th></tr></thead><tbody>${items.map((scan) => `<tr><td><button class="project-table-name" data-open-scan="${escape(scan.scan_id)}">${icon("folder")}${escape(scan.project_name || scan.target_path)}</button><div class="table-sub">${languageTags(scan)} · ${escape(scan.scan_id.slice(0, 8))}</div></td><td>${gateBadge(scan.security_gate)}</td><td><div class="severity-counts"><span class="mini-count critical" title="Críticos">${number(scan.summary_by_severity.CRITICAL)}</span><span class="mini-count high" title="Altos">${number(scan.summary_by_severity.HIGH)}</span><span class="mini-count medium" title="Médios">${number(scan.summary_by_severity.MEDIUM)}</span><span class="table-sub">${number(scan.total_findings)} total</span></div></td><td>${number(scan.scanned_files_count)}</td><td>${date(scan.created_at)}</td><td><button class="icon-button" data-open-scan="${escape(scan.scan_id)}" aria-label="Abrir análise de ${escape(scan.project_name)}">${icon("chevron")}</button></td></tr>`).join("")}</tbody></table></div>`;
   }
+  function ensureAnalyticsSelections() {
+    if (!state.scans.length) return;
+    const find = (id) => state.scans.find((scan) => scan.scan_id === id);
+    const defaultFilesScan = state.scans.find((scan) => scan.total_findings > 0) || state.scans[0];
+    state.overviewFilesScanId = find(state.overviewFilesScanId)?.scan_id || find(preference("sast-overview-files"))?.scan_id || defaultFilesScan.scan_id;
+    const namedReference = state.scans.find((scan) => /vulner|antes|before|insegur/i.test(scan.project_name || ""));
+    const reference = find(state.overviewCompareBeforeId) || find(preference("sast-overview-compare-before")) || namedReference || [...state.scans].sort((a, b) => b.total_findings - a.total_findings)[0];
+    const namedComparison = state.scans.find((scan) => scan.scan_id !== reference.scan_id && /corrigid|depois|after|segur|secure|fix/i.test(scan.project_name || ""));
+    const cleanComparison = state.scans.find((scan) => scan.scan_id !== reference.scan_id && scan.total_findings === 0);
+    const fallbackComparison = state.scans.find((scan) => scan.scan_id !== reference.scan_id);
+    const comparison = find(state.overviewCompareAfterId) || find(preference("sast-overview-compare-after")) || namedComparison || cleanComparison || fallbackComparison;
+    state.overviewCompareBeforeId = reference.scan_id;
+    state.overviewCompareAfterId = comparison?.scan_id || "";
+  }
+  function scanOptionLabel(scan) {
+    return `${scan.project_name || scan.target_path} · ${number(scan.total_findings)} achados · ${date(scan.created_at)}`;
+  }
+  function trendScanLabel(scan) {
+    return (scan.project_name || scan.target_path || scan.scan_id).replace(/^Demonstração\s*[·:-]\s*/i, "").replace(/correção/gi, "corr.").slice(0, 11);
+  }
+  function scanOptionsMarkup(selectedId) {
+    return state.scans.map((scan) => `<option value="${escape(scan.scan_id)}" ${scan.scan_id === selectedId ? "selected" : ""}>${escape(scanOptionLabel(scan))}</option>`).join("");
+  }
+  function renderTopFiles(scan) {
+    const files = scan.top_files;
+    if (!Array.isArray(files)) return empty("Resumo por arquivo indisponível", "Atualize o servidor e execute ou abra novamente uma análise para carregar o ranking.", "", true);
+    if (!files.length) return empty("Nenhum arquivo com achados", "Esta execução não registrou vulnerabilidades por arquivo.", "", true);
+    const labels = { CRITICAL: "Críticos", HIGH: "Altos", MEDIUM: "Médios", LOW: "Baixos", INFO: "Informativos" };
+    return `<div class="top-files-list">${files.map((file, index) => `<div class="top-file-row"><span class="top-file-rank">${String(index + 1).padStart(2, "0")}</span><div class="top-file-main"><button class="top-file-path" data-open-file-findings="${escape(scan.scan_id)}" data-file-path="${escape(file.path)}" title="Abrir achados deste arquivo">${icon("file")}${escape(file.path)}</button><div class="top-file-severities">${severityOrder.filter((level) => file.summary_by_severity?.[level]).map((level) => `<span class="file-severity-count ${level.toLowerCase()}" title="${labels[level]}">${labels[level]} <strong>${number(file.summary_by_severity[level])}</strong></span>`).join("")}</div></div><span class="top-file-total">${number(file.total_findings)}<small>achado${file.total_findings === 1 ? "" : "s"}</small></span></div>`).join("")}</div>`;
+  }
+  function severityStack(scan) {
+    const total = Number(scan.total_findings) || 0;
+    if (!total) return '<div class="comparison-stack empty-stack" aria-label="Nenhum achado nesta análise"></div>';
+    const summary = scan.summary_by_severity || {};
+    return `<div class="comparison-stack" role="img" aria-label="Distribuição de ${number(total)} achados por severidade">${severityOrder.map((level) => {
+      const count = Number(summary[level]) || 0;
+      return count ? `<span class="stack-segment ${level.toLowerCase()}" style="width:${count / total * 100}%" title="${severityLabels[level]}: ${number(count)}"></span>` : "";
+    }).join("")}</div>`;
+  }
+  function renderComparison() {
+    ensureAnalyticsSelections();
+    if (!state.scans.length) return "";
+    const before = state.scans.find((scan) => scan.scan_id === state.overviewCompareBeforeId);
+    const after = state.scans.find((scan) => scan.scan_id === state.overviewCompareAfterId);
+    const controls = `<div class="comparison-controls"><label><span>Análise de referência</span><select id="compare-before-select" aria-label="Análise de referência">${scanOptionsMarkup(before?.scan_id)}</select></label><label><span>Análise comparada</span><select id="compare-after-select" aria-label="Análise comparada">${state.scans.length > 1 ? scanOptionsMarkup(after?.scan_id) : '<option value="">É preciso ter duas análises</option>'}</select></label></div>`;
+    if (!before || !after || before.scan_id === after.scan_id) return `<section class="panel comparison-panel"><div class="panel-heading"><div><h2>Comparação entre análises</h2><p>Compare resultados registrados no histórico desta instalação.</p></div><span class="outline-tag">Dados reais</span></div>${controls}${empty("Salve mais uma análise para comparar", "A comparação precisa de duas execuções distintas no histórico.", "", true)}</section>`;
+    const delta = Number(after.total_findings) - Number(before.total_findings);
+    const deltaLabel = delta < 0 ? `${number(Math.abs(delta))} achado${Math.abs(delta) === 1 ? "" : "s"} a menos` : delta > 0 ? `${number(delta)} achado${delta === 1 ? "" : "s"} a mais` : "Mesmo total de achados";
+    const percent = before.total_findings ? Math.round(Math.abs(delta) / before.total_findings * 100) : null;
+    const detail = percent === null ? (delta > 0 ? "A referência tinha zero achados" : "As duas análises não registraram achados") : `${percent}% de variação sobre a referência`;
+    const card = (scan, label) => `<article class="comparison-scan"><div class="comparison-scan-heading"><div><span class="comparison-label">${label}</span><strong title="${escape(scan.project_name || scan.target_path)}">${escape(scan.project_name || scan.target_path)}</strong><small>${date(scan.created_at)} · ${number(scan.scanned_files_count)} arquivos</small></div>${gateBadge(scan.security_gate)}</div><div class="comparison-total"><strong>${number(scan.total_findings)}</strong><span>achados</span></div>${severityStack(scan)}<div class="comparison-severity-legend">${severityOrder.filter((level) => scan.summary_by_severity?.[level]).map((level) => `<span><i class="severity-dot ${level.toLowerCase()}"></i>${severityLabels[level]} <strong>${number(scan.summary_by_severity[level])}</strong></span>`).join("") || '<span class="comparison-no-findings">Nenhum achado registrado</span>'}</div></article>`;
+    return `<section class="panel comparison-panel"><div class="panel-heading"><div><h2>Comparação entre análises</h2><p>Compare execuções reais. A diferença não atribui causalidade a uma alteração específica.</p></div><span class="outline-tag">${state.scans.length} no histórico</span></div>${controls}<div class="comparison-result"><div class="comparison-pair">${card(before, "REFERÊNCIA")}<div class="comparison-change ${delta < 0 ? "improved" : delta > 0 ? "increased" : "unchanged"}"><span>${icon(delta < 0 ? "arrow" : delta > 0 ? "alert" : "check")}</span><strong>${deltaLabel}</strong><small>${detail}</small></div>${card(after, "COMPARAÇÃO")}</div></div><div class="comparison-footnote">A distribuição considera os achados e os gates salvos em cada execução.</div></section>`;
+  }
   function renderOverview() {
     const latest = state.scans[0];
     if (!latest) {
       $("overview-content").innerHTML = `<div class="metric-grid">${[["Análises salvas", "0", "clock"], ["Arquivos analisados", "—", "file"], ["Achados críticos", "—", "alert"], ["Regras ativas", number(state.rules.length), "rules"]].map(([label, value, symbol]) => `<div class="metric"><div class="metric-top">${label}<span class="metric-icon">${icon(symbol)}</span></div><div class="metric-number">${value}</div><div class="metric-bottom">Dados desta instalação</div></div>`).join("")}</div><div class="panel">${empty("Seu workspace está pronto", "Carregue uma pasta ou use o projeto de exemplo para executar a primeira análise.", '<a class="button primary" href="#scanner">' + icon("scan") + 'Começar análise</a>')}</div>`;
       return;
     }
-    const summary = latest.summary_by_severity;
+    ensureAnalyticsSelections();
+    const summary = latest.summary_by_severity || {};
     const metrics = [
       ["Arquivos analisados", latest.scanned_files_count, "file", "", "Na última análise"],
       ["Achados críticos", summary.CRITICAL, "alert", "critical", "Prioridade de revisão"],
@@ -121,11 +183,14 @@
     const donut = latest.total_findings ? `conic-gradient(${slices.join(",")})` : "#e6f2ec";
     const trend = state.scans.slice(0, 8).reverse();
     const max = Math.max(...trend.map((item) => item.total_findings), 1);
+    const filesScan = state.scans.find((scan) => scan.scan_id === state.overviewFilesScanId) || latest;
     $("overview-content").innerHTML = `<div class="metric-grid">${metrics.map(([label, value, symbol, cls, note]) => `<div class="metric ${cls}"><div class="metric-top">${label}<span class="metric-icon">${icon(symbol)}</span></div><div class="metric-number">${number(value)}</div><div class="metric-bottom">${note}</div></div>`).join("")}</div>
+      ${renderComparison()}
       <div class="overview-grid"><div class="panel"><div class="panel-heading"><h2>Última análise</h2><span class="outline-tag">${icon("clock", "small")}${date(latest.created_at)}</span></div><div class="latest-scan-body"><div class="latest-scan-top"><div class="latest-header"><span class="project-icon">${icon("folder")}</span><div><div class="project-title">${escape(latest.project_name)}</div><div class="project-meta">Execução #${escape(latest.scan_id.slice(0, 8))} · Workspace local</div></div></div>${gateBadge(latest.security_gate)}</div><div class="gate-note">${escape(latest.security_gate.reason)}</div><div class="latest-stats"><div><strong>${number(latest.scanned_files_count)}</strong><span>arquivos analisados</span></div><div><strong>${duration(latest.scan_duration_ms)}</strong><span>tempo do motor</span></div><div><strong>${number(state.rules.length)}</strong><span>regras disponíveis</span></div></div><div class="latest-bottom"><div class="language-tags">${languageTags(latest)}</div><button class="text-link" data-open-scan="${escape(latest.scan_id)}">Explorar análise ${icon("arrow", "small")}</button></div></div></div>
       <div class="panel"><div class="panel-heading"><h2>Distribuição por severidade</h2><span class="outline-tag">Última análise</span></div><div class="severity-overview"><div class="severity-donut" style="background:${donut}"><div class="donut-hole"><strong>${number(latest.total_findings)}</strong><small>ACHADOS</small></div></div><div class="severity-legend">${severityOrder.filter((s) => s !== "INFO" || summary.INFO).map((severity) => `<div class="legend-row"><span><i class="severity-dot ${severity.toLowerCase()}"></i>${severityLabels[severity]}</span><strong>${number(summary[severity])}</strong></div>`).join("")}</div></div></div></div>
-      <div class="panel overview-history"><div class="panel-heading"><h2>Análises recentes</h2><a href="#history" class="text-link">Ver histórico ${icon("arrow", "small")}</a></div>${table(state.scans.slice(0, 5))}</div><p class="section-footnote">Indicadores calculados a partir das análises salvas nesta instalação.</p>
-      <div class="panel"><div class="panel-heading"><h2>Achados por execução</h2><span class="outline-tag">Histórico real</span></div>${trend.length > 1 ? `<div class="trend-content">${trend.map((scan) => `<div class="trend-column" title="${escape(scan.project_name)} · ${date(scan.created_at)}"><strong>${number(scan.total_findings)}</strong><div class="trend-bar" style="height:${Math.max(3, scan.total_findings / max * 72)}px"></div><small>${date(scan.created_at, true)}</small></div>`).join("")}</div>` : empty("A evolução começa na próxima análise", "O gráfico será formado por suas próximas execuções.", "", true)}</div>`;
+      <div class="analytics-grid"><section class="panel top-files-panel"><div class="panel-heading"><div><h2>Arquivos com mais achados</h2><p>Os 5 arquivos com maior concentração de ocorrências.</p></div><label class="analytics-select"><span>Análise</span><select id="overview-files-select" aria-label="Análise para o ranking dos arquivos">${scanOptionsMarkup(filesScan.scan_id)}</select></label></div>${renderTopFiles(filesScan)}<p class="panel-footnote">Selecione um arquivo para abrir a triagem já filtrada.</p></section>
+      <section class="panel trend-panel"><div class="panel-heading"><div><h2>Achados por execução</h2><p>Volume total nas análises salvas mais recentes.</p></div><span class="outline-tag">Histórico real</span></div>${trend.length > 1 ? `<div class="trend-content">${trend.map((scan) => `<div class="trend-column" title="${escape(scan.project_name)} · ${date(scan.created_at)}" aria-label="${escape(scan.project_name)}: ${number(scan.total_findings)} achados em ${date(scan.created_at)}"><strong>${number(scan.total_findings)}</strong><div class="trend-bar" style="height:${Math.max(3, scan.total_findings / max * 72)}px"></div><small>${escape(trendScanLabel(scan))}</small></div>`).join("")}</div>` : empty("A evolução começa na próxima análise", "O gráfico será formado por suas próximas execuções.", "", true)}</section></div>
+      <div class="panel overview-history"><div class="panel-heading"><div><h2>Análises recentes</h2><p>Histórico persistido desta instalação.</p></div><a href="#history" class="text-link">Ver histórico ${icon("arrow", "small")}</a></div>${table(state.scans.slice(0, 5))}</div><p class="section-footnote">Gráficos e indicadores são calculados a partir das análises salvas nesta instalação.</p>`;
   }
   function renderHistory() {
     const query = $("history-search").value.trim().toLowerCase();
@@ -343,7 +408,7 @@
     return (state.active?.findings || []).map((finding, index) => ({ finding, index })).filter(({ finding }) =>
       (!severity || finding.severity === severity) && (!file || finding.file_path === file) &&
       (!reviewFilter || (reviewFilter === "unreviewed" ? !semanticReviewFor(finding) : semanticReviewFor(finding)?.classification === reviewFilter)) &&
-      (!query || [finding.rule_id, finding.rule_name, finding.file_path, finding.cwe, finding.message].join(" ").toLowerCase().includes(query))
+      (!query || [finding.rule_id, finding.rule_name, finding.file_path, finding.cwe, finding.message, finding.owasp?.id, finding.owasp?.name].join(" ").toLowerCase().includes(query))
     ).sort((a, b) => $("finding-sort").value === "file" ? a.finding.file_path.localeCompare(b.finding.file_path) || a.finding.line_number - b.finding.line_number :
       severityOrder.indexOf(a.finding.severity) - severityOrder.indexOf(b.finding.severity) || a.finding.file_path.localeCompare(b.finding.file_path) || a.finding.line_number - b.finding.line_number);
   }
@@ -370,7 +435,7 @@
     const pageItems = items.slice(state.page * state.pageSize, (state.page + 1) * state.pageSize);
     if (!pageItems.some(({ index }) => index === state.selected)) state.selected = pageItems[0]?.index ?? null;
     const scroll = $("findings-list").scrollTop;
-    $("findings-list").innerHTML = pageItems.length ? pageItems.map(({ finding, index }) => `<button class="finding-row ${state.selected === index ? "selected" : ""}" data-finding="${index}" aria-pressed="${state.selected === index}"><span class="finding-row-top">${severityBadge(finding.severity)}<code class="rule-code">${escape(finding.rule_id)}</code></span><strong>${escape(finding.rule_name)}</strong><span class="finding-row-path" title="${escape(finding.file_path)}:${finding.line_number}">${icon("file")}${escape(finding.file_path)}:${finding.line_number}</span></button>`).join("") : empty(scan.total_findings ? "Nenhum resultado no filtro" : scan.has_errors ? "Análise incompleta" : "Nenhum achado", scan.total_findings ? "Tente outro termo ou limpe os filtros." : scan.has_errors ? "Confira os erros de processamento acima." : "Nenhuma regra detectou um problema no código analisado.", "", true);
+    $("findings-list").innerHTML = pageItems.length ? pageItems.map(({ finding, index }) => `<button class="finding-row ${state.selected === index ? "selected" : ""}" data-finding="${index}" aria-pressed="${state.selected === index}"><span class="finding-row-top">${severityBadge(finding.severity)}<code class="rule-code">${escape(finding.rule_id)}</code>${owaspBadge(finding.owasp, false)}</span><strong>${escape(finding.rule_name)}</strong><span class="finding-row-path" title="${escape(finding.file_path)}:${finding.line_number}">${icon("file")}${escape(finding.file_path)}:${finding.line_number}</span></button>`).join("") : empty(scan.total_findings ? "Nenhum resultado no filtro" : scan.has_errors ? "Análise incompleta" : "Nenhum achado", scan.total_findings ? "Tente outro termo ou limpe os filtros." : scan.has_errors ? "Confira os erros de processamento acima." : "Nenhuma regra detectou um problema no código analisado.", "", true);
     $("findings-list").scrollTop = scroll;
     $("finding-pagination").innerHTML = items.length > state.pageSize ? `<div class="pagination"><button data-page="-1" ${state.page === 0 ? "disabled" : ""}>Anterior</button><span>${state.page + 1} / ${Math.ceil(items.length / state.pageSize)}</span><button data-page="1" ${(state.page + 1) * state.pageSize >= items.length ? "disabled" : ""}>Próxima</button></div>` : "";
     renderDetail();
@@ -409,7 +474,7 @@
     const result = state.aiResults.get(key);
     const pending = state.aiBusy?.key === key;
     const cweId = /^CWE-(\d+)$/.exec(finding.cwe)?.[1];
-    $("finding-detail").innerHTML = `<div class="detail-heading"><div class="detail-tags">${severityBadge(finding.severity)}<code>${escape(finding.rule_id)}</code><span class="outline-tag">${escape(finding.cwe)}</span></div><h2>${escape(finding.rule_name)}</h2><div class="detail-location">${icon("file")}<span>${escape(finding.file_path)}<strong> : ${finding.line_number}</strong></span></div></div><div class="detail-body"><p class="detail-description">${escape(finding.message)}</p><div class="detail-section-title"><span>Trecho de código</span><button class="icon-button" data-copy-snippet aria-label="Copiar trecho de código">${icon("copy")}</button></div>${sourceMarkup(finding)}<div class="detail-section-title">Orientação da regra</div><div class="remediation-advice">${escape(finding.remediation_advice)}</div><div class="detail-meta-row"><span>Regra ${escape(finding.rule_id)} · Coluna ${finding.column_number + 1}</span>${cweId ? `<a class="text-link" href="https://cwe.mitre.org/data/definitions/${cweId}.html" target="_blank" rel="noopener">Consultar ${escape(finding.cwe)} ${icon("external", "small")}</a>` : ""}</div>${semanticMarkup(finding, key)}<section class="ai-section"><div class="ai-heading"><div><h3>${icon("spark")}Remediação assistida</h3><p>Sugestão de correção para revisão</p></div><button class="button primary small-button ai-generate" data-generate-ai ${state.aiBusy || state.semanticBusy ? "disabled" : ""}>${pending ? '<span class="spinner"></span>Gerando…' : state.aiBusy || state.semanticBusy ? "IA em uso" : result ? "Gerar novamente" : icon("spark") + "Gerar remediação"}</button></div><div class="ai-body" id="ai-body">${pending ? '<div class="ai-loading">Consultando o modelo local…<p>O primeiro uso pode levar até 90 segundos para carregar o modelo e gerar a resposta.</p><progress aria-label="Gerando remediação"></progress></div>' : result ? renderAI(result, key) : '<p class="field-help">Ollama gera uma sugestão contextual. Se o modelo estiver indisponível ou a resposta não passar nas validações, o resultado será identificado como fallback determinístico.</p>'}</div></section></div>`;
+    $("finding-detail").innerHTML = `<div class="detail-heading"><div class="detail-tags">${severityBadge(finding.severity)}<code>${escape(finding.rule_id)}</code><span class="outline-tag">${escape(finding.cwe)}</span>${owaspBadge(finding.owasp)}</div><h2>${escape(finding.rule_name)}</h2><div class="detail-location">${icon("file")}<span>${escape(finding.file_path)}<strong> : ${finding.line_number}</strong></span></div></div><div class="detail-body"><p class="detail-description">${escape(finding.message)}</p><div class="detail-section-title"><span>Trecho de código</span><button class="icon-button" data-copy-snippet aria-label="Copiar trecho de código">${icon("copy")}</button></div>${sourceMarkup(finding)}<div class="detail-section-title">Orientação da regra</div><div class="remediation-advice">${escape(finding.remediation_advice)}</div><div class="detail-meta-row"><span>Regra ${escape(finding.rule_id)} · Coluna ${finding.column_number + 1}</span>${cweId ? `<a class="text-link" href="https://cwe.mitre.org/data/definitions/${cweId}.html" target="_blank" rel="noopener">Consultar ${escape(finding.cwe)} ${icon("external", "small")}</a>` : ""}</div>${semanticMarkup(finding, key)}<section class="ai-section"><div class="ai-heading"><div><h3>${icon("spark")}Remediação assistida</h3><p>Sugestão de correção para revisão</p></div><button class="button primary small-button ai-generate" data-generate-ai ${state.aiBusy || state.semanticBusy ? "disabled" : ""}>${pending ? '<span class="spinner"></span>Gerando…' : state.aiBusy || state.semanticBusy ? "IA em uso" : result ? "Gerar novamente" : icon("spark") + "Gerar remediação"}</button></div><div class="ai-body" id="ai-body">${pending ? '<div class="ai-loading">Consultando o modelo local…<p>O primeiro uso pode levar até 90 segundos para carregar o modelo e gerar a resposta.</p><progress aria-label="Gerando remediação"></progress></div>' : result ? renderAI(result, key) : '<p class="field-help">Ollama gera uma sugestão contextual. Se o modelo estiver indisponível ou a resposta não passar nas validações, o resultado será identificado como fallback determinístico.</p>'}</div></section></div>`;
     loadSource(finding);
   }
   function semanticMarkup(finding, key) {
@@ -529,8 +594,8 @@
     }).join("");
     const query = $("rules-search").value.trim().toLowerCase();
     const language = $("rule-language-filter").value;
-    const rules = state.rules.filter((rule) => (!language || rule.rule_id.split("-")[0] === language) && (!query || [rule.rule_id, rule.name, rule.description, rule.cwe].join(" ").toLowerCase().includes(query)));
-    $("rules-list").innerHTML = rules.length ? rules.map((rule) => `<article class="rule-card"><div class="rule-card-top"><code>${escape(rule.rule_id)} · ${escape(rule.cwe)}</code>${severityBadge(rule.severity)}</div><h3>${escape(rule.name)}</h3><p>${escape(rule.description)}</p><details><summary>Ver orientação de remediação</summary><p>${escape(rule.remediation)}</p></details></article>`).join("") : empty("Nenhuma regra encontrada", "Tente outro termo ou linguagem.", "", true);
+    const rules = state.rules.filter((rule) => (!language || rule.rule_id.split("-")[0] === language) && (!query || [rule.rule_id, rule.name, rule.description, rule.cwe, rule.owasp?.id, rule.owasp?.name].join(" ").toLowerCase().includes(query)));
+    $("rules-list").innerHTML = rules.length ? rules.map((rule) => `<article class="rule-card"><div class="rule-card-top"><code>${escape(rule.rule_id)} · ${escape(rule.cwe)}</code>${severityBadge(rule.severity)}</div><div class="rule-owasp">${owaspBadge(rule.owasp)}</div><h3>${escape(rule.name)}</h3><p>${escape(rule.description)}</p><details><summary>Ver orientação de remediação</summary><p>${escape(rule.remediation)}</p></details></article>`).join("") : empty("Nenhuma regra encontrada", "Tente outro termo ou linguagem.", "", true);
   }
   function renderHealth() {
     const healthy = state.health?.status === "healthy";
@@ -609,6 +674,20 @@
   $("history-search").addEventListener("input", renderHistory);
   $("refresh-history").addEventListener("click", async () => { try { await refreshHistory(); toast("Histórico atualizado."); } catch (error) { toast(error.message, true); } });
   $("rules-search").addEventListener("input", renderRules);
+  $("overview-content").addEventListener("change", (event) => {
+    const control = event.target;
+    if (control.id === "overview-files-select") {
+      state.overviewFilesScanId = control.value;
+      savePreference("sast-overview-files", control.value);
+    } else if (control.id === "compare-before-select") {
+      state.overviewCompareBeforeId = control.value;
+      savePreference("sast-overview-compare-before", control.value);
+    } else if (control.id === "compare-after-select") {
+      state.overviewCompareAfterId = control.value;
+      savePreference("sast-overview-compare-after", control.value);
+    } else return;
+    renderOverview();
+  });
   $("rule-language-filter").addEventListener("change", renderRules);
   $("policy-threshold").addEventListener("change", renderPolicy);
   $("refresh-services").addEventListener("click", () => refreshServices());
@@ -618,6 +697,22 @@
   document.addEventListener("click", async (event) => {
     const open = event.target.closest("[data-open-scan]");
     if (open) { event.preventDefault(); await openScan(open.dataset.openScan); }
+    const fileFindings = event.target.closest("[data-open-file-findings]");
+    if (fileFindings) {
+      event.preventDefault();
+      await openScan(fileFindings.dataset.openFileFindings, false);
+      if (state.active?.scan_id !== fileFindings.dataset.openFileFindings) return;
+      const path = fileFindings.dataset.filePath;
+      if (![...$("file-filter").options].some((option) => option.value === path)) {
+        toast("Esse arquivo não está disponível no detalhamento salvo.", true);
+        return;
+      }
+      $("file-filter").value = path;
+      state.page = 0;
+      state.selected = null;
+      navigate("findings");
+      renderFindings();
+    }
     const row = event.target.closest("[data-finding]");
     if (row) { state.selected = Number(row.dataset.finding); renderFindings(); if (window.innerWidth < 760) $("finding-detail").scrollIntoView({ block: "start" }); }
     const page = event.target.closest("[data-page]");

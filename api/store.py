@@ -11,6 +11,34 @@ from engine.models import ScanResult, SemanticReview
 from engine.policy import evaluate_gate
 
 
+def _top_files(findings, limit: int = 5):
+    """Compact file-level severity counts for the dashboard history endpoint."""
+    grouped = {}
+    severities = ("CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO")
+    for finding in findings:
+        path = finding.get("file_path")
+        if not path:
+            continue
+        item = grouped.setdefault(path, {"path": path, "total_findings": 0, "summary_by_severity": {level: 0 for level in severities}})
+        severity = finding.get("severity")
+        if isinstance(severity, dict):
+            severity = severity.get("value")
+        if hasattr(severity, "value"):
+            severity = severity.value
+        item["total_findings"] += 1
+        if severity in item["summary_by_severity"]:
+            item["summary_by_severity"][severity] += 1
+    return sorted(
+        grouped.values(),
+        key=lambda item: (
+            -item["total_findings"],
+            -item["summary_by_severity"]["CRITICAL"],
+            -item["summary_by_severity"]["HIGH"],
+            item["path"].casefold(),
+        ),
+    )[:limit]
+
+
 class ScanStore:
     def __init__(self, path: Path):
         self.path = Path(path)
@@ -77,7 +105,13 @@ class ScanStore:
             rows = database.execute(
                 "SELECT result_json FROM scans ORDER BY created_at DESC, rowid DESC LIMIT ?", (limit,)
             ).fetchall()
-        return [json.loads(row["result_json"]) | {"findings": []} for row in rows]
+        items = []
+        for row in rows:
+            result = json.loads(row["result_json"])
+            result["top_files"] = _top_files(result.get("findings", []))
+            result["findings"] = []
+            items.append(result)
+        return items
 
     def source(self, scan_id: str, path: str):
         with self.connection() as database:
