@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081426">
+  <meta name="description" content="Conheça o SAST Studio: análise estática de segurança, gate de qualidade e remediação assistida por IA local.">
+  <title>SAST Studio · Apresentação do projeto</title>
+  <link rel="icon" type="image/svg+xml" href="/static/brand.svg">
+  <link rel="stylesheet" href="/static/css/presentation.css?v=1">
+  <script src="/static/js/presentation.js?v=1" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-brand" href="/apresentacao" aria-label="SAST Studio, apresentação">
+      <img src="/static/brand.svg" alt="" width="40" height="40">
+      <span>SAST <b>Studio</b><small>CODE SECURITY WORKSPACE</small></span>
+    </a>
+    <nav class="site-nav" aria-label="Navegação da apresentação">
+      <a href="#proposta">O projeto</a>
+      <a href="#fluxo">Como funciona</a>
+      <a href="#ia">IA local</a>
+      <a href="#executar">Como executar</a>
+    </nav>
+    <a class="header-cta" href="/dashboard">Abrir sistema <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> FIAP · ENGENHARIA DE SOFTWARE · CP3</p>
+          <h1 id="hero-title">Segurança do código,<br><span>antes do deploy.</span></h1>
+          <p class="hero-lead">O SAST Studio encontra padrões de risco no código, explica cada achado e ajuda a revisar uma correção — sem executar o projeto.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="/dashboard">Explorar o sistema <span aria-hidden="true">→</span></a>
+            <a class="button button-quiet" href="#demonstracao">Ver a demonstração <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-meta">
+            <span><i class="meta-mark meta-blue"></i> Análise estática</span>
+            <span><i class="meta-mark meta-green"></i> IA com Ollama local</span>
+            <span><i class="meta-mark meta-violet"></i> Python · JS/TS · Java</span>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="visual-window">
+            <div class="window-bar"><span class="window-lights"><i></i><i></i><i></i></span><span>workspace · visão geral</span><span class="window-lock" aria-hidden="true">●</span></div>
+            <img src="/presentation-assets/01-visao-geral.png" alt="Dashboard do SAST Studio comparando uma análise vulnerável bloqueada com uma análise corrigida aprovada">
+            <div class="visual-caption"><span class="caption-icon" aria-hidden="true">✓</span><span><b>Resultado rastreável</b><small>Da detecção ao gate, cada execução fica no histórico.</small></span></div>
+          </div>
+          <div class="floating-chip"><span class="live-spark" aria-hidden="true">✳</span> IA local · sem chave de API</div>
+        </div>
+      </div>
+
+      <div class="hero-proof" aria-label="Resumo do projeto">
+        <div><strong>3</strong><span>linguagens analisadas</span></div>
+        <div><strong>9 <em>→</em> 0</strong><span>achados no exemplo após correção*</span></div>
+        <div><strong>JSON <i>·</i> SARIF <i>·</i> MD</strong><span>formatos de relatório</span></div>
+        <p>* Nas regras atuais e no projeto de demonstração incluído.</p>
+      </div>
+    </section>
+
+    <section class="section section-intro" id="proposta" aria-labelledby="proposal-title">
+      <div class="section-heading">
+        <p class="eyebrow eyebrow-light">O PROJETO</p>
+        <h2 id="proposal-title">Uma análise que dá para <span>entender e demonstrar.</span></h2>
+        <p>Em vez de apenas listar alertas, o workspace conecta código, evidências, decisão de gate, revisão por IA e histórico em um fluxo só.</p>
+      </div>
+      <div class="capability-grid">
+        <article class="capability-card">
+          <span class="capability-icon icon-scan" aria-hidden="true">⌕</span>
+          <h3>Encontra padrões</h3>
+          <p>Python usa AST e fluxo de dados básico. JavaScript, TypeScript e Java usam parsers Tree-sitter e regras estruturais.</p>
+          <span class="card-foot">SEM EXECUTAR O CÓDIGO</span>
+        </article>
+        <article class="capability-card">
+          <span class="capability-icon icon-gate" aria-hidden="true">✓</span>
+          <h3>Aplica um gate</h3>
+          <p>Severidade, política e erros de processamento ficam visíveis. O resultado pode bloquear um Pull Request no CI.</p>
+          <span class="card-foot">POLÍTICA EXPLÍCITA</span>
+        </article>
+        <article class="capability-card">
+          <span class="capability-icon icon-ai" aria-hidden="true">✳</span>
+          <h3>Ajuda a corrigir</h3>
+          <p>Ollama revisa o contexto e propõe uma remediação. A pessoa confere o diff; nada é aplicado automaticamente.</p>
+          <span class="card-foot">REVISÃO HUMANA NO CONTROLE</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-flow" id="fluxo" aria-labelledby="flow-title">
+      <div class="section-heading section-heading-center">
+        <p class="eyebrow eyebrow-blue">DO CÓDIGO À EVIDÊNCIA</p>
+        <h2 id="flow-title">Um fluxo simples, <span>do começo ao fim.</span></h2>
+        <p>O mesmo motor atende a interface, a API e a CLI. A fila registra o processamento e os relatórios acompanham a análise.</p>
+      </div>
+      <div class="flow-track">
+        <article class="flow-step">
+          <span class="step-number">01</span>
+          <div class="step-icon" aria-hidden="true">⌘</div>
+          <h3>Receber o código</h3>
+          <p>Escolha uma pasta, arquivo ou trecho. Limites protegem a entrada e as fontes não são executadas.</p>
+          <span class="step-tag">PASTA · ARQUIVO · EDITOR</span>
+        </article>
+        <div class="flow-connector" aria-hidden="true">→</div>
+        <article class="flow-step">
+          <span class="step-number">02</span>
+          <div class="step-icon" aria-hidden="true">⌬</div>
+          <h3>Analisar estruturas</h3>
+          <p>Parsers e regras identificam padrões. Um worker processa a análise pela fila persistente em SQLite.</p>
+          <span class="step-tag">AST · TREE-SITTER · WORKER</span>
+        </article>
+        <div class="flow-connector" aria-hidden="true">→</div>
+        <article class="flow-step">
+          <span class="step-number">03</span>
+          <div class="step-icon" aria-hidden="true">▤</div>
+          <h3>Explicar e decidir</h3>
+          <p>Veja regra, CWE, linha e evidência. O gate usa o limiar configurado; JSON, SARIF e Markdown guardam o resultado.</p>
+          <span class="step-tag">ACHADOS · GATE · RELATÓRIOS</span>
+        </article>
+      </div>
+      <div class="architecture-strip">
+        <span class="architecture-label">ARQUITETURA</span>
+        <span>Dashboard</span><i>→</i><span>FastAPI</span><i>→</i><span>Fila SQLite</span><i>→</i><span>Worker</span><i>→</i><span>Motor SAST</span>
+        <b>+</b><span class="architecture-ai">Ollama local</span>
+      </div>
+    </section>
+
+    <section class="section section-demo" id="demonstracao" aria-labelledby="demo-title">
+      <div class="demo-heading">
+        <div>
+          <p class="eyebrow eyebrow-blue">DEMONSTRAÇÃO REAL</p>
+          <h2 id="demo-title">Detectar. Revisar. <span>Corrigir.</span></h2>
+        </div>
+        <p>Exemplos controlados incluídos no repositório. As capturas mostram a interface executando, e a resposta de IA está identificada pelo provedor.</p>
+      </div>
+      <div class="demo-story">
+        <article class="story-card story-vulnerable">
+          <div class="story-label"><span class="story-dot dot-red"></span> ANTES DA CORREÇÃO</div>
+          <h3>O gate encontra o risco.</h3>
+          <p>3 arquivos · 9 achados · 6 críticos · gate bloqueado</p>
+          <img src="/presentation-assets/02-achados-vulneraveis.png" alt="Lista de nove achados no exemplo vulnerável, com gate bloqueado e trecho de SQL Injection destacado" loading="lazy">
+        </article>
+        <article class="story-card story-ai" id="ia">
+          <div class="story-label"><span class="story-dot dot-violet"></span> REVISÃO ASSISTIDA</div>
+          <h3>O modelo explica o contexto.</h3>
+          <p>Ollama · llama3.2:3b · resposta real da IA</p>
+          <img src="/presentation-assets/03-triagem-ollama.png" alt="Revisão semântica real pelo Ollama, com risco confirmado, severidade e evidências" loading="lazy">
+        </article>
+        <article class="story-card story-diff">
+          <div class="story-label"><span class="story-dot dot-blue"></span> SUGESTÃO PARA REVISÃO</div>
+          <h3>O diff mostra a mudança.</h3>
+          <p>Linhas removidas e adicionadas, sem alterar o arquivo original.</p>
+          <img src="/presentation-assets/05-diff-remediacao.png" alt="Modal de diff da sugestão com uma linha removida e uma adicionada" loading="lazy">
+        </article>
+        <article class="story-card story-corrected">
+          <div class="story-label"><span class="story-dot dot-green"></span> DEPOIS DA CORREÇÃO</div>
+          <h3>O exemplo seguro passa.</h3>
+          <p>3 arquivos · 0 achados pelas regras atuais · gate aprovado</p>
+          <img src="/presentation-assets/06-projeto-corrigido.png" alt="Resultado do exemplo corrigido com zero achados e gate aprovado" loading="lazy">
+        </article>
+      </div>
+      <div class="demo-note"><span aria-hidden="true">i</span><p>Zero achados significa que as regras aplicadas não encontraram os padrões cobertos. Não é uma prova de segurança absoluta; a IA também pode errar e suas sugestões precisam de revisão.</p></div>
+    </section>
+
+    <section class="section section-runtime" id="executar" aria-labelledby="run-title">
+      <div class="runtime-copy">
+        <p class="eyebrow eyebrow-light">PRONTO PARA RODAR LOCALMENTE</p>
+        <h2 id="run-title">A apresentação começa <span>no seu computador.</span></h2>
+        <p>O dashboard é servido localmente. Para mostrar a IA, deixe o Ollama aberto com o modelo configurado; a página informa o estado atual do serviço.</p>
+        <div class="runtime-status" aria-label="Estado atual dos serviços locais">
+          <div class="status-row"><span class="status-indicator" id="api-indicator"></span><span id="api-live-status" aria-live="polite">Consultando a API…</span></div>
+          <div class="status-row"><span class="status-indicator" id="ai-indicator"></span><span id="ai-live-status" aria-live="polite">Consultando Ollama…</span></div>
+          <button class="status-refresh" type="button" id="refresh-status">Atualizar estado local <span aria-hidden="true">↻</span></button>
+        </div>
+      </div>
+      <div class="run-card">
+        <div class="run-card-top"><span class="terminal-dot"></span><span>PowerShell · preparação</span><span class="terminal-tag">WINDOWS</span></div>
+        <ol class="run-steps">
+          <li><span>01</span><div><b>Instale as dependências</b><code>py -3.11 -m pip install -r requirements.txt</code></div></li>
+          <li><span>02</span><div><b>Baixe o modelo local</b><code>ollama pull llama3.2:3b</code></div></li>
+          <li><span>03</span><div><b>Inicie o workspace</b><code>iniciar.bat</code></div></li>
+          <li><span>04</span><div><b>Faça o ensaio completo</b><code>verificar_apresentacao.bat</code></div></li>
+        </ol>
+        <div class="run-card-footer"><span class="run-check" aria-hidden="true">✓</span><span>Workspace <b>127.0.0.1:8000/dashboard</b></span></div>
+      </div>
+    </section>
+
+    <section class="closing-section">
+      <div class="closing-content">
+        <p class="eyebrow eyebrow-blue">SAST STUDIO · FIAP CP3</p>
+        <h2>Segurança não precisa ser uma caixa-preta.</h2>
+        <p>Explore o workspace, veja o fluxo completo e confira o código e as evidências do projeto.</p>
+        <div class="closing-actions">
+          <a class="button button-primary" href="/dashboard">Abrir o workspace <span aria-hidden="true">→</span></a>
+          <a class="button button-outline" href="https://github.com/vinycius11dev/sast-studio-cp3" target="_blank" rel="noopener">Ver no GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="site-brand footer-brand" href="/apresentacao"><img src="/static/brand.svg" alt="" width="32" height="32"><span>SAST <b>Studio</b></span></a>
+    <span>Projeto acadêmico · FIAP Engenharia de Software · 2026</span>
+    <a href="/docs" target="_blank" rel="noopener">Documentação da API ↗</a>
+  </footer>
+</body>
+</html>

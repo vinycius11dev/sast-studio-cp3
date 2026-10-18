@@ -4,6 +4,8 @@ Workspace de análise estática de segurança de código feito como projeto acad
 
 **Versão 3.0.0 · Python · JavaScript/TypeScript · Java · Ollama · Docker · GitHub Actions**
 
+Depois de iniciar o aplicativo, abra a [tela de apresentação](http://127.0.0.1:8000/apresentacao) para explicar o projeto em sala e mostrar o estado local da API e do Ollama.
+
 <p align="center">
   <img src="docs/screenshots/readme/01-visao-geral.png" alt="Visão geral do SAST Studio com comparação entre análises vulnerável e corrigida" width="100%">
 </p>

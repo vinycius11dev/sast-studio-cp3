@@ -1,5 +1,9 @@
 # Roteiro de defesa — entrega final CP3
 
+A página de apresentação do projeto fica em http://127.0.0.1:8000/apresentacao.
+Ela reúne a proposta, o fluxo técnico, capturas reais e os comandos para iniciar.
+Use **Abrir sistema** para sair da apresentação e voltar ao dashboard.
+
 ## Antes da aula
 
 1. Abra o Ollama e execute `ollama list`: o modelo deve ser `llama3.2:3b`.
