@@ -31,6 +31,7 @@ COPY api/ /app/api/
 COPY static/ /app/static/
 COPY samples/ /app/samples/
 COPY demonstracao/ /app/demonstracao/
+COPY docs/screenshots/readme/ /app/docs/screenshots/readme/
 COPY cli.py /app/cli.py
 COPY .github/workflows/ /app/.github/workflows/
 
