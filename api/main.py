@@ -25,6 +25,7 @@ from engine.reporter import Reporter
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = ROOT_DIR / "static"
+PRESENTATION_ASSETS_DIR = ROOT_DIR / "docs" / "screenshots" / "readme"
 MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024
 MAX_PROJECT_FILES = 200
 MAX_PROJECT_SIZE_BYTES = 25 * 1024 * 1024
@@ -49,6 +50,7 @@ async def lifespan(app):
 
 app = FastAPI(title="SAST Studio API", description="Workspace local de segurança de código e remediação assistida.", version="3.0.0", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/presentation-assets", StaticFiles(directory=PRESENTATION_ASSETS_DIR), name="presentation-assets")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(","),
@@ -79,6 +81,12 @@ def root():
 @app.get("/dashboard", include_in_schema=False)
 def dashboard_page():
     return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/apresentacao", include_in_schema=False)
+@app.get("/presentation", include_in_schema=False)
+def presentation_page():
+    return FileResponse(STATIC_DIR / "presentation.html")
 
 
 @app.get("/health", tags=["Status"])
