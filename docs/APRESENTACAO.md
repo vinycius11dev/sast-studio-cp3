@@ -8,9 +8,13 @@ Use **Abrir sistema** para sair da apresentação e voltar ao dashboard.
 
 1. Abra o Ollama e execute `ollama list`: o modelo deve ser `llama3.2:3b`.
 2. Dê dois cliques em `iniciar.bat` e abra http://127.0.0.1:8000/dashboard.
+   Se o iniciador avisar que uma versão antiga ainda usa a porta 8000, feche
+   a janela do servidor antigo com Ctrl+C e execute `iniciar.bat` novamente.
+   Se não encontrar essa janela, reinicie o computador antes da aula.
 3. Em **Integrações**, confirme API, worker da fila e Ollama disponíveis.
 4. Gere uma sugestão antes de apresentar para carregar o modelo na memória.
-   A primeira chamada pode ser mais lenta. Inferências têm limite total de 90 segundos.
+   A primeira chamada fria levou 81 segundos nesta máquina; depois que o modelo
+   carregou, a remediação levou 28 segundos. Inferências têm limite de 90 segundos.
 5. Abra antecipadamente os Pull Requests e os logs de Actions indicados em
    `docs/GITHUB_CP3.md` (PR #1 vulnerável e PR #2 corrigido).
 6. Mantenha notebook, carregador, servidor e Ollama ligados. A análise e a IA locais
@@ -69,6 +73,7 @@ apresentado como resposta do LLM.
 
 - **Por que AST?** Analisa a estrutura do código e evita tratar texto de comentários e strings como chamadas reais.
 - **Por que fila?** Desacopla o pedido HTTP do processamento, persiste jobs e permite workers concorrentes no mesmo host.
+- **Por que SQLite, e não Redis/Celery?** O enunciado apresenta tecnologias recomendadas. A fila SQLite atende ao processamento assíncrono e persistente em um host, com menos dependências; Redis/Celery e banco distribuído seriam o próximo passo para escalar entre hosts.
 - **Onde entra a IA?** Revisa contexto, possível falso positivo e severidade; também propõe correções. As regras estáticas continuam sendo a origem dos achados e do gate.
 - **Como mediu?** Testes de regressão, smoke de API/Docker e corpus rotulado com 53 casos e 24 controles seguros. Os números desse corpus não provam precisão universal nem medem a precisão do LLM.
 - **O que significa zero achados?** Nenhuma regra atual detectou risco naquela entrada. Não comprova segurança absoluta.
