@@ -1,19 +1,22 @@
 # Validação — SAST Studio 3.0 — 18/10/2026
 
 Rechecagem local em 18/10/2026: suíte Python, scripts JavaScript, benchmark,
-smoke da API e inferências reais de triagem/remediação via Ollama. Os itens de
-Docker, GitHub e concorrência/persistência da fila abaixo são evidências da
-execução anterior, registradas em 17/10/2026; não foram repetidos nesta rechecagem.
+smoke da API e inferências reais de triagem/remediação via Ollama. Depois foi
+reexecutada a suíte com as novas verificações do iniciador e o smoke completo
+na prévia local da apresentação. Os itens de Docker, GitHub e concorrência/
+persistência da fila abaixo são evidências da execução anterior, registradas em
+17/10/2026; não foram repetidos nesta rechecagem.
 
 ## Testes e integração
 
 | Verificação | Resultado |
 | --- | --- |
-| Pytest — 18/10 | 95 aprovados; 2 avisos de depreciação vindos de dependências; nenhum erro de teste |
+| Pytest — 18/10 | 98 aprovados; 2 avisos de depreciação vindos de dependências; nenhum erro de teste |
 | Node — 18/10 | 4 testes de diff aprovados; sintaxe dos dois scripts validada |
+| Iniciador — 18/10 | Versão antiga na porta 8000 detectada e instrução de recuperação exibida; 3 testes novos aprovados |
 | Corpus rotulado — 18/10 | 53 casos, 24 controles seguros, TP 30, FP 0, FN 0 nesta base; mediana 0,1769 ms; p95 0,6102 ms |
-| Smoke local — 18/10 | 4 casos de código e projetos vulnerável/corrigido; 9 achados/bloqueado versus 0/aprovado; JSON, SARIF e Markdown |
-| IA local — 18/10 | Triagem e remediação reais via Ollama `llama3.2:3b`; 19,54 s e 13,29 s nesta máquina; modelo carregado ao final |
+| Smoke local — 18/10 | API na prévia `8004`; 4 casos de código e projetos vulnerável/corrigido; 9 achados/bloqueado versus 0/aprovado; JSON, SARIF e Markdown |
+| IA local — 18/10 | Triagem e remediação reais via Ollama `llama3.2:3b`; 81,25 s na primeira chamada com modelo frio e 28,21 s na remediação; modelo carregado ao final |
 | Docker — 17/10 | API e worker saudáveis; usuário uid 1001; dados preservados após reiniciar os containers |
 | Fila — 17/10 | Persistência, claim concorrente, lease expirado, falha e limpeza de payload testados |
 | Ollama no Docker — 17/10 | Inferência real via host.docker.internal, risco externo confirmado como CRITICAL |
