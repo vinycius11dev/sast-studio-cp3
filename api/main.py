@@ -22,6 +22,7 @@ from engine.languages import SUPPORTED_EXTENSIONS
 from engine.models import Finding, RuleMetadata, ScannedFile, ScanResult, SemanticReview
 from engine.semantic_review import AISemanticReviewEngine
 from engine.reporter import Reporter
+from engine.quality import measured_quality
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = ROOT_DIR / "static"
@@ -31,6 +32,10 @@ MAX_PROJECT_FILES = 200
 MAX_PROJECT_SIZE_BYTES = 25 * 1024 * 1024
 SUPPORTED_UPLOAD_EXTENSIONS = set(SUPPORTED_EXTENSIONS)
 GateThreshold = Literal["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+
+
+class ClearHistoryRequest(BaseModel):
+    confirmation: Literal["ZERAR"]
 
 @asynccontextmanager
 async def lifespan(app):
@@ -54,7 +59,7 @@ app.mount("/presentation-assets", StaticFiles(directory=PRESENTATION_ASSETS_DIR)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(","),
-    allow_credentials=True, allow_methods=["GET", "POST"], allow_headers=["*"],
+    allow_credentials=True, allow_methods=["GET", "POST", "DELETE"], allow_headers=["*"],
 )
 sast_engine = SASTEngine()
 ai_engine = AIRemediationEngine()
@@ -112,6 +117,16 @@ def ai_status():
     return ai_engine.get_status()
 
 
+@app.get("/api/v1/engines", tags=["Status"])
+def engine_status():
+    return {"items": sast_engine.external_scanners.status(), "scope": "Regras e fluxo local; não comprova segurança absoluta."}
+
+
+@app.get("/api/v1/quality", tags=["Status"])
+def quality_metrics():
+    return measured_quality()
+
+
 @app.get("/api/v1/rules", response_model=List[RuleMetadata], tags=["Regras"])
 def list_rules():
     return sast_engine.list_rules()
@@ -139,24 +154,8 @@ def _decode_source(data: bytes, filename: str) -> str:
 
 
 def _execute_scan(sources: Dict[str, str], project_name: str, threshold: str, ignored: int = 0) -> ScanResult:
-    started = time.perf_counter()
-    findings, errors, file_reports = [], [], []
-    for path, source in sorted(sources.items()):
-        result = sast_engine.scan_code(source, identifier=path)
-        findings.extend(result.findings)
-        errors.extend(result.errors)
-        file_reports.append(ScannedFile(
-            path=path, language=SUPPORTED_EXTENSIONS[Path(path).suffix.lower()],
-            size_bytes=len(source.encode("utf-8")), findings_count=result.total_findings,
-            status="error" if result.has_errors else "completed",
-        ))
-    result = ScanResult(
-        target_path=project_name, scanned_files_count=sum(item.status == "completed" for item in file_reports),
-        total_findings=len(findings), findings=findings, files=file_reports,
-        summary_by_severity=sast_engine._build_summary(findings),
-        scan_duration_ms=round((time.perf_counter() - started) * 1000, 2),
-        has_errors=bool(errors), errors=errors, ignored_files_count=ignored,
-    )
+    result = sast_engine.scan_sources(sources, target=project_name)
+    result.ignored_files_count = ignored
     return scan_store.save(result, sources, project_name, threshold)
 
 
@@ -253,6 +252,14 @@ def scan_samples_endpoint():
 @app.get("/api/v1/scans", tags=["Histórico"])
 def scans(limit: int = Query(100, ge=1, le=500)):
     return {"items": scan_store.list(limit)}
+
+
+@app.delete("/api/v1/scans", tags=["Histórico"])
+def clear_scans(request: ClearHistoryRequest):
+    job_counts = job_store.status()["counts"]
+    if job_counts["queued"] or job_counts["running"]:
+        raise HTTPException(409, "Aguarde as análises em andamento terminarem antes de zerar o histórico.")
+    return scan_store.clear()
 
 
 def _get_scan(scan_id: str) -> ScanResult:

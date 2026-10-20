@@ -169,6 +169,10 @@ class Reporter:
                 "ruleId": f.rule_id,
                 "level": level,
                 "message": {"text": f.message},
+                "properties": {"cwe": f.cwe, "engines": f.engines, "confidence": f.confidence,
+                               "analysisScope": f.analysis_scope,
+                               "evidence": [item.model_dump(mode="json") for item in f.evidence],
+                               "limitations": f.limitations},
                 "locations": [
                     {
                         "physicalLocation": {
@@ -184,14 +188,21 @@ class Reporter:
                         }
                     }
                 ],
-                "properties": {"cwe": f.cwe},
             }
             if f.owasp:
                 sarif_result["properties"]["owaspTop10"] = f.owasp.model_dump(mode="json")
+            if f.fingerprint:
+                sarif_result["partialFingerprints"] = {"sastStudioSemantic/v1": f.fingerprint}
+            if f.data_flow:
+                sarif_result["codeFlows"] = [{"threadFlows": [{"locations": [
+                    {"location": {"message": {"text": step.role}, "physicalLocation": {
+                        "artifactLocation": {"uri": quote(step.file_path.replace("\\", "/"), safe="/"), "uriBaseId": "%SRCROOT%"},
+                        "region": {"startLine": max(1, step.line_number), "startColumn": max(1, step.column_number + 1),
+                                   "snippet": {"text": step.code_snippet}}}}} for step in f.data_flow]}]}]
             sarif_results.append(sarif_result)
 
         sarif_data = {
-            "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+            "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
             "version": "2.1.0",
             "runs": [
                 {
@@ -203,7 +214,8 @@ class Reporter:
                         }
                     },
                     "results": sarif_results,
-                    "properties": {"semanticReviews": [review.model_dump(mode="json") for review in result.semantic_reviews]},
+                    "properties": {"semanticReviews": [review.model_dump(mode="json") for review in result.semantic_reviews],
+                                   "engineRuns": [run.model_dump(mode="json") for run in result.engine_runs]},
                     "invocations": [{"executionSuccessful": not result.has_errors,
                                      "toolExecutionNotifications": [{"level": "error", "message": {"text": error}} for error in result.errors]}],
                 }

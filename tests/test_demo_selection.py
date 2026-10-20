@@ -14,19 +14,23 @@ from api.store import ScanStore
 )
 def test_ready_demo_projects_can_be_loaded_and_scanned(tmp_path, monkeypatch, variant, folder, total, gate):
     monkeypatch.setattr(main, "scan_store", ScanStore(tmp_path / "demo.sqlite3"))
+    user_demo_file = main.ROOT_DIR / "demonstracao" / "01-vulneravel" / "js" / "text.js"
+    expected_files = 4 if variant == "vulneravel" and user_demo_file.is_file() else 3
+    # Expanded coverage also detects XSS, file access, MD5, TLS and the DB secret in text.js.
+    expected_findings = 22 if expected_files == 4 else total
     with TestClient(main.app) as client:
         response = client.get("/api/v1/samples", params={"variant": variant})
         assert response.status_code == 200
         data = response.json()
-        assert len(data["files"]) == 3
+        assert len(data["files"]) == expected_files
         assert {file["language"] for file in data["files"]} == {"python", "javascript", "java"}
         assert all(file["path"].startswith(folder + "/") for file in data["files"])
         files = [("files", (file["path"], file["content"].encode("utf-8"), "text/plain")) for file in data["files"]]
         response = client.post("/api/v1/scan/project", files=files, data={"project_name": data["project_name"], "gate_threshold": "HIGH"})
         assert response.status_code == 200
         scan = response.json()
-        assert scan["scanned_files_count"] == 3
-        assert scan["total_findings"] == total
+        assert scan["scanned_files_count"] == expected_files
+        assert scan["total_findings"] == expected_findings
         assert scan["security_gate"]["status"] == gate
         assert scan["errors"] == []
 

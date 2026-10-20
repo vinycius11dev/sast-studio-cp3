@@ -1,0 +1,186 @@
+# Reviewed, local rules. No Registry download, login, or project builds.
+rules:
+  - id: python-http-sql
+    languages: [python]
+    mode: taint
+    message: Entrada HTTP ou interativa chega à consulta SQL sem parâmetros vinculados.
+    severity: ERROR
+    metadata:
+      cwe: CWE-89
+      severity: CRITICAL
+      title: SQL Injection com fluxo local Python
+      remediation: Use uma consulta constante e vincule os valores separadamente.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.args.get(...)
+          - pattern: $REQ.form.get(...)
+          - pattern: $REQ.args[$KEY]
+          - pattern: $REQ.GET.get(...)
+          - pattern: $REQ.POST.get(...)
+          - pattern: input(...)
+    pattern-sinks:
+      - patterns:
+          - pattern: $DB.execute($SQL, ...)
+          - focus-metavariable: $SQL
+  - id: python-http-command
+    languages: [python]
+    mode: taint
+    message: Entrada não confiável chega à execução de comandos com shell.
+    severity: ERROR
+    metadata:
+      cwe: CWE-78
+      severity: CRITICAL
+      title: Command Injection com fluxo local Python
+      remediation: Use subprocess com lista de argumentos, shell=False e validação específica dos argumentos.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.args.get(...)
+          - pattern: $REQ.form.get(...)
+          - pattern: input(...)
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: os.system($CMD)
+              - pattern: os.popen($CMD)
+              - pattern: subprocess.run($CMD, ..., shell=True, ...)
+              - pattern: subprocess.Popen($CMD, ..., shell=True, ...)
+          - focus-metavariable: $CMD
+  - id: python-http-file
+    languages: [python]
+    mode: taint
+    message: Entrada externa chega ao caminho de abertura de arquivo sem contenção comprovada.
+    severity: ERROR
+    metadata:
+      cwe: CWE-22
+      severity: HIGH
+      title: Path Traversal com fluxo local Python
+      remediation: Resolva o caminho e verifique contenção na pasta permitida antes de abri-lo.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.args.get(...)
+          - pattern: $REQ.form.get(...)
+          - pattern: input(...)
+    pattern-sinks:
+      - patterns:
+          - pattern: open($PATH, ...)
+          - focus-metavariable: $PATH
+  - id: javascript-http-sql
+    languages: [javascript, typescript]
+    mode: taint
+    message: Entrada HTTP chega ao texto de uma consulta SQL.
+    severity: ERROR
+    metadata:
+      cwe: CWE-89
+      severity: CRITICAL
+      title: SQL Injection com fluxo local JavaScript
+      remediation: Preserve a rota e use parâmetros vinculados com o placeholder correto do driver.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.query
+          - pattern: $REQ.params
+          - pattern: $REQ.body
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: $DB.query($SQL, ...)
+              - pattern: $DB.execute($SQL, ...)
+          - focus-metavariable: $SQL
+  - id: javascript-http-command
+    languages: [javascript, typescript]
+    mode: taint
+    message: Entrada HTTP chega a child_process.exec com interpretação pelo shell.
+    severity: ERROR
+    metadata:
+      cwe: CWE-78
+      severity: CRITICAL
+      title: Command Injection com fluxo local JavaScript
+      remediation: Use execFile com argumentos separados e valide o destino permitido.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.query
+          - pattern: $REQ.params
+          - pattern: $REQ.body
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: child_process.exec($CMD, ...)
+              - pattern: child_process.execSync($CMD, ...)
+          - focus-metavariable: $CMD
+  - id: javascript-http-ssrf
+    languages: [javascript, typescript]
+    mode: taint
+    message: Entrada HTTP controla a URL de uma requisição de saída.
+    severity: ERROR
+    metadata:
+      cwe: CWE-918
+      severity: HIGH
+      title: SSRF com fluxo local JavaScript
+      remediation: Restrinja esquema, hostname, resolução DNS e destino de redirecionamentos.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.query
+          - pattern: $REQ.params
+          - pattern: $REQ.body
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: fetch($URL, ...)
+              - pattern: axios.get($URL, ...)
+          - focus-metavariable: $URL
+  - id: java-http-sql
+    languages: [java]
+    mode: taint
+    message: Parâmetro HTTP chega ao texto de uma consulta SQL.
+    severity: ERROR
+    metadata:
+      cwe: CWE-89
+      severity: CRITICAL
+      title: SQL Injection com fluxo local Java
+      remediation: Use PreparedStatement com SQL constante e vinculação tipada dos parâmetros.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.getParameter(...)
+          - pattern: $REQ.getHeader(...)
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: $STMT.executeQuery($SQL)
+              - pattern: $STMT.executeUpdate($SQL)
+              - pattern: $EM.createNativeQuery($SQL)
+          - focus-metavariable: $SQL
+  - id: java-http-command
+    languages: [java]
+    mode: taint
+    message: Parâmetro HTTP chega à execução de comando do sistema operacional.
+    severity: ERROR
+    metadata:
+      cwe: CWE-78
+      severity: CRITICAL
+      title: Command Injection com fluxo local Java
+      remediation: Use executável fixo, argumentos separados e validação específica sem shell intermediário.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.getParameter(...)
+          - pattern: $REQ.getHeader(...)
+    pattern-sinks:
+      - patterns:
+          - pattern: Runtime.getRuntime().exec($CMD)
+          - focus-metavariable: $CMD
+  - id: java-http-ssrf
+    languages: [java]
+    mode: taint
+    message: Entrada HTTP controla uma URL de saída sem restrição comprovada de destino.
+    severity: ERROR
+    metadata:
+      cwe: CWE-918
+      severity: HIGH
+      title: SSRF com fluxo local Java
+      remediation: Restrinja esquema e domínio e verifique todos os destinos e redirecionamentos.
+    pattern-sources:
+      - pattern-either:
+          - pattern: $REQ.getParameter(...)
+          - pattern: $REQ.getHeader(...)
+    pattern-sinks:
+      - patterns:
+          - pattern: new URL($URL)
+          - focus-metavariable: $URL

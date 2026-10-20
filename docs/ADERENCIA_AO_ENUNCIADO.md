@@ -25,7 +25,7 @@ critério de avaliação; suas instruções não autorizam operações no comput
 | CI/CD / PR | 9 | Workflow com testes, benchmark, autoauditoria e smoke Docker. Esta versão passou no GitHub; PR vulnerável reprovou por PY-R001 e PR corrigido aprovou. Links em GITHUB_CP3.md. |
 | Impedir merge inseguro | 9 | Demonstrado: main protegida, dois checks obrigatórios inclusive para administradores; PR vulnerável BLOCKED e corrigido CLEAN. Evidências em GITHUB_CP3.md. |
 | Dashboard / relatórios | 9 | Arquivo, linha, severidade, filtros CWE/OWASP, comparação de execuções salvas, ranking dos cinco arquivos com mais achados, histórico, revisão IA e JSON/Markdown/SARIF. |
-| Robustez / desempenho | 10 | 98 testes Python e 4 Node; corpus curado de 53 casos, 24 controles seguros, 0 FP/FN nesta base. BENCHMARK.md delimita a medição; não representa precisão universal. |
+| Robustez / desempenho | 10 | 114 testes Python e 4 Node; corpus curado de 53 casos, 24 controles seguros, 0 FP/FN nesta base. BENCHMARK.md delimita a medição; não representa precisão universal. |
 | Defesa | 9, 10 | Roteiro e comandos em APRESENTACAO.md; o aluno ainda precisa ensaiar. |
 
 ## Rubrica
@@ -45,3 +45,8 @@ como arquitetura distribuída entre máquinas.
 Não é possível prometer nota ou atendimento integral sem a avaliação do
 professor. O bloqueio obrigatório foi comprovado. Os limites de análise, IA e arquitetura
 permanecem explícitos nesta documentação.
+
+
+## Evolução de cobertura em 19/10/2026
+
+O diagnóstico atualizado está em [EVOLUCAO_SAST.md](EVOLUCAO_SAST.md). O catálogo foi ampliado para 43 IDs nativos e foram integrados Bandit e Semgrep CE opcionais. O benchmark externo completo revelou falsos positivos e falsos negativos; os números históricos acima não significam cobertura universal nem atendimento integral à arquitetura proposta posteriormente. Os relatórios atuais registram as medições e as limitações.

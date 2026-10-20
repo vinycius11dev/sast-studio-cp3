@@ -113,6 +113,13 @@ class ScanStore:
             items.append(result)
         return items
 
+    def clear(self):
+        """Remove saved analyses and their semantic reviews, preserving project files."""
+        with self.connection() as database:
+            deleted_reviews = database.execute("DELETE FROM semantic_reviews").rowcount
+            deleted_scans = database.execute("DELETE FROM scans").rowcount
+        return {"deleted_scans": deleted_scans, "deleted_reviews": deleted_reviews}
+
     def source(self, scan_id: str, path: str):
         with self.connection() as database:
             row = database.execute("SELECT sources_json FROM scans WHERE id = ?", (scan_id,)).fetchone()

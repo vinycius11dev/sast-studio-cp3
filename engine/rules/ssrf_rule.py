@@ -1,10 +1,10 @@
 import ast
 import re
 from engine.models import Severity
-from .base_rule import BaseRule
+from .python_context import PythonContextRule
 
 
-class ServerSideRequestForgeryRule(BaseRule):
+class ServerSideRequestForgeryRule(PythonContextRule):
     """Detecta vulnerabilidade de Server-Side Request Forgery (SSRF - CWE-918).
 
     Identifica chamadas HTTP via bibliotecas como `requests`, `urllib` ou `http.client`
@@ -50,27 +50,27 @@ class ServerSideRequestForgeryRule(BaseRule):
                     self.static_names.add(target.id)
                 else:
                     self.static_names.discard(target.id)
-        self.generic_visit(node)
+        super().visit_Assign(node)
 
     def visit_FunctionDef(self, node):
         outer = self.static_names
         parameters = {argument.arg for argument in (*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs)}
         self.static_names = outer - parameters
         try:
-            self.generic_visit(node)
+            super().visit_FunctionDef(node)
         finally:
             self.static_names = outer
 
     visit_AsyncFunctionDef = visit_FunctionDef
 
     def visit_Call(self, node: ast.Call) -> None:
-        func_expr = ast.unparse(node.func) if hasattr(ast, "unparse") else ""
+        func_expr = self.resolve(node.func)
 
         # Sinks de requisição HTTP em Python
         is_http_call = bool(
-            re.search(r"requests\.(get|post|put|delete|head|patch|request)", func_expr)
-            or re.search(r"urllib\.request\.(urlopen|Request)", func_expr)
-            or re.search(r"httpx\.(get|post|put|delete|request)", func_expr)
+            re.fullmatch(r"requests\.(get|post|put|delete|head|patch|options|request)", func_expr)
+            or re.fullmatch(r"urllib\.request\.(urlopen|Request)", func_expr)
+            or re.fullmatch(r"httpx\.(get|post|put|delete|head|patch|options|request)", func_expr)
         )
 
         positional_index = 1 if func_expr.endswith(".request") else 0

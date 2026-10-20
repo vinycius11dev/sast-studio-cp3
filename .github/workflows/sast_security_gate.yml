@@ -32,7 +32,8 @@ jobs:
         run: |
           node --check static/js/dashboard.js
           node --check static/js/diff-viewer.js
-          node --test tests/diff-viewer.test.cjs
+          node --check static/js/connection.js
+          node --test tests/diff-viewer.test.cjs tests/test_connection.js tests/queued-recovery.test.cjs
       - name: Labeled SAST benchmark
         run: python -m scripts.benchmark --output reports/benchmark.json --markdown reports/benchmark.md
       - name: Audit platform and PR demonstration target

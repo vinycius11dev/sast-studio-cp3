@@ -4,8 +4,10 @@ from fastapi.testclient import TestClient
 
 from api.main import app
 from api.store import ScanStore
+from api.jobs import JobStore
 from cli import cmd_scan
 from engine.engine import SASTEngine
+from engine.models import SemanticReview
 
 client = TestClient(app)
 
@@ -35,6 +37,40 @@ def test_saved_scan_can_be_reopened_with_source(tmp_path, monkeypatch):
         "summary_by_severity": {"CRITICAL": 1, "HIGH": 0, "MEDIUM": 0, "LOW": 0, "INFO": 0},
     }]
     assert history[0]["files"][0]["path"] == "src/service.py"
+
+
+def test_clear_history_removes_scans_sources_and_semantic_reviews():
+    result = scan()
+    from api.main import scan_store
+    review = SemanticReview(
+        scan_id=result["scan_id"], finding_key="finding-1", rule_id="PY-R003",
+        file_path="src/service.py", line_number=1, column_number=0,
+        original_severity="CRITICAL", classification="confirmed", suggested_severity="CRITICAL",
+        confidence="high", reasoning="Risco confirmado no trecho analisado.",
+        provider="unavailable", model_used="test",
+    )
+    scan_store.save_review(review)
+
+    rejected = client.request("DELETE", "/api/v1/scans", json={"confirmation": "CLEAR"})
+    assert rejected.status_code == 422
+    assert client.get("/api/v1/scans").json()["items"]
+
+    cleared = client.request("DELETE", "/api/v1/scans", json={"confirmation": "ZERAR"})
+    assert cleared.status_code == 200
+    assert cleared.json() == {"deleted_scans": 1, "deleted_reviews": 1}
+    assert client.get("/api/v1/scans").json()["items"] == []
+    assert client.get(f"/api/v1/scans/{result['scan_id']}").status_code == 404
+
+
+def test_clear_history_is_blocked_while_a_scan_is_queued(tmp_path, monkeypatch):
+    result = scan()
+    jobs = JobStore(tmp_path / "jobs.sqlite3")
+    jobs.submit({"src/pending.py": "eval(value)"}, "Análise pendente", "HIGH")
+    monkeypatch.setattr("api.main.job_store", jobs)
+
+    response = client.request("DELETE", "/api/v1/scans", json={"confirmation": "ZERAR"})
+    assert response.status_code == 409
+    assert client.get(f"/api/v1/scans/{result['scan_id']}").status_code == 200
 
 
 def test_reports_are_bound_to_selected_scan():

@@ -1,16 +1,16 @@
 # Roteiro de defesa — entrega final CP3
 
-A página de apresentação do projeto fica em http://127.0.0.1:8000/apresentacao.
-Ela reúne a proposta, o fluxo técnico, capturas reais e os comandos para iniciar.
+A página de apresentação usa o endereço exibido ao iniciar o aplicativo
+(normalmente http://127.0.0.1:8000/apresentacao). Ela reúne a proposta, o fluxo
+técnico, capturas reais e os comandos para iniciar.
 Use **Abrir sistema** para sair da apresentação e voltar ao dashboard.
 
 ## Antes da aula
 
 1. Abra o Ollama e execute `ollama list`: o modelo deve ser `llama3.2:3b`.
-2. Dê dois cliques em `iniciar.bat` e abra http://127.0.0.1:8000/dashboard.
-   Se o iniciador avisar que uma versão antiga ainda usa a porta 8000, feche
-   a janela do servidor antigo com Ctrl+C e execute `iniciar.bat` novamente.
-   Se não encontrar essa janela, reinicie o computador antes da aula.
+2. Dê dois cliques em `iniciar.bat` e abra o endereço que ele mostrar. Se a
+   porta 8000 estiver ocupada, o iniciador reutiliza outra instância atual ou
+   escolhe uma porta livre para não abrir uma versão antiga.
 3. Em **Integrações**, confirme API, worker da fila e Ollama disponíveis.
 4. Gere uma sugestão antes de apresentar para carregar o modelo na memória.
    A primeira chamada fria levou 81 segundos nesta máquina; depois que o modelo
@@ -79,3 +79,8 @@ apresentado como resposta do LLM.
 - **O que significa zero achados?** Nenhuma regra atual detectou risco naquela entrada. Não comprova segurança absoluta.
 - **Limites?** Fluxo Python básico, sem prova completa entre arquivos; LLM pode errar; fila SQLite local; sem autenticação multiusuário.
 - **Onde roda?** Localmente ou em um servidor configurado. GitHub Actions executa a análise e guarda evidências; publicar o código no GitHub não hospeda automaticamente o dashboard.
+
+
+## Demonstração após ampliar os motores
+
+As contagens do roteiro acima pertencem ao conjunto original de três arquivos e ao perfil nativo. A instalação pode incluir um quarto arquivo de testes adicionado pelo usuário; Bandit e Semgrep também podem acrescentar evidências e alertas. Use a contagem real da execução. Em **Regras de análise**, mostre o corpus curado e o OWASP Benchmark separadamente e explique as limitações. Em **Integrações**, confirme os motores ativos; em **Achados**, abra as evidências e, quando existente, o fluxo local rastreado. A aprovação estática de um patch não equivale a executar testes da aplicação.

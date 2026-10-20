@@ -1,0 +1,814 @@
+[
+  {
+    "id": "js-eval",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "eval(req.body.code);",
+    "expected_rules": [
+      "JS-R001"
+    ],
+    "description": "Execução dinâmica global"
+  },
+  {
+    "id": "js-eval-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const run = eval; run(input);",
+    "expected_rules": [
+      "JS-R001"
+    ],
+    "description": "Alias local de eval"
+  },
+  {
+    "id": "js-eval-shadow",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "function handler(eval) { eval(input); }",
+    "expected_rules": [],
+    "description": "Parâmetro local não prova chamada de eval global"
+  },
+  {
+    "id": "js-function-constructor",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const run = new Function(\"input\", req.body.code);",
+    "expected_rules": [
+      "JS-R001"
+    ],
+    "description": "Construtor Function"
+  },
+  {
+    "id": "js-vm-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import { runInNewContext as run } from \"node:vm\"; run(req.body.code);",
+    "expected_rules": [
+      "JS-R001"
+    ],
+    "description": "Execução de código por vm via alias de importação"
+  },
+  {
+    "id": "js-json-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const value = JSON.parse(req.body.payload);",
+    "expected_rules": [],
+    "description": "Parsing JSON sem execução de código"
+  },
+  {
+    "id": "js-code-in-string",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const example = \"eval(input); element.innerHTML = name\"; // eval(input)",
+    "expected_rules": [],
+    "description": "Trechos em texto e comentários não são executados"
+  },
+  {
+    "id": "js-secret-object",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const config = { password: \"demo-password-1234\" };",
+    "expected_rules": [
+      "JS-R002"
+    ],
+    "description": "Credencial literal em objeto"
+  },
+  {
+    "id": "js-secret-assignment",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "config.apiToken = \"demo-token-1234\";",
+    "expected_rules": [
+      "JS-R002"
+    ],
+    "description": "Segredo literal atribuído a propriedade"
+  },
+  {
+    "id": "js-secret-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const value = \"demo-password-1234\"; const password = value;",
+    "expected_rules": [
+      "JS-R002"
+    ],
+    "description": "Credencial literal propagada por alias"
+  },
+  {
+    "id": "js-secret-env",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const password = process.env.DB_PASSWORD;",
+    "expected_rules": [],
+    "description": "Credencial obtida do ambiente"
+  },
+  {
+    "id": "js-secret-empty",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const password = \"\";",
+    "expected_rules": [],
+    "description": "String vazia não caracteriza segredo embutido"
+  },
+  {
+    "id": "js-command-esm-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import {exec as run} from \"node:child_process\"; run(\"ping \" + req.query.host);",
+    "expected_rules": [
+      "JS-R003"
+    ],
+    "description": "Importação ESM com alias de exec"
+  },
+  {
+    "id": "js-command-cjs-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const { exec: launch } = require(\"child_process\"); launch(`ping ${host}`);",
+    "expected_rules": [
+      "JS-R003"
+    ],
+    "description": "Desestruturação CommonJS com alias"
+  },
+  {
+    "id": "js-command-namespace",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const cp = require(\"node:child_process\"); cp.execSync(command);",
+    "expected_rules": [
+      "JS-R003"
+    ],
+    "description": "Namespace child_process com alias"
+  },
+  {
+    "id": "js-command-shell-options",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const cp = require(\"child_process\"); const opts={shell:true}; cp.spawn(\"echo\", [req.query.text], opts);",
+    "expected_rules": [
+      "JS-R003"
+    ],
+    "description": "spawn com shell habilitado em options local"
+  },
+  {
+    "id": "js-command-arguments-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const {execFile} = require(\"child_process\"); execFile(\"ping\", [\"-c\", \"1\", host], {shell:false});",
+    "expected_rules": [],
+    "description": "execFile com argumentos separados e shell desativado"
+  },
+  {
+    "id": "js-command-constant-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const cp = require(\"child_process\"); cp.exec(\"git status\");",
+    "expected_rules": [],
+    "description": "Comando constante não caracteriza injeção de entrada"
+  },
+  {
+    "id": "js-command-shadow-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "function run(exec) { exec(req.body.code); }",
+    "expected_rules": [],
+    "description": "Parâmetro exec não é tratado como child_process"
+  },
+  {
+    "id": "js-regex-exec-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const pattern = /hello/; pattern.exec(input);",
+    "expected_rules": [],
+    "description": "RegExp.exec não executa comando"
+  },
+  {
+    "id": "js-xss-dom",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "document.getElementById(\"box\").innerHTML = req.query.name;",
+    "expected_rules": [
+      "JS-R004"
+    ],
+    "description": "Entrada dinâmica no DOM"
+  },
+  {
+    "id": "js-xss-express",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "app.get(\"/\", (req,res) => { res.status(200).send(\"<b>\" + req.query.name + \"</b>\"); });",
+    "expected_rules": [
+      "JS-R004"
+    ],
+    "description": "Reflexão de entrada em resposta HTML Express"
+  },
+  {
+    "id": "js-xss-adjacent",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "box.insertAdjacentHTML(\"beforeend\", location.hash);",
+    "expected_rules": [
+      "JS-R004"
+    ],
+    "description": "insertAdjacentHTML com entrada do navegador"
+  },
+  {
+    "id": "js-xss-constant-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "box.innerHTML = \"<b>Olá</b>\"; document.write(\"<p>Olá</p>\"); res.send(\"Pronto\");",
+    "expected_rules": [],
+    "description": "HTML literal constante"
+  },
+  {
+    "id": "js-xss-sanitizer-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import purify from \"dompurify\"; const safe = purify.sanitize(req.query.name); box.innerHTML=safe;",
+    "expected_rules": [],
+    "description": "DOMPurify reconhecido por alias"
+  },
+  {
+    "id": "js-xss-textcontent-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "box.textContent = req.query.name; res.json({name:req.query.name});",
+    "expected_rules": [],
+    "description": "Saída DOM por textContent e resposta JSON"
+  },
+  {
+    "id": "js-sql-query",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "db.query(\"SELECT * FROM users WHERE id=\" + req.query.id);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Consulta dinâmica SQL direta"
+  },
+  {
+    "id": "js-sql-config",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const cfg={text:`SELECT * FROM users WHERE id=${req.query.id}`}; client.query(cfg);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "SQL no campo text de objeto local"
+  },
+  {
+    "id": "js-sql-cjs-destructure",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const {query:run} = db; run(\"DELETE FROM users WHERE id=\" + input);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Alias de query desestruturado"
+  },
+  {
+    "id": "js-sql-bind",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const run=db.query.bind(db); run(`SELECT * FROM users WHERE name=${name}`);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Alias de método query com bind"
+  },
+  {
+    "id": "js-sql-augmented",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "let sql=\"SELECT * FROM users WHERE id=\"; sql += req.query.id; db.execute(sql);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Propagação de concatenação por +="
+  },
+  {
+    "id": "js-sql-multiple",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "db.query(`SELECT * FROM a WHERE id=${a}`);\ndb.execute(\"DELETE FROM b WHERE id=\"+b);",
+    "expected_rules": [
+      "JS-R005",
+      "JS-R005"
+    ],
+    "description": "Dois sinks SQL distintos",
+    "expected_locations": [
+      {
+        "rule_id": "JS-R005",
+        "line_number": 1
+      },
+      {
+        "rule_id": "JS-R005",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "js-sql-direct-input",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "db.query(req.query.sql);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Entrada HTTP usada como consulta inteira"
+  },
+  {
+    "id": "js-sql-placeholder-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "db.execute(\"SELECT * FROM users WHERE id=?\", [req.query.id]);",
+    "expected_rules": [],
+    "description": "Consulta parametrizada preserva separação de dados"
+  },
+  {
+    "id": "js-sql-config-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "client.query({text:\"SELECT * FROM users WHERE id=$1\",values:[req.params.id]});",
+    "expected_rules": [],
+    "description": "Objeto PostgreSQL com valores vinculados"
+  },
+  {
+    "id": "js-sql-constant-concat-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const id=\"1\"; db.query(\"SELECT * FROM users WHERE id=\"+id);",
+    "expected_rules": [],
+    "description": "Concatenação de duas constantes"
+  },
+  {
+    "id": "js-sql-block-shadow-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const sql=\"SELECT * FROM users WHERE id=\"+input; { const sql=\"SELECT * FROM users\"; db.query(sql); }",
+    "expected_rules": [],
+    "description": "Declaração de bloco sombreia variável externa vulnerável"
+  },
+  {
+    "id": "js-sql-parameter-shadow-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const sql=\"SELECT * FROM users WHERE id=\"+input; function handler(sql) { db.query(sql); }",
+    "expected_rules": [],
+    "description": "Parâmetro de função não reutiliza definição global homônima"
+  },
+  {
+    "id": "js-sql-later-assignment-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "let sql=\"SELECT * FROM users\"; db.query(sql); sql=\"DELETE FROM users WHERE id=\"+input;",
+    "expected_rules": [],
+    "description": "Atribuição posterior não afeta consulta anterior"
+  },
+  {
+    "id": "js-sql-closure",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const suffix=req.query.id; function handler() { db.query(\"SELECT * FROM users WHERE id=\"+suffix); }",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Captura lexical de variável externa"
+  },
+  {
+    "id": "js-ssrf-import-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import {get as retrieve} from \"node:https\"; retrieve(req.query.url);",
+    "expected_rules": [
+      "JS-R006"
+    ],
+    "description": "URL externa via alias importado de https.get"
+  },
+  {
+    "id": "js-ssrf-axios-config",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const opts={url:req.body.target}; axios.request(opts);",
+    "expected_rules": [
+      "JS-R006"
+    ],
+    "description": "URL dinâmica em configuração axios"
+  },
+  {
+    "id": "js-ssrf-fetch-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "fetch(\"https://example.org/api\");",
+    "expected_rules": [],
+    "description": "URL constante"
+  },
+  {
+    "id": "js-path-fs-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import {readFile as read} from \"node:fs/promises\"; read(req.query.file);",
+    "expected_rules": [
+      "JS-R007"
+    ],
+    "description": "Leitura de arquivo por alias importado"
+  },
+  {
+    "id": "js-path-join",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const fs=require(\"fs\"); const path=require(\"path\"); fs.readFile(path.join(\"/uploads\", req.query.file));",
+    "expected_rules": [
+      "JS-R007"
+    ],
+    "description": "path.join não confina entrada a uma raiz"
+  },
+  {
+    "id": "js-path-sendfile",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "app.get(\"/files\", (req,res) => { res.sendFile(req.params.name); });",
+    "expected_rules": [
+      "JS-R007"
+    ],
+    "description": "Express envia caminho recebido do cliente"
+  },
+  {
+    "id": "js-path-constant-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const fs=require(\"fs\"); fs.readFileSync(\"./settings.json\");",
+    "expected_rules": [],
+    "description": "Leitura de caminho literal"
+  },
+  {
+    "id": "js-path-env-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const fs=require(\"fs\"); fs.readFileSync(process.env.CONFIG_PATH);",
+    "expected_rules": [],
+    "description": "Caminho de configuração do ambiente não é entrada HTTP demonstrada"
+  },
+  {
+    "id": "js-path-basename-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const fs=require(\"fs\"); const path=require(\"path\"); fs.readFile(path.join(\"/uploads\",path.basename(req.query.file)));",
+    "expected_rules": [],
+    "description": "basename remove componentes de diretório antes de unir raiz fixa"
+  },
+  {
+    "id": "js-deserialize",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const serialize=require(\"node-serialize\"); serialize.unserialize(req.body.payload);",
+    "expected_rules": [
+      "JS-R008"
+    ],
+    "description": "Desserializador que reconstrói funções"
+  },
+  {
+    "id": "js-deserialize-import",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import {unserialize as decode} from \"node-serialize\"; decode(req.body.payload);",
+    "expected_rules": [
+      "JS-R008"
+    ],
+    "description": "Desserialização insegura por alias ESM"
+  },
+  {
+    "id": "js-deserialize-yaml-full",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const yaml=require(\"js-yaml\"); yaml.load(req.body.text,{schema:yaml.DEFAULT_FULL_SCHEMA});",
+    "expected_rules": [
+      "JS-R008"
+    ],
+    "description": "Schema YAML legado capaz de construir funções"
+  },
+  {
+    "id": "js-deserialize-yaml-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const yaml=require(\"js-yaml\"); yaml.load(req.body.text);",
+    "expected_rules": [],
+    "description": "Default moderno de js-yaml não é presumido como schema executável"
+  },
+  {
+    "id": "js-hash-md5",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import {createHash as hash} from \"node:crypto\"; hash(\"md5\").update(input).digest(\"hex\");",
+    "expected_rules": [
+      "JS-R009"
+    ],
+    "description": "Hash MD5 em API crypto importada"
+  },
+  {
+    "id": "js-hash-sha1-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const crypto=require(\"crypto\"); const algorithm=\"sha1\"; crypto.createHash(algorithm);",
+    "expected_rules": [
+      "JS-R009"
+    ],
+    "description": "Nome de algoritmo fraco via variável"
+  },
+  {
+    "id": "js-hash-webcrypto",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "crypto.subtle.digest(\"SHA-1\", data);",
+    "expected_rules": [
+      "JS-R009"
+    ],
+    "description": "SHA-1 em Web Crypto"
+  },
+  {
+    "id": "js-cipher-ecb",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const crypto=require(\"crypto\"); crypto.createCipheriv(\"aes-256-ecb\",key,null);",
+    "expected_rules": [
+      "JS-R009"
+    ],
+    "description": "Modo ECB sem autenticação"
+  },
+  {
+    "id": "js-hash-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "import {createHash} from \"node:crypto\"; createHash(\"sha256\").update(input).digest(\"hex\");",
+    "expected_rules": [],
+    "description": "SHA-256 não é classificado como algoritmo fraco"
+  },
+  {
+    "id": "js-random-secret",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const token = Math.random().toString(36);",
+    "expected_rules": [
+      "JS-R010"
+    ],
+    "description": "Token gerado por PRNG não criptográfico"
+  },
+  {
+    "id": "js-random-alias",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const n=Math.random(); const sessionId=String(n);",
+    "expected_rules": [
+      "JS-R010"
+    ],
+    "description": "Aleatoriedade fraca propagada até identificador de sessão"
+  },
+  {
+    "id": "js-random-return",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "function generateToken() { return Math.random().toString(16); }",
+    "expected_rules": [
+      "JS-R010"
+    ],
+    "description": "Retorno de gerador de token usa Math.random"
+  },
+  {
+    "id": "js-random-ui-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const color=Math.floor(Math.random()*255);",
+    "expected_rules": [],
+    "description": "Aleatoriedade de interface sem finalidade de segredo"
+  },
+  {
+    "id": "js-random-crypto-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const crypto=require(\"crypto\"); const token=crypto.randomBytes(32).toString(\"hex\");",
+    "expected_rules": [],
+    "description": "Token gerado com CSPRNG"
+  },
+  {
+    "id": "js-sensitive-log",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "console.log(req.body.password);",
+    "expected_rules": [
+      "JS-R011"
+    ],
+    "description": "Senha da requisição é registrada"
+  },
+  {
+    "id": "js-sensitive-alias-log",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const value=req.headers.authorization; logger.info(value);",
+    "expected_rules": [
+      "JS-R011"
+    ],
+    "description": "Autorização propagada por variável local até log"
+  },
+  {
+    "id": "js-sensitive-bound-log",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const token=process.env.API_TOKEN; console.error(token);",
+    "expected_rules": [
+      "JS-R011"
+    ],
+    "description": "Token de ambiente enviado ao log"
+  },
+  {
+    "id": "js-log-label-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "console.info(\"password changed\"); logger.error(\"Falha na autenticação\");",
+    "expected_rules": [],
+    "description": "Mensagens constantes não contêm valor de segredo"
+  },
+  {
+    "id": "js-log-redacted-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const password=req.body.password; console.log(\"[REDACTED]\");",
+    "expected_rules": [],
+    "description": "O valor do segredo não é registrado"
+  },
+  {
+    "id": "js-express-cookie",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "res.cookie(\"session\", value, {secure:false, httpOnly:false});",
+    "expected_rules": [
+      "JS-R012",
+      "JS-R012"
+    ],
+    "description": "Duas proteções de cookie explicitamente desativadas"
+  },
+  {
+    "id": "js-express-session",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const session=require(\"express-session\"); const options={cookie:{httpOnly:false}}; app.use(session(options));",
+    "expected_rules": [
+      "JS-R012"
+    ],
+    "description": "Cookie inseguro em configuração express-session via variável"
+  },
+  {
+    "id": "js-express-development",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const express=require(\"express\"); const app=express(); app.set(\"env\",\"development\");",
+    "expected_rules": [
+      "JS-R012"
+    ],
+    "description": "Modo de desenvolvimento explicitamente habilitado"
+  },
+  {
+    "id": "js-express-cookie-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "res.cookie(\"session\",value,{secure:true,httpOnly:true,sameSite:\"strict\"});",
+    "expected_rules": [],
+    "description": "Proteções de cookie explícitas"
+  },
+  {
+    "id": "js-express-generic-object-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const drawing = { secure:false, httpOnly:false }; render(drawing);",
+    "expected_rules": [],
+    "description": "Propriedades homônimas em objeto alheio a cookies não são tratadas como Express"
+  },
+  {
+    "id": "js-tls-disabled",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const https=require(\"https\"); const agent=new https.Agent({rejectUnauthorized:false});",
+    "expected_rules": [
+      "JS-R013"
+    ],
+    "description": "Verificação de certificado desativada em agente"
+  },
+  {
+    "id": "js-tls-env-disabled",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "process.env.NODE_TLS_REJECT_UNAUTHORIZED=\"0\";",
+    "expected_rules": [
+      "JS-R013"
+    ],
+    "description": "Validação TLS global desativada"
+  },
+  {
+    "id": "js-tls-safe",
+    "filename": "coverage.js",
+    "language": "javascript",
+    "code": "const https=require(\"https\"); const agent=new https.Agent({rejectUnauthorized:true});",
+    "expected_rules": [],
+    "description": "Verificação TLS habilitada"
+  },
+  {
+    "id": "js-typescript",
+    "filename": "handler.ts",
+    "language": "javascript",
+    "code": "import {exec as run} from \"node:child_process\"; function ping(host: string): void { run(`ping ${host}`); }",
+    "expected_rules": [
+      "JS-R003"
+    ],
+    "description": "TypeScript com importação e parâmetros tipados"
+  },
+  {
+    "id": "js-tsx-safe",
+    "filename": "Button.tsx",
+    "language": "javascript",
+    "code": "const Button = () => <button>{value}</button>;",
+    "expected_rules": [],
+    "description": "Interpolação JSX escapada não é innerHTML"
+  },
+  {
+    "id": "js-xss-renamed-route",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "const express=require(\"express\"); const server=express(); server.get(\"/\",(incoming,outgoing)=>outgoing.send(incoming.query.name));",
+    "expected_rules": [
+      "JS-R004"
+    ],
+    "description": "Parâmetros renomeados em callback Express reconhecido"
+  },
+  {
+    "id": "js-xss-composed-sanitizer-safe",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "import clean from \"sanitize-html\"; res.send(\"<p>\"+clean(req.query.name)+\"</p>\");",
+    "expected_rules": [],
+    "description": "Concatenação de sanitização reconhecida e HTML constante"
+  },
+  {
+    "id": "js-xss-pretend-sanitizer",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "function escapeHtml(value){return value;} res.send(escapeHtml(req.query.name));",
+    "expected_rules": [
+      "JS-R004"
+    ],
+    "description": "Nome de função caseira não comprova sanitização"
+  },
+  {
+    "id": "js-xss-plaintext-safe",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "res.type(\"text/plain\").send(req.query.name);",
+    "expected_rules": [],
+    "description": "Saída explicitamente text/plain não é HTML"
+  },
+  {
+    "id": "js-sql-conditional-overwrite",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "let sql=\"SELECT * FROM users WHERE id=\"+input; if(flag){sql=\"SELECT * FROM users\";} db.query(sql);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Atribuição condicional segura não apaga caminho vulnerável anterior"
+  },
+  {
+    "id": "js-sql-branch-taint",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "let sql=\"SELECT * FROM users\"; if(flag){sql+=\" WHERE id=\"+input;} db.query(sql);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Concatenação condicional conserva caminho vulnerável"
+  },
+  {
+    "id": "js-import-shadow-safe",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "const fs=require(\"fs\"); function handler(fs){fs.readFile(req.query.name);}",
+    "expected_rules": [],
+    "description": "Parâmetro homônimo sombreia módulo de sistema de arquivos"
+  },
+  {
+    "id": "js-sql-typescript-alias",
+    "filename": "flow.ts",
+    "language": "javascript",
+    "code": "type Input=string; const query: Input=`SELECT * FROM users WHERE id=${id}`; db.execute(query as string);",
+    "expected_rules": [
+      "JS-R005"
+    ],
+    "description": "Propagação SQL atravessa assertion TypeScript"
+  },
+  {
+    "id": "js-ssrf-route-renamed",
+    "filename": "flow.js",
+    "language": "javascript",
+    "code": "const express=require(\"express\"); const server=express(); server.get(\"/\",(incoming,outgoing)=>fetch(incoming.query.url));",
+    "expected_rules": [
+      "JS-R006"
+    ],
+    "description": "Origem de URL em parâmetros renomeados de rota Express"
+  }
+]

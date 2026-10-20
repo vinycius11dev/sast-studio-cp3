@@ -12,6 +12,14 @@ def test_health_endpoint():
     assert data["active_rules"] >= 14
 
 
+def test_presentation_inlines_screenshots_for_access_protected_tunnels():
+    response = client.get("/apresentacao")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert response.text.count("src=\"data:image/png;base64,") == 5
+    assert "/presentation-assets/" not in response.text
+
+
 def test_list_rules_endpoint():
     response = client.get("/api/v1/rules")
     assert response.status_code == 200

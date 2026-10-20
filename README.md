@@ -1,10 +1,13 @@
 # SAST Studio
 
+> **Evolução de detecção — 19/10/2026:** o motor nativo passou a 43 IDs de regras, com corpus de regressão ampliado, Bandit e Semgrep CE opcionais e validação estática independente de patches completos. Há limitações reais no benchmark externo. Consulte o [diagnóstico e plano de evolução](docs/EVOLUCAO_SAST.md), a [medição interna atual](docs/BENCHMARK.md) e a [avaliação completa OWASP BenchmarkJava](docs/quality/owasp-native-results.md) antes de interpretar os percentuais. As capturas históricas abaixo representam execuções anteriores.
+
+
 Workspace de análise estática de segurança de código feito como projeto acadêmico de Engenharia de Software — FIAP, entrega CP3. O SAST Studio encontra padrões de risco sem executar o código, organiza os resultados no histórico, aplica uma política de bloqueio e oferece revisão e remediação assistidas por IA local.
 
 **Versão 3.0.0 · Python · JavaScript/TypeScript · Java · Ollama · Docker · GitHub Actions**
 
-Depois de iniciar o aplicativo, abra a [tela de apresentação](http://127.0.0.1:8000/apresentacao) para explicar o projeto em sala e mostrar o estado local da API e do Ollama.
+Depois de iniciar o aplicativo, abra a tela de apresentação no endereço mostrado pelo iniciador (por padrão, <http://127.0.0.1:8000/apresentacao>) para explicar o projeto em sala e mostrar o estado local da API e do Ollama.
 
 <p align="center">
   <img src="docs/screenshots/readme/01-visao-geral.png" alt="Visão geral do SAST Studio com comparação entre análises vulnerável e corrigida" width="100%">
@@ -48,6 +51,8 @@ As capturas abaixo foram feitas na interface local do projeto. A análise de IA 
 6. Em **Visão geral**, compare as duas execuções salvas. Em **Histórico**, reabra resultados e exporte os relatórios.
 
 Os exemplos vulnerável e corrigido são propositalmente pequenos e não executam as funções vulneráveis. Para demonstrar a IA, mostre o identificador do provedor na própria interface; uma resposta do **Motor determinístico (Fallback)** não é uma inferência do LLM.
+
+As correções são sugestões e nunca alteram os arquivos originais automaticamente. O validador rejeita patches que não removem o achado, não passam pela análise sintática ou inventam variáveis. Em JavaScript, uma substituição de `eval()` não é presumida como `JSON.parse()`; quando o formato esperado não está comprovado, a tela explica por que não gerou patch. Correções de comandos também precisam preservar o fluxo existente, validar a entrada e usar argumentos separados. Segredos carregados do ambiente não recebem valor vazio por padrão: a aplicação deve falhar explicitamente se a variável obrigatória não estiver configurada.
 
 ## Arquitetura
 
@@ -99,10 +104,10 @@ ollama list
 Abra o aplicativo Ollama, depois dê dois cliques em **`iniciar.bat`** ou execute:
 
 ```powershell
-python iniciar.py
+python manter_sast.py
 ```
 
-O navegador abre o workspace em <http://127.0.0.1:8000/dashboard>. Mantenha a janela do servidor aberta. A documentação interativa da API fica em <http://127.0.0.1:8000/docs>; a verificação de saúde fica em <http://127.0.0.1:8000/health>.
+Por padrão, o navegador abre o workspace em <http://127.0.0.1:8000/dashboard>. Se essa porta estiver ocupada, o iniciador reutiliza uma instância atual ou escolhe uma porta livre e imprime o endereço correto; use essa mesma porta para `/apresentacao`, `/docs` e `/health`. Mantenha a janela do servidor aberta. O acompanhamento recupera processos da API que encerrarem e preserva o diretório de histórico. O botão **Reconectar API** verifica a conexão sem perder o conteúdo do editor. Para acesso público temporário, use **iniciar_com_link.bat** com `cloudflared` instalado. Veja [recuperação, erros 502 e limites do túnel](docs/CONEXAO.md). `python iniciar.py` continua sendo o iniciador simples, sem acompanhamento.
 
 Antes da apresentação, execute **`verificar_apresentacao.bat`** com o servidor e o Ollama abertos. Ele percorre os fluxos vulnerável/corrigido, confere os relatórios e exige duas inferências reais quando usa `--require-llm`. O resumo é gravado em `reports/smoke-result.json`, pasta local ignorada pelo Git.
 
@@ -192,7 +197,7 @@ python -m scripts.smoke --require-llm
 
 Inicie primeiro o app com `iniciar.bat`. `python -m scripts.smoke` valida API, worker, exemplos vulnerável/corrigido, gates e formatos de relatório, sem chamar o LLM. `python -m scripts.smoke --require-llm` também faz inferências reais de triagem e remediação e falha se retornar fallback.
 
-Na revalidação local de 18/10/2026: 98 testes Python aprovados; 4 testes Node aprovados; smoke com 9 achados/bloqueado contra 0/aprovado; e triagem/remediação reais por Ollama. O corpus interno tem 53 casos, incluindo 24 controles seguros: obteve precisão e recall de 100% nessa amostra delimitada. Isso não é uma avaliação independente nem garante os mesmos resultados em qualquer projeto. O iniciador também detecta uma versão antiga do servidor na porta 8000. Docker e persistência entre reinícios foram validados em execução anterior, conforme detalhado em [VALIDACAO.md](docs/VALIDACAO.md).
+Na revalidação local de 19/10/2026: 100 testes Python e 4 testes Node aprovados; o exemplo JavaScript vulnerável produziu 3 achados e gate bloqueado, enquanto o corrigido teve 0 achados e gate aprovado; a triagem real do Ollama confirmou o risco com alta confiança. O corpus interno tem 53 casos, incluindo 24 controles seguros: obteve precisão e recall de 100% nessa amostra delimitada. Isso não é uma avaliação independente nem garante os mesmos resultados em qualquer projeto. O iniciador evita a versão antiga na porta 8000 reutilizando uma instância atual ou escolhendo uma porta livre. Docker e persistência entre reinícios foram validados em execução anterior, conforme detalhado em [VALIDACAO.md](docs/VALIDACAO.md).
 
 ## Limites conhecidos
 
