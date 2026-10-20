@@ -13,6 +13,24 @@ ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED = {".py", ".js", ".java"}
 
 
+def discover_base_url(state_file=None):
+    """Use the active SAST server even when the supervisor chose a fallback port."""
+    from iniciar import find_current_server
+
+    port = find_current_server()
+    if port:
+        return f"http://127.0.0.1:{port}"
+
+    state_path = Path(state_file) if state_file else ROOT / "data" / "runtime" / "state.json"
+    try:
+        saved_port = json.loads(state_path.read_text(encoding="utf-8")).get("port")
+    except (OSError, ValueError, AttributeError):
+        saved_port = None
+    if isinstance(saved_port, int) and not isinstance(saved_port, bool) and 1 <= saved_port <= 65535:
+        return f"http://127.0.0.1:{saved_port}"
+    return "http://127.0.0.1:8000"
+
+
 def run(base, require_llm=False):
     base = base.rstrip("/")
 
@@ -198,13 +216,13 @@ def main():
     parser = argparse.ArgumentParser(
         description="Valida o SAST pela API real e, com --require-llm, faz inferências Ollama de triagem e remediação."
     )
-    parser.add_argument("--base-url", default="http://127.0.0.1:8000")
+    parser.add_argument("--base-url", help="URL da API; por padrão, detecta a instância atual do iniciador")
     parser.add_argument("--require-llm", action="store_true", help="Exige e testa triagem e remediação com o modelo Ollama.")
     parser.add_argument("--output", default="reports/smoke-result.json", help="Arquivo JSON com o resultado da verificação.")
     args = parser.parse_args()
 
     try:
-        report = run(args.base_url, args.require_llm)
+        report = run(args.base_url or discover_base_url(), args.require_llm)
     except (AssertionError, OSError, ValueError, RuntimeError) as error:
         print(f"SMOKE FALHOU: {error}", file=sys.stderr)
         return 1

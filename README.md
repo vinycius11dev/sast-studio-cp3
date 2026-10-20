@@ -109,7 +109,7 @@ python manter_sast.py
 
 Por padrão, o navegador abre o workspace em <http://127.0.0.1:8000/dashboard>. Se essa porta estiver ocupada, o iniciador reutiliza uma instância atual ou escolhe uma porta livre e imprime o endereço correto; use essa mesma porta para `/apresentacao`, `/docs` e `/health`. Mantenha a janela do servidor aberta. O acompanhamento recupera processos da API que encerrarem e preserva o diretório de histórico. O botão **Reconectar API** verifica a conexão sem perder o conteúdo do editor. Para acesso público temporário, use **iniciar_com_link.bat** com `cloudflared` instalado. Veja [recuperação, erros 502 e limites do túnel](docs/CONEXAO.md). `python iniciar.py` continua sendo o iniciador simples, sem acompanhamento.
 
-Antes da apresentação, execute **`verificar_apresentacao.bat`** com o servidor e o Ollama abertos. Ele percorre os fluxos vulnerável/corrigido, confere os relatórios e exige duas inferências reais quando usa `--require-llm`. O resumo é gravado em `reports/smoke-result.json`, pasta local ignorada pelo Git.
+Antes da apresentação, execute `ollama run llama3.2:3b "Responda apenas OK"` para aquecer o modelo e depois rode **`verificar_apresentacao.bat`** com o servidor e o Ollama abertos. O smoke detecta automaticamente a porta escolhida pelo iniciador, percorre os fluxos vulnerável/corrigido, confere os relatórios e exige duas inferências reais. O resumo é gravado em `reports/smoke-result.json`, pasta local ignorada pelo Git.
 
 ### Sem Ollama
 

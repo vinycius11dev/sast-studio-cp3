@@ -1,4 +1,13 @@
-# Validação — SAST Studio 3.0 — 18/10/2026
+# Validação — SAST Studio 3.0 — 20/10/2026
+
+## Revalidação final — 20/10/2026
+
+- Pytest: **518 aprovados e 2 ignorados** (integração de scanner opcional e recuperação real de processo opt-in); 2 avisos de depreciação de dependências.
+- Node: **13 testes aprovados**, incluindo reconexão após HTTP 502 e proteção para não reenviar uma análise já aceita.
+- API local com native, Bandit e Semgrep: projeto vulnerável, 4 arquivos/24 achados combinados/gate bloqueado; projeto corrigido, 3 avisos LOW do Bandit, zero achados nativos e gate aprovado. JSON, SARIF e Markdown responderam corretamente.
+- Ollama `llama3.2:3b`: uma primeira chamada fria excedeu o limite atual de 90 s; com o modelo aquecido, triagem real retornou confirmed/CRITICAL/alta confiança e a remediação gerou patch e diff sem fallback. Aquecer o modelo antes da defesa é requisito operacional.
+- GitHub Actions run #17: Security Gate e Docker smoke aprovados. PR #7 continua aberto; a branch main não foi alterada por merge.
+- O smoke local detecta automaticamente a porta selecionada pelo iniciador; no computador de teste localizou `8001`, evitando a instância antiga em `8000`.
 
 ## Recuperação de conexão — 19/10/2026
 
