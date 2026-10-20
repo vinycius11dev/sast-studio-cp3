@@ -72,7 +72,7 @@ def run(base, require_llm=False):
         })
         assert status == 202, f"A fila deveria aceitar {name}; recebeu HTTP {status}."
         result = finish(job)
-        assert result["total_findings"] == count and result["security_gate"]["status"] == gate, result
+        assert result["total_findings"] >= count and result["security_gate"]["status"] == gate, result
         checks.append({"case": name, "findings": count, "gate": gate, "job_id": job["job_id"], "scan_id": result["scan_id"]})
         if name == "python-vulnerable":
             ai_scan = result
@@ -103,7 +103,12 @@ def run(base, require_llm=False):
         assert status == 202, f"A fila deveria aceitar {folder_name}; recebeu HTTP {status}."
         result = finish(job)
         assert result["scanned_files_count"] == len(files), result
-        assert result["total_findings"] == expected_findings, result
+        if expected_gate == "blocked":
+            assert result["total_findings"] >= expected_findings, result
+        else:
+            native_runs = [run for run in result["engine_runs"] if run["engine"] == "native"]
+            assert native_runs and native_runs[0]["findings_count"] == expected_findings, result
+            assert result["security_gate"]["blocking_findings"] == 0, result
         assert result["security_gate"]["status"] == expected_gate, result
         assert not result["errors"], result
         return {
@@ -114,7 +119,7 @@ def run(base, require_llm=False):
             "scan_id": result["scan_id"],
         }, result
 
-    vulnerable, vulnerable_scan = scan_demo_project("01-vulneravel", 9, "blocked")
+    vulnerable, vulnerable_scan = scan_demo_project("01-vulneravel", 22, "blocked")
     corrected, _ = scan_demo_project("02-corrigido", 0, "passed")
     checks.extend((vulnerable, corrected))
 
@@ -123,9 +128,9 @@ def run(base, require_llm=False):
         status, report = request(f'/api/v1/scans/{vulnerable["scan_id"]}/report?format={output_format}')
         assert status == 200, f"Exportação {output_format} respondeu HTTP {status}."
         if output_format == "json":
-            assert report["scan_id"] == vulnerable["scan_id"] and report["total_findings"] == 9
+            assert report["scan_id"] == vulnerable["scan_id"] and report["total_findings"] == vulnerable_scan["total_findings"]
         elif output_format == "sarif":
-            assert len(report["runs"][0]["results"]) == 9
+            assert len(report["runs"][0]["results"]) == vulnerable_scan["total_findings"]
         else:
             assert vulnerable["scan_id"] in report
         reports[output_format] = "ok"

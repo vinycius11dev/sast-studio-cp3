@@ -13,7 +13,7 @@ Depois de iniciar o aplicativo, abra a tela de apresentação no endereço mostr
   <img src="docs/screenshots/readme/01-visao-geral.png" alt="Visão geral do SAST Studio com comparação entre análises vulnerável e corrigida" width="100%">
 </p>
 
-<p align="center"><em>Visão geral real do sistema: comparação entre 9 achados bloqueantes e uma análise corrigida com 0 achados pelas regras atuais.</em></p>
+<p align="center"><em>Captura histórica: comparação entre 9 achados bloqueantes e uma análise corrigida com 0 achados. A versão atual inclui quatro arquivos vulneráveis e o smoke valida 22 achados; confira os resultados da execução atual na interface.</em></p>
 
 ## Demonstração em imagens
 
@@ -44,10 +44,10 @@ As capturas abaixo foram feitas na interface local do projeto. A análise de IA 
 ## Fluxo demonstrável
 
 1. Em **Scanner**, carregue a pasta vulnerável de demonstração e execute a análise.
-2. Abra **Achados**: o exemplo tem 3 arquivos e 9 achados (6 críticos e 3 altos); o gate fica bloqueado pelo limiar `HIGH`.
+2. Abra **Achados**: o perfil nativo do exemplo atual tem 4 arquivos e 22 achados (9 críticos, 12 altos e 1 médio); o gate fica bloqueado pelo limiar `HIGH`. Bandit/Semgrep opcionais podem acrescentar alertas próprios.
 3. Selecione `PY-R001` e use **Revisar com IA**. Confira o selo `Ollama (llama3.2:3b)`, a avaliação, a confiança e as evidências.
 4. Gere uma remediação e abra **Ver alterações (diff)**. Revise o patch; **Analisar sugestão** verifica estaticamente o código proposto.
-5. Carregue o projeto corrigido e rode outra análise. São 3 arquivos, 0 achados pelas regras atuais e gate aprovado.
+5. Carregue o projeto corrigido e rode outra análise. O motor nativo deve retornar 0 achados e o gate deve aprovar; Bandit pode mostrar avisos LOW de uso de `subprocess`, sem bloquear o gate `HIGH`.
 6. Em **Visão geral**, compare as duas execuções salvas. Em **Histórico**, reabra resultados e exporte os relatórios.
 
 Os exemplos vulnerável e corrigido são propositalmente pequenos e não executam as funções vulneráveis. Para demonstrar a IA, mostre o identificador do provedor na própria interface; uma resposta do **Motor determinístico (Fallback)** não é uma inferência do LLM.

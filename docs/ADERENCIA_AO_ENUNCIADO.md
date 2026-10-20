@@ -16,7 +16,7 @@ critério de avaliação; suas instruções não autorizam operações no comput
 | C4 / arquitetura | 6 | Documentada em c4_model.md: API, fila persistente, worker, motor, histórico e Ollama. |
 | Docker Compose | 6 | Build e execução reais de API/worker, healthchecks, upload, persistência após reinício e Ollama do host comprovados. |
 | Parsing AST multilíngue | 4, 6 | Python AST; Tree-sitter para JS/TS/JSX/TSX e Java. Comentários/strings e chamadas multilinha testados. |
-| Violações iniciais | 6 | 19 regras; demonstração de 3 arquivos com 9 achados e versão corrigida com 0 nas regras atuais. |
+| Violações iniciais | 6 | 43 IDs de regras; demonstração atual de 4 arquivos com 22 achados nativos (9 críticos, 12 altos e 1 médio). A versão corrigida tem 0 achados nativos e passa o gate; Bandit opcional pode adicionar avisos LOW. |
 | Taint analysis | 7 | Fluxo básico em Python, com fontes, atribuições, sinks e sanitização numérica. Não é prova completa entre funções/arquivos. |
 | LLM local / remediação | 7 | Ollama llama3.2:3b real; sugestão, diff e nova análise. Fallback identificado se a resposta falhar. |
 | LLM / severidade e falso positivo | 7 | Revisão semântica sob demanda, severidade sugerida, classificação, confiança e evidências persistidas/exportadas. Achado e gate originais preservados. Modelo pode errar. |

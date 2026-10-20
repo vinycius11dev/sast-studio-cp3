@@ -155,4 +155,4 @@ def test_mysql2_and_postgres_fallbacks_use_their_own_placeholder():
         "remediation_advice": "Use placeholders compatible with pg.",
     })
     postgres_result = engine.remediate_finding(postgres_finding, original_code=postgres_source)
-    assert "WHERE id = $1" in postgres_result.suggested_patch\n
+    assert "WHERE id = $1" in postgres_result.suggested_patch
