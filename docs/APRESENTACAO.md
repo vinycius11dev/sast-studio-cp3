@@ -12,7 +12,7 @@ Use **Abrir sistema** para sair da apresentação e voltar ao dashboard.
    porta 8000 estiver ocupada, o iniciador reutiliza outra instância atual ou
    escolhe uma porta livre para não abrir uma versão antiga.
 3. Em **Integrações**, confirme API, worker da fila e Ollama disponíveis.
-4. Antes da aula, aqueça o modelo no terminal com `ollama run llama3.2:3b "Responda apenas OK"` e depois execute `verificar_apresentacao.bat`. Em 20/10, a primeira inferência fria excedeu o limite de 90 segundos; com o modelo aquecido, a triagem real e a geração de patch com diff foram concluídas. Reserve alguns minutos para esse aquecimento e para o smoke.
+4. Antes da aula, aqueça o modelo no terminal com `ollama run llama3.2:3b "Responda apenas OK"` e depois execute `verificar_apresentacao.bat`. Em 20/10, a primeira inferência fria excedeu o limite de 90 segundos; com o modelo aquecido, o smoke integral passou: triagem real em 29,07 s e geração de patch com diff em 16,57 s. Reserve alguns minutos para esse aquecimento e para o smoke.
 5. Abra antecipadamente os Pull Requests e os logs de Actions indicados em
    `docs/GITHUB_CP3.md` (PR #1 vulnerável e PR #2 corrigido).
 6. Mantenha notebook, carregador, servidor e Ollama ligados. A análise e a IA locais

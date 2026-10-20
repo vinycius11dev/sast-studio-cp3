@@ -31,6 +31,12 @@ def discover_base_url(state_file=None):
     return "http://127.0.0.1:8000"
 
 
+def select_ai_smoke_finding(scan):
+    """Exercise the native eval rule, not an unrelated optional-scanner finding."""
+    findings = scan.get("findings") or []
+    return next((item for item in findings if item.get("rule_id") == "PY-R001"), findings[0] if findings else None)
+
+
 def run(base, require_llm=False):
     base = base.rstrip("/")
 
@@ -164,7 +170,7 @@ def run(base, require_llm=False):
         if not ai_scan or not ai_scan["findings"]:
             raise RuntimeError("O exemplo vulnerável não gerou um achado para validar a IA.")
 
-        finding = ai_scan["findings"][0]
+        finding = select_ai_smoke_finding(ai_scan)
         payload = {**finding, "scan_id": ai_scan["scan_id"]}
         triage_started = time.monotonic()
         _, review = request("/api/v1/triage", payload, timeout=115)

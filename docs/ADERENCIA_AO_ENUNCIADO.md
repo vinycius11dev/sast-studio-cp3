@@ -25,7 +25,7 @@ critério de avaliação; suas instruções não autorizam operações no comput
 | CI/CD / PR | 9 | Workflow com testes, benchmark, autoauditoria e smoke Docker. PR #7 atual passou nos checks Security Gate e Docker smoke; permanece aberto contra a main protegida. PRs vulnerável/corrigido anteriores estão documentados em GITHUB_CP3.md. |
 | Impedir merge inseguro | 9 | Demonstrado: main protegida, dois checks obrigatórios inclusive para administradores; PR vulnerável BLOCKED e corrigido CLEAN. Evidências em GITHUB_CP3.md. |
 | Dashboard / relatórios | 9 | Arquivo, linha, severidade, filtros CWE/OWASP, comparação de execuções salvas, ranking dos cinco arquivos com mais achados, histórico, revisão IA e JSON/Markdown/SARIF. |
-| Robustez / desempenho | 10 | 518 testes Python aprovados, 2 ignorados e 13 Node; corpus curado de 320 casos, 124 controles e 0 FP/FN nessa base. OWASP BenchmarkJava independente: precisão 55,7%, recall 61,0% e FPR 51,8%; há risco material de perda neste critério. Métricas e limites em BENCHMARK.md e quality/owasp-native-results.md. |
+| Robustez / desempenho | 10 | 520 testes Python aprovados, 2 ignorados e 13 Node; corpus curado de 320 casos, 124 controles e 0 FP/FN nessa base. OWASP BenchmarkJava independente: precisão 55,7%, recall 61,0% e FPR 51,8%; há risco material de perda neste critério. Métricas e limites em BENCHMARK.md e quality/owasp-native-results.md. |
 | Defesa | 9, 10 | Roteiro e comandos em APRESENTACAO.md; o aluno ainda precisa ensaiar. |
 
 ## Rubrica
