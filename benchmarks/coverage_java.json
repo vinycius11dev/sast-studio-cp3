@@ -1,0 +1,868 @@
+[
+  {
+    "id": "java-coverage-jdbc-concat",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc concat",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nstmt.executeQuery(\"SELECT * FROM t WHERE id=\" + input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-variable-alias",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc variable alias",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString sql=\"SELECT * FROM t WHERE name=\" + input;\nString alias=sql;\nstmt.executeQuery(alias);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "JAVA-R001",
+        "line_number": 6
+      }
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-format",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc format",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString sql=String.format(\"SELECT * FROM t WHERE id=%s\", input);\nstmt.executeQuery(sql);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-formatted",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc formatted",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nstmt.executeUpdate(\"DELETE FROM t WHERE id=%s\".formatted(input));\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-stringbuilder",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc stringbuilder",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nStringBuilder sql=new StringBuilder(\"SELECT * FROM t WHERE id=\");\nsql.append(input);\nstmt.executeQuery(sql.toString());\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-compound-assignment",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc compound assignment",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString sql=\"SELECT * FROM t WHERE id=\";\nsql += input;\nstmt.executeQuery(sql);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-prepared-but-concatenated",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc prepared but concatenated",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nconn.prepareStatement(\"SELECT * FROM t WHERE id=\" + input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-raw-dynamic-query",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc raw dynamic query",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nstmt.executeQuery(input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jpa-native-query",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jpa native query",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nem.createNativeQuery(\"SELECT * FROM t WHERE id=\" + input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jpa-jpql",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jpa jpql",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nem.createQuery(\"FROM User u WHERE u.name=\" + input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-spring-jdbc-template",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "spring jdbc template",
+    "code": "class Sample {\n\nvoid run(JdbcTemplate template, String input) throws Exception {\ntemplate.queryForList(\"SELECT * FROM t WHERE id=\" + input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-spring-named-template",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "spring named template",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnamedParameterJdbcTemplate.update(\"DELETE FROM t WHERE id=\" + input, parameters);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-bound-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc bound safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nvar p=conn.prepareStatement(\"SELECT * FROM t WHERE id=?\");\np.setString(1,input);\np.executeQuery();\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-jdbc-template-bound-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc template bound safe",
+    "code": "class Sample {\n\nvoid run(JdbcTemplate template, String input) throws Exception {\ntemplate.queryForObject(\"SELECT * FROM t WHERE id=?\", String.class, input);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-jpa-bound-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jpa bound safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nem.createQuery(\"FROM User u WHERE u.name=:name\").setParameter(\"name\", input);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-jdbc-literal-concat-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc literal concat safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString sql=\"SELECT * FROM t WHERE id=\" + \"1\"; stmt.executeQuery(sql);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-jdbc-reassignment-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc reassignment safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString sql=\"SELECT * FROM t WHERE id=\"+input; sql=\"SELECT 1\"; stmt.executeQuery(sql);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-jdbc-functions-isolated",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc functions isolated",
+    "code": "class Sample {\nvoid other(String input) { String sql=\"SELECT \" + input; }\nvoid run(String input) throws Exception {\nstmt.executeQuery(\"SELECT 1\");\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-jdbc-block-scope",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc block scope",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString sql=\"SELECT 1\";\n{ String sql=\"SELECT \"+input; stmt.executeQuery(sql); }\nstmt.executeQuery(sql);\n}\n}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-fields-class-isolated",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc fields class isolated",
+    "code": "class Sample {\nString sql=\"SELECT 1\"; class Other {String sql=\"SELECT \" + value;}\nvoid run(String input) throws Exception {\nstmt.executeQuery(sql);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-secret-literal",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "secret literal",
+    "code": "class Sample {\nprivate static final String DB_PASSWORD=\"DemoPassword123\";\nvoid run(String input) throws Exception {\n\n}\n}",
+    "expected_rules": [
+      "JAVA-R002"
+    ]
+  },
+  {
+    "id": "java-coverage-secret-assignment",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "secret assignment",
+    "code": "class Sample {\nString apiToken;\nvoid run(String input) throws Exception {\napiToken=\"DemoValue123\";\n}\n}",
+    "expected_rules": [
+      "JAVA-R002"
+    ]
+  },
+  {
+    "id": "java-coverage-secret-env-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "secret env safe",
+    "code": "class Sample {\nString password=System.getenv(\"DB_PASSWORD\");\nvoid run(String input) throws Exception {\n\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-secret-label-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "secret label safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nlogger.info(\"Password reset requested\");\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-runtime-dynamic",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "runtime dynamic",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nRuntime.getRuntime().exec(input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-runtime-alias",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "runtime alias",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nRuntime runtime=Runtime.getRuntime(); runtime.exec(\"ping \" + input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-runtime-literal-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "runtime literal safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nRuntime.getRuntime().exec(\"/usr/bin/id\");\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-processbuilder-shell",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "processbuilder shell",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew ProcessBuilder(\"sh\", \"-c\", input).start();\n}\n}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-processbuilder-dynamic-executable",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "processbuilder dynamic executable",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew ProcessBuilder(input).start();\n}\n}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-processbuilder-fixed-executable-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "processbuilder fixed executable safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew ProcessBuilder(\"/usr/bin/ping\", \"-c\", \"1\", input).start();\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-deserialize-objectstream",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "deserialize objectstream",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nObjectInputStream in=new ObjectInputStream(source); in.readObject();\n}\n}",
+    "expected_rules": [
+      "JAVA-R004"
+    ]
+  },
+  {
+    "id": "java-coverage-deserialize-xml-decoder",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "deserialize xml decoder",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nnew XMLDecoder(source).readObject();\n}\n}",
+    "expected_rules": [
+      "JAVA-R004"
+    ]
+  },
+  {
+    "id": "java-coverage-deserialize-filter-allowlist-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "deserialize filter allowlist safe",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nObjectInputStream in=new ObjectInputStream(source); in.setObjectInputFilter(ObjectInputFilter.Config.createFilter(\"java.lang.String;!*\")); in.readObject();\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-deserialize-filter-allow-all-unsafe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "deserialize filter allow all unsafe",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nObjectInputStream in=new ObjectInputStream(source); in.setObjectInputFilter(ObjectInputFilter.Config.createFilter(\"*\")); in.readObject();\n}\n}",
+    "expected_rules": [
+      "JAVA-R004"
+    ]
+  },
+  {
+    "id": "java-coverage-readobject-unrelated-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "readobject unrelated safe",
+    "code": "class Sample {\n\nvoid run(CustomRepository repository) throws Exception {\nrepository.readObject();\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-path-file-inputstream",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "path file inputstream",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew FileInputStream(input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R005"
+    ]
+  },
+  {
+    "id": "java-coverage-path-file-parent",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "path file parent",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew File(\"/srv/uploads\", input);\n}\n}",
+    "expected_rules": [
+      "JAVA-R005"
+    ]
+  },
+  {
+    "id": "java-coverage-path-nio",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "path nio",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nPath path=Paths.get(\"/srv/uploads\", input); Files.readString(path);\n}\n}",
+    "expected_rules": [
+      "JAVA-R005"
+    ]
+  },
+  {
+    "id": "java-coverage-path-static-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "path static safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew File(\"/srv/uploads\", \"readme.txt\"); Files.readString(Path.of(\"/srv/readme.txt\"));\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-path-normalize-alone-unsafe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "path normalize alone unsafe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nPath base=Path.of(\"/srv/uploads\"); Path path=base.resolve(input).normalize(); Files.readString(path);\n}\n}",
+    "expected_rules": [
+      "JAVA-R005"
+    ]
+  },
+  {
+    "id": "java-coverage-path-component-guard-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "path component guard safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nPath base=Path.of(\"/srv/uploads\").toAbsolutePath().normalize(); Path path=base.resolve(input).normalize(); if (!path.startsWith(base)) {throw new IllegalArgumentException();} Files.readString(path);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-path-check-without-reject-unsafe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "path check without reject unsafe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nPath base=Path.of(\"/srv/uploads\").toAbsolutePath().normalize(); Path path=base.resolve(input).normalize(); path.startsWith(base); Files.readString(path);\n}\n}",
+    "expected_rules": [
+      "JAVA-R005"
+    ]
+  },
+  {
+    "id": "java-coverage-ssrf-url",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "ssrf url",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew URL(input).openConnection();\n}\n}",
+    "expected_rules": [
+      "JAVA-R006"
+    ]
+  },
+  {
+    "id": "java-coverage-ssrf-url-alias",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "ssrf url alias",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString destination=\"https://\"+input; new URL(destination);\n}\n}",
+    "expected_rules": [
+      "JAVA-R006"
+    ]
+  },
+  {
+    "id": "java-coverage-ssrf-resttemplate",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "ssrf resttemplate",
+    "code": "class Sample {\n\nvoid run(RestTemplate template, String input) throws Exception {\ntemplate.getForObject(input, String.class);\n}\n}",
+    "expected_rules": [
+      "JAVA-R006"
+    ]
+  },
+  {
+    "id": "java-coverage-ssrf-httpclient",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "ssrf httpclient",
+    "code": "class Sample {\n\nvoid run(HttpClient client, String input) throws Exception {\nHttpRequest request=HttpRequest.newBuilder(URI.create(input)).GET().build(); client.send(request, handler);\n}\n}",
+    "expected_rules": [
+      "JAVA-R006"
+    ]
+  },
+  {
+    "id": "java-coverage-ssrf-httpclient-static-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "ssrf httpclient static safe",
+    "code": "class Sample {\n\nvoid run(HttpClient client) throws Exception {\nHttpRequest request=HttpRequest.newBuilder(URI.create(\"https://example.org\")).GET().build(); client.send(request, handler);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-ssrf-static-url-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "ssrf static url safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nnew URL(\"https://example.org/health\").openConnection();\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-xss-servlet-direct",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xss servlet direct",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nresponse.getWriter().println(\"<h1>\"+input+\"</h1>\");\n}\n}",
+    "expected_rules": [
+      "JAVA-R007"
+    ]
+  },
+  {
+    "id": "java-coverage-xss-servlet-writer-alias",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xss servlet writer alias",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nPrintWriter writer=response.getWriter(); String html=\"<h1>\"+input+\"</h1>\"; writer.write(html);\n}\n}",
+    "expected_rules": [
+      "JAVA-R007"
+    ]
+  },
+  {
+    "id": "java-coverage-xss-html-encoder-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xss html encoder safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nresponse.getWriter().write(Encode.forHtml(input));\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-xss-static-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xss static safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nresponse.getWriter().println(\"<h1>Welcome</h1>\");\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-xxe-documentbuilder",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe documentbuilder",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nDocumentBuilderFactory f=DocumentBuilderFactory.newInstance(); DocumentBuilder b=f.newDocumentBuilder(); b.parse(source);\n}\n}",
+    "expected_rules": [
+      "JAVA-R008"
+    ]
+  },
+  {
+    "id": "java-coverage-xxe-doctype-disabled-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe doctype disabled safe",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nDocumentBuilderFactory f=DocumentBuilderFactory.newInstance(); f.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true); DocumentBuilder b=f.newDocumentBuilder(); b.parse(source);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-xxe-wrong-flag-value",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe wrong flag value",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nDocumentBuilderFactory f=DocumentBuilderFactory.newInstance(); f.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", false); DocumentBuilder b=f.newDocumentBuilder(); b.parse(source);\n}\n}",
+    "expected_rules": [
+      "JAVA-R008"
+    ]
+  },
+  {
+    "id": "java-coverage-xxe-expansion-only-unsafe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe expansion only unsafe",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nDocumentBuilderFactory f=DocumentBuilderFactory.newInstance(); f.setExpandEntityReferences(false); DocumentBuilder b=f.newDocumentBuilder(); b.parse(source);\n}\n}",
+    "expected_rules": [
+      "JAVA-R008"
+    ]
+  },
+  {
+    "id": "java-coverage-xxe-external-flags-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe external flags safe",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nDocumentBuilderFactory f=DocumentBuilderFactory.newInstance(); f.setFeature(\"http://xml.org/sax/features/external-general-entities\", false); f.setFeature(\"http://xml.org/sax/features/external-parameter-entities\", false); f.setFeature(\"http://apache.org/xml/features/nonvalidating/load-external-dtd\", false); DocumentBuilder b=f.newDocumentBuilder(); b.parse(source);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-xxe-sibling-factory-unsafe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe sibling factory unsafe",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nDocumentBuilderFactory f=DocumentBuilderFactory.newInstance(); DocumentBuilderFactory safe=DocumentBuilderFactory.newInstance(); safe.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\", true); DocumentBuilder b=f.newDocumentBuilder(); b.parse(source);\n}\n}",
+    "expected_rules": [
+      "JAVA-R008"
+    ]
+  },
+  {
+    "id": "java-coverage-xxe-stax",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe stax",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nXMLInputFactory f=XMLInputFactory.newFactory(); f.createXMLStreamReader(source);\n}\n}",
+    "expected_rules": [
+      "JAVA-R008"
+    ]
+  },
+  {
+    "id": "java-coverage-xxe-stax-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe stax safe",
+    "code": "class Sample {\n\nvoid run(InputStream source) throws Exception {\nXMLInputFactory f=XMLInputFactory.newFactory(); f.setProperty(XMLInputFactory.SUPPORT_DTD, false); f.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false); f.createXMLStreamReader(source);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-weak-md5",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "weak md5",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nMessageDigest.getInstance(\"MD5\");\n}\n}",
+    "expected_rules": [
+      "JAVA-R009"
+    ]
+  },
+  {
+    "id": "java-coverage-weak-sha1-alias",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "weak sha1 alias",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString algorithm=\"SHA-1\"; MessageDigest.getInstance(algorithm);\n}\n}",
+    "expected_rules": [
+      "JAVA-R009"
+    ]
+  },
+  {
+    "id": "java-coverage-weak-des",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "weak des",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nCipher.getInstance(\"DES/CBC/PKCS5Padding\");\n}\n}",
+    "expected_rules": [
+      "JAVA-R009"
+    ]
+  },
+  {
+    "id": "java-coverage-weak-aes-default-ecb",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "weak aes default ecb",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nCipher.getInstance(\"AES\");\n}\n}",
+    "expected_rules": [
+      "JAVA-R009"
+    ]
+  },
+  {
+    "id": "java-coverage-sha256-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "sha256 safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nMessageDigest.getInstance(\"SHA-256\");\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-aes-gcm-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "aes gcm safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nCipher.getInstance(\"AES/GCM/NoPadding\");\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-weak-random-token",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "weak random token",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nRandom random=new Random(); String token=String.valueOf(random.nextLong());\n}\n}",
+    "expected_rules": [
+      "JAVA-R010"
+    ]
+  },
+  {
+    "id": "java-coverage-weak-random-session",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "weak random session",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nString sessionId=String.valueOf(Math.random());\n}\n}",
+    "expected_rules": [
+      "JAVA-R010"
+    ]
+  },
+  {
+    "id": "java-coverage-weak-random-nextbytes",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "weak random nextbytes",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nRandom random=new Random(); byte[] tokenBytes=new byte[32]; random.nextBytes(tokenBytes);\n}\n}",
+    "expected_rules": [
+      "JAVA-R010"
+    ]
+  },
+  {
+    "id": "java-coverage-secure-random-token-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "secure random token safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nSecureRandom random=new SecureRandom(); String token=String.valueOf(random.nextLong());\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-ordinary-random-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "ordinary random safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nRandom random=new Random(); int dice=random.nextInt(6);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-log-password",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "log password",
+    "code": "class Sample {\n\nvoid run(String password) throws Exception {\nlogger.info(\"password={}\", password);\n}\n}",
+    "expected_rules": [
+      "JAVA-R011"
+    ]
+  },
+  {
+    "id": "java-coverage-log-secret-alias",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "log secret alias",
+    "code": "class Sample {\n\nvoid run(String apiToken) throws Exception {\nString value=apiToken; logger.debug(value);\n}\n}",
+    "expected_rules": [
+      "JAVA-R011"
+    ]
+  },
+  {
+    "id": "java-coverage-log-system-error",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "log system error",
+    "code": "class Sample {\n\nvoid run(String password) throws Exception {\nSystem.err.println(password);\n}\n}",
+    "expected_rules": [
+      "JAVA-R011"
+    ]
+  },
+  {
+    "id": "java-coverage-log-nonsensitive-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "log nonsensitive safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\nlogger.info(\"User {} signed in\", input);\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-comments-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "comments safe",
+    "code": "class Sample {\n\nvoid run(String input) throws Exception {\n// Runtime.getRuntime().exec(input);\nString example=\"MessageDigest.getInstance(\\\"MD5\\\")\";\n}\n}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-script-engine-eval",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "script engine eval",
+    "code": "class Sample {void run(ScriptEngine engine, String input) {engine.eval(input);}}",
+    "expected_rules": [
+      "JAVA-R012"
+    ]
+  },
+  {
+    "id": "java-coverage-groovy-eval",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "groovy eval",
+    "code": "class Sample {void run(String input) {new GroovyShell().evaluate(input);}}",
+    "expected_rules": [
+      "JAVA-R012"
+    ]
+  },
+  {
+    "id": "java-coverage-script-literal-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "script literal safe",
+    "code": "class Sample {void run(ScriptEngine engine) {engine.eval(\"1+1\");}}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-custom-eval-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "custom eval safe",
+    "code": "class Sample {void run(CustomExpression engine, String input) {engine.eval(input);}}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-jdbc-append-chain",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc append chain",
+    "code": "class Sample {void run(String input) {StringBuilder sql=new StringBuilder(); sql.append(\"SELECT \").append(input); stmt.executeQuery(sql.toString());}}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-jdbc-conditional-taint",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "jdbc conditional taint",
+    "code": "class Sample {void run(String input, boolean enabled) {String sql=\"SELECT 1\"; if(enabled) sql=input; stmt.executeQuery(sql);}}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-xxe-conditional-config",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "xxe conditional config",
+    "code": "class Sample {void run(InputStream source, boolean enabled) {DocumentBuilderFactory f=DocumentBuilderFactory.newInstance(); if(enabled) f.setFeature(\"http://apache.org/xml/features/disallow-doctype-decl\",true); DocumentBuilder b=f.newDocumentBuilder(); b.parse(source);}}",
+    "expected_rules": [
+      "JAVA-R008"
+    ]
+  },
+  {
+    "id": "java-coverage-conditional-input-through-alias",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "conditional input through alias",
+    "code": "class Sample {void run(String[] values) {String value=\"\"; if(values!=null) value=values[0]; String alias=value; stmt.executeQuery(\"SELECT \"+alias);}}",
+    "expected_rules": [
+      "JAVA-R001"
+    ]
+  },
+  {
+    "id": "java-coverage-conditional-constant-through-alias-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "conditional constant through alias safe",
+    "code": "class Sample {void run(String[] values) {String value=\"\"; if(values!=null) value=\"safe\"; String alias=value; stmt.executeQuery(\"SELECT \"+alias);}}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-conditional-overwritten-alias-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "conditional overwritten alias safe",
+    "code": "class Sample {void run(String[] values) {String value=\"\"; if(values!=null) value=values[0]; value=\"safe\"; String alias=value; stmt.executeQuery(\"SELECT \"+alias);}}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-configured-shell-process",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "configured shell process",
+    "code": "class Sample {void run(String input) {ProcessBuilder pb=new ProcessBuilder(); pb.command(\"sh\",\"-c\",input); pb.start();}}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-configured-shell-list-process",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "configured shell list process",
+    "code": "class Sample {void run(String input) {List<String> command=new ArrayList<String>(); command.add(\"sh\"); command.add(\"-c\"); command.add(input); ProcessBuilder pb=new ProcessBuilder(); pb.command(command); pb.start();}}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-configured-fixed-list-process-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "configured fixed list process safe",
+    "code": "class Sample {void run(String input) {List<String> command=new ArrayList<String>(); command.add(\"/usr/bin/ping\"); command.add(input); ProcessBuilder pb=new ProcessBuilder(); pb.command(command); pb.start();}}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-fixed-process-array-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "fixed process array safe",
+    "code": "class Sample {void run(String input) {new ProcessBuilder(new String[]{\"/usr/bin/ping\",input}).start();}}",
+    "expected_rules": []
+  },
+  {
+    "id": "java-coverage-mutated-process-array",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "mutated process array",
+    "code": "class Sample {void run(String input) {String[] command={\"/usr/bin/id\"}; command[0]=input; new ProcessBuilder(command).start();}}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-conditional-shell-executable",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "conditional shell executable",
+    "code": "class Sample {void run(String input, boolean windows) {String executable=\"\"; if(windows) executable=\"cmd.exe\"; else executable=\"sh\"; String[] command={executable,\"-c\",input}; new ProcessBuilder(command).start();}}",
+    "expected_rules": [
+      "JAVA-R003"
+    ]
+  },
+  {
+    "id": "java-coverage-conditional-fixed-executable-safe",
+    "filename": "Sample.java",
+    "language": "java",
+    "description": "conditional fixed executable safe",
+    "code": "class Sample {void run(String input, boolean enabled) {String executable=\"/usr/bin/ping\"; if(enabled) executable=\"/usr/local/bin/ping\"; String[] command={executable,\"-c\",\"1\",input}; new ProcessBuilder(command).start();}}",
+    "expected_rules": []
+  }
+]

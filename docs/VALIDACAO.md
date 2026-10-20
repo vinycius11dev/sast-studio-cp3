@@ -1,4 +1,21 @@
-# Validação — SAST Studio 3.0 — 18/10/2026
+# Validação — SAST Studio 3.0 — 20/10/2026
+
+## Revalidação final — 20/10/2026
+
+- Pytest: **520 aprovados e 2 ignorados** (integração de scanner opcional e recuperação real de processo opt-in); 2 avisos de depreciação de dependências.
+- Node: **13 testes aprovados**, incluindo reconexão após HTTP 502 e proteção para não reenviar uma análise já aceita.
+- API local com native, Bandit e Semgrep: projeto vulnerável, 4 arquivos/24 achados combinados/gate bloqueado; projeto corrigido, 3 avisos LOW do Bandit, zero achados nativos e gate aprovado. JSON, SARIF e Markdown responderam corretamente.
+- Ollama `llama3.2:3b`: uma primeira chamada fria excedeu o limite atual de 90 s; com o modelo aquecido, o smoke integral com `--require-llm` passou, com triagem em 29,07 s e remediação em 16,57 s. A triagem retornou confirmed/CRITICAL/alta confiança e a remediação gerou patch e diff pelo Ollama, sem fallback. Aquecer o modelo antes da defesa é requisito operacional.
+- GitHub Actions: checks obrigatórios Security Gate e Docker smoke aprovados na PR #7. A PR continua aberta; a branch main não foi alterada por merge.
+- O smoke local detecta automaticamente a porta selecionada pelo iniciador; no computador de teste localizou `8001`, evitando a instância antiga em `8000`.
+
+## Recuperação de conexão — 19/10/2026
+
+- Suíte completa: **516 testes Python aprovados**, 1 teste opcional ignorado e 2 avisos de dependências. Inclui recuperação real de um processo de API isolado, com PID novo, mesma porta e reabertura da análise salva no mesmo diretório de dados.
+- JavaScript: **13 testes aprovados**, incluindo falha 502, reconexão, timeout, proteção contra pedidos duplicados e retomada da consulta de um trabalho já enviado.
+- Navegador público: queda de rede simulada mostrou o aviso e preservou o editor após reconectar. Um 502 injetado na consulta de trabalho não reenviou a análise; o scanner concluiu o arquivo JavaScript com 0 achados, gate aprovado e execução nativa/Semgrep concluída (`b4b1e706`).
+- O botão e a reconexão estão servidos no dashboard atual. A ativação do acompanhamento local em segundo plano foi bloqueada pela revisão automática da ferramenta. O usuário pode ativá-lo com dois cliques em `iniciar.bat`; a porta e o diretório de histórico atuais já estão configurados localmente.
+- Registro desta rodada: [reliability-validation.json](quality/reliability-validation.json). Instruções e limites: [CONEXAO.md](CONEXAO.md). Docker, GitHub e inferências de IA não foram repetidos nesta mudança de conectividade.
 
 Rechecagem local em 18/10/2026: suíte Python, scripts JavaScript, benchmark,
 smoke da API e inferências reais de triagem/remediação via Ollama. Depois foi
@@ -21,6 +38,21 @@ persistência da fila abaixo são evidências da execução anterior, registrada
 | Fila — 17/10 | Persistência, claim concorrente, lease expirado, falha e limpeza de payload testados |
 | Ollama no Docker — 17/10 | Inferência real via host.docker.internal, risco externo confirmado como CRITICAL |
 | GitHub — 17/10 | Evidências e status próprios em GITHUB_CP3.md; main protegida e bloqueio de merge comprovado |
+
+## Rechecagem de correção — 19/10/2026
+
+| Verificação | Resultado |
+| --- | --- |
+| Pytest — 19/10 | 114 aprovados; 2 avisos de depreciação em dependências; nenhum erro de teste. |
+| Node — 19/10 | 4 testes do visualizador de diff aprovados; sintaxe do dashboard JavaScript validada. |
+| Iniciador — 19/10 | Detectou a instância atual em `8004` apesar da versão antiga em `8000`; 5 testes do iniciador aprovados. |
+| Apresentação — 19/10 | Página `200` local; as 5 capturas são embutidas no HTML e carregam sem pedidos externos de imagem. |
+| Cloudflare protegido — 19/10 | Após o PIN, o dashboard carregou o histórico e indicou o Ollama disponível. Porém, `/api/v1/samples` voltou a ser redirecionado pelo Cloudflare Access; o scanner exibiu erro de rede e não iniciou uma nova varredura por esse túnel. |
+| Cloudflare temporário aberto — 19/10 | Túnel sem PIN para `8004`: `/health`, status Ollama e `/api/v1/samples` responderam. Pela interface, a amostra vulnerável gerou 9 achados/bloqueado (`f7023e6a`); a corrigida gerou 0/aprovado (`ec8e6209`). Ollama `llama3.2:3b` gerou remediação real; a análise estática da sugestão retornou 0 achados (`57998459`). Nenhuma dessas execuções teve erro de processamento. |
+| Scanner — 19/10 | Amostra JavaScript vulnerável: 3 achados e gate bloqueado; versão corrigida: 0 achados e gate aprovado. |
+| IA — 19/10 | Revisão semântica real e remediação via Ollama `llama3.2:3b`; sugestão Python validada com 0 achados, sem fallback. |
+| Patches JavaScript — 19/10 | Testes cobrem rejeição de identificador inventado, exigência de validação antes de `execFile`, ausência de troca genérica de `eval()` por `JSON.parse()` e segredo de ambiente com falha explícita se ausente. |
+| Varredura completa local — 19/10 | Na instância local `8004`, amostra multilíngue: 8 arquivos, 47 achados, gate bloqueado; demonstração corrigida: 3 arquivos, 0 achados, gate aprovado. Nenhum erro de processamento. |
 
 ## Evidências adicionais de inferência — 17/10
 
@@ -80,3 +112,21 @@ medição interna delimitada, não uma avaliação externa da segurança de qual
 A cópia pública passou no CI. Proteção de main aplicada inclusive a administradores,
 com Security Gate e Docker smoke obrigatórios. PR #1: FAILURE/BLOCKED; PR #2:
 SUCCESS/CLEAN. A consulta e os links estão em GITHUB_CP3.md e github-protection.json.
+
+
+## Evolução de cobertura — 19/10/2026
+
+- 43 IDs de regras nativas: Python 18, JavaScript/TypeScript 13 e Java 12.
+- Corpus ampliado: 320 casos/124 controles seguros,200 ocorrências positivas esperadas, sem FP/FN nesta base curada; cinco repetições. Ver BENCHMARK.md e o hash do corpus.
+- OWASP BenchmarkJava 1.2: 2.740 casos completos, resultados e falhas por CWE em quality/owasp-native-results.{json,md}; o score externo revela limitações substanciais de precisão/recall. O snapshot anterior é preservado.
+- Motores reais instalados em ambiente independente: Bandit 1.9.4 e Semgrep CE 1.181.0, com 9 regras Semgrep locais versionadas.
+- Teste pelo túnel público, com fila/worker: três arquivos vulneráveis (Java, Python, JS),4 achados após deduplicação conservadora e gate bloqueado; três arquivos parametrizados,0 achados e gate aprovado. Os três motores concluíram sem erro. Cada execução foi salva de fato; não são contadores simulados.
+- Ollama real llama3.2:3b: geração de patch SQL MySQL concluída em 58,8s, preservando callback/resposta e parâmetros?, com validador estático aprovado. A primeira revisão semântica excedeu o tempo; após limitar o orçamento da revisão, uma chamada real concluiu em 62,7s. Ambos os resultados estão registrados em quality/live-validation.json.
+- Ambiente durante a análise de lentidão: modelo em CPU, sem VRAM e cerca de 0,6GiB livres de RAM. Isso limita latência/estabilidade; nenhum programa do usuário foi encerrado para recuperar memória.
+- UI conferida no navegador em 1600x1000, sem overflow horizontal ou erros de console nas telas alteradas. Evidência combinada nativo/Semgrep e fluxo Python local foram exibidos.
+- SARIF validado contra cópia oficial do esquema OASIS 2.1.0; 4 testes Node do diff aprovados. Typecheck, testes de aplicações submetidas, equivalência funcional e isolamento por OS são explicitamente não executados no gate de patches.
+- A versão atual roda em 127.0.0.1:8001 com histórico/fila próprios em data/coverage-v3. O launcher foi validado para encontrar essa instância e não reutilizar o motor anterior da porta 8000. O túnel temporário aponta para 8001.
+
+O diagnóstico, as funcionalidades parciais e as prioridades estão em [EVOLUCAO_SAST.md](EVOLUCAO_SAST.md). Esta evolução não declara atendimento integral a todos os itens do plano de arquitetura nem cobertura universal.
+
+Suíte final desta evolução: **504 testes Python aprovados**, incluindo a integração real com os motores opcionais, e **4 testes Node aprovados**. Após o último ajuste de exclusão dos diretórios locais tmp/graphify-out, os 37 testes relevantes de API/workspace/orquestração passaram; a integração opcional já havia sido executada na suíte completa.

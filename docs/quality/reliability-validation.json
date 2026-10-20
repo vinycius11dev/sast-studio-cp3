@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-19",
+  "scope": "API reconnection and local service recovery",
+  "python_suite": {"passed": 516, "skipped": 1, "warnings": 2, "duration_seconds": 21.19, "real_supervisor_test_enabled": true},
+  "javascript_suite": {"passed": 13},
+  "real_api_recovery": {
+    "isolated_port_and_data": true,
+    "terminated_owned_test_process": true,
+    "replacement_pid_changed": true,
+    "same_port": true,
+    "saved_scan_accessible_after_restart": true
+  },
+  "browser_validation": {
+    "url": "https://tub-sim-shannon-tried.trycloudflare.com",
+    "viewport": "1600x1000",
+    "offline_banner_displayed": true,
+    "editor_preserved_after_reconnect": true,
+    "horizontal_overflow": false,
+    "injected_502_during_job_poll": true,
+    "scan_completed_without_resubmission": true,
+    "scan_id_prefix": "b4b1e706",
+    "scanned_files": 1,
+    "findings": 0,
+    "gate": "passed",
+    "native": "completed",
+    "semgrep": "completed",
+    "bandit": "not_applicable_to_javascript"
+  },
+  "deployment": {
+    "frontend_served_on_current_link": true,
+    "supervisor_background_activation": "blocked_by_automatic_tool_review",
+    "manual_activation": "iniciar.bat",
+    "current_port_and_history_directory_configured_locally": true
+  },
+  "limits": [
+    "Temporary Cloudflare tunnels do not guarantee uptime and replacement tunnels can change the URL.",
+    "The web button cannot start a powered-off host or a stopped local supervisor.",
+    "Healthy Ollama catalog responses do not guarantee inference quality or inference latency.",
+    "No Docker, GitHub pipeline or new AI inference was rerun for this connectivity change."
+  ]
+}

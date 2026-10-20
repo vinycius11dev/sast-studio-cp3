@@ -1,0 +1,194 @@
+{
+  "url": "https://tub-sim-shannon-tried.trycloudflare.com",
+  "scans": [
+    {
+      "scan_id": "10daa660fb69428da5b2dfaac1ad31b0",
+      "project_name": "Validação real - SQL vulnerável nas três linguagens",
+      "scanned_files_count": 3,
+      "total_findings": 4,
+      "security_gate": {
+        "threshold": "HIGH",
+        "status": "blocked",
+        "blocking_findings": 3,
+        "reason": "3 achado(s) com severidade HIGH ou superior."
+      },
+      "engine_runs": [
+        {
+          "engine": "native",
+          "status": "completed",
+          "version": "3.1.0",
+          "duration_ms": 24.23,
+          "findings_count": 3,
+          "files_count": 3,
+          "errors": []
+        },
+        {
+          "engine": "bandit",
+          "status": "completed",
+          "version": "1.9.4",
+          "duration_ms": 1750.8,
+          "findings_count": 1,
+          "files_count": 1,
+          "errors": []
+        },
+        {
+          "engine": "semgrep",
+          "status": "completed",
+          "version": "1.181.0",
+          "duration_ms": 11505.2,
+          "findings_count": 3,
+          "files_count": 3,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "scan_id": "40cfcd970ab4424bb09f18737b1d8409",
+      "project_name": "Validação real - SQL parametrizado nas três linguagens",
+      "scanned_files_count": 3,
+      "total_findings": 0,
+      "security_gate": {
+        "threshold": "HIGH",
+        "status": "passed",
+        "blocking_findings": 0,
+        "reason": "Nenhum achado com severidade HIGH ou superior nas regras aplicadas."
+      },
+      "engine_runs": [
+        {
+          "engine": "native",
+          "status": "completed",
+          "version": "3.1.0",
+          "duration_ms": 3.52,
+          "findings_count": 0,
+          "files_count": 3,
+          "errors": []
+        },
+        {
+          "engine": "bandit",
+          "status": "completed",
+          "version": "1.9.4",
+          "duration_ms": 3071.39,
+          "findings_count": 0,
+          "files_count": 1,
+          "errors": []
+        },
+        {
+          "engine": "semgrep",
+          "status": "completed",
+          "version": "1.181.0",
+          "duration_ms": 6630.81,
+          "findings_count": 0,
+          "files_count": 3,
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "semantic_review": {
+    "provider": "ollama",
+    "classification": "needs_review",
+    "model_used": "Ollama (llama3.2:3b) + validação local",
+    "confidence": "low",
+    "fallback_reason": null,
+    "duration_seconds": 62.7
+  },
+  "remediation": {
+    "provider": "ollama",
+    "model_used": "Ollama (llama3.2:3b)",
+    "patch_scope": "file",
+    "fallback_reason": null,
+    "validation": {
+      "status": "passed",
+      "checks": [
+        {
+          "name": "temporary_workspace",
+          "status": "passed",
+          "detail": "Origem e proposta analisadas em diretório temporário dedicado e removido ao final; nenhum arquivo do projeto foi executado."
+        },
+        {
+          "name": "original_syntax",
+          "status": "passed",
+          "detail": "Arquivo original aceito pelo parser nativo."
+        },
+        {
+          "name": "proposed_syntax",
+          "status": "passed",
+          "detail": "Proposta aceita pelo parser nativo; parsing não equivale a compilação."
+        },
+        {
+          "name": "target_occurrence",
+          "status": "passed",
+          "detail": "Ocorrências de CWE-89: 1 → 0; a assinatura do alvo foi reduzida."
+        },
+        {
+          "name": "no_new_findings",
+          "status": "passed",
+          "detail": "Nenhum novo achado identificado pelos scanners nativos ao comparar regra, CWE e trecho sem posição de linha."
+        },
+        {
+          "name": "new_references",
+          "status": "passed",
+          "detail": "Nenhuma nova referência sem declaração reconhecida em comparação ao arquivo original; resolução de dependências não executada."
+        },
+        {
+          "name": "preserved_contracts",
+          "status": "passed",
+          "detail": "Assinaturas, rotas, retornos e contratos de callbacks/respostas reconhecidos foram preservados pela comparação estrutural."
+        },
+        {
+          "name": "sql_driver_parameters",
+          "status": "passed",
+          "detail": "Placeholders e valores separados são compatíveis com o driver identificado no arquivo (verificação estática)."
+        },
+        {
+          "name": "typecheck",
+          "status": "not_run",
+          "detail": "Typecheck/compilação não executados; não há confirmação de tipos, imports em runtime ou classpath Java."
+        },
+        {
+          "name": "application_tests",
+          "status": "not_run",
+          "detail": "Testes da aplicação e execução do código proposto não foram realizados."
+        },
+        {
+          "name": "os_sandbox",
+          "status": "not_run",
+          "detail": "Nenhum sandbox de sistema operacional foi criado ou utilizado."
+        },
+        {
+          "name": "behavioral_equivalence",
+          "status": "not_run",
+          "detail": "Equivalência funcional não é demonstrada por essas verificações estáticas; requer revisão e testes da aplicação."
+        }
+      ],
+      "limitations": [
+        "Validação estática não prova equivalência funcional nem ausência de vulnerabilidades.",
+        "Não foram executados código do usuário, aplicações, testes ou scripts de build.",
+        "Não foram executados typecheck, compilação ou resolução completa de dependências.",
+        "O diretório temporário não constitui sandbox do sistema operacional.",
+        "Referências externas já existentes são toleradas; inferência de contratos, fluxo e bibliotecas é parcial e local ao arquivo."
+      ],
+      "errors": []
+    }
+  },
+  "semantic_review_initial_attempt": {
+    "provider": "unavailable",
+    "model_used": "Validação local CWE-89 (Ollama não concluiu)",
+    "classification": "confirmed",
+    "confidence": "medium",
+    "fallback_reason": "timed out"
+  },
+  "verification": {
+    "pytest_suite_passed": 504,
+    "node_diff_tests_passed": 4,
+    "sarif_schema": "OASIS SARIF2.1.0",
+    "public_api_healthy": true,
+    "quality_report_current": true,
+    "active_engines": [
+      "native",
+      "bandit",
+      "semgrep"
+    ],
+    "url": "https://tub-sim-shannon-tried.trycloudflare.com"
+  }
+}

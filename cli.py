@@ -16,7 +16,7 @@ from engine.policy import evaluate_gate
 
 def cmd_rules(args):
     """Lista as regras ativas no motor SAST."""
-    engine = SASTEngine()
+    engine = SASTEngine(engines=getattr(args, "engines", None).split(",") if getattr(args, "engines", None) else None)
     rules = engine.list_rules()
     print("=" * 70)
     print("  REGRAS ATIVAS NO MOTOR SAST")
@@ -38,7 +38,7 @@ def cmd_scan(args):
         print(f"Erro: O caminho especificado não existe: {target_path}", file=sys.stderr)
         return 2
 
-    engine = SASTEngine()
+    engine = SASTEngine(engines=args.engines.split(",") if getattr(args, "engines", None) else None)
 
     if os.path.isdir(target_path):
         result = engine.scan_directory(target_path, recursive=not args.no_recursive)
@@ -139,6 +139,7 @@ def main():
     )
     scan_parser.add_argument("-o", "--output", help="Caminho para salvar o relatório em arquivo")
     scan_parser.add_argument("--no-color", action="store_true", help="Desativa cores no terminal")
+    scan_parser.add_argument("--engines", help="Motores: native ou native,bandit,semgrep. Prevalece sobre SAST_ENGINES.")
     scan_parser.add_argument(
         "--no-recursive",
         action="store_true",

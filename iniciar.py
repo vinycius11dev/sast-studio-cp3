@@ -23,11 +23,40 @@ def existing_server_status(address):
 
     try:
         with urllib.request.urlopen(address + "/apresentacao", timeout=2) as response:
-            return "ready" if response.status == 200 else "stale"
+            if response.status != 200:
+                return "stale"
+        with urllib.request.urlopen(address + "/api/v1/engines", timeout=8) as response:
+            engines = json.load(response).get("items", [])
+        return "ready" if any(item.get("engine") == "native" and item.get("version") == "3.1.0" for item in engines) else "stale"
     except urllib.error.HTTPError as error:
         return "stale" if error.code == 404 else "unavailable"
     except (OSError, ValueError):
         return "unavailable"
+
+
+def find_current_server(start_port=8000, end_port=8100):
+    """Find a running current SAST instance, including one using a fallback port."""
+    for port in range(start_port, end_port):
+        with socket.socket() as connection:
+            connection.settimeout(0.2)
+            if connection.connect_ex(("127.0.0.1", port)) != 0:
+                continue
+        address = f"http://127.0.0.1:{port}"
+        if existing_server_status(address) == "ready":
+            return port
+    return None
+
+
+def find_free_port(start_port=8000, end_port=8100):
+    """Return the first loopback port that can be bound by the launcher."""
+    for port in range(start_port, end_port):
+        with socket.socket() as connection:
+            try:
+                connection.bind(("127.0.0.1", port))
+            except OSError:
+                continue
+        return port
+    return None
 
 
 def main():
@@ -35,23 +64,30 @@ def main():
     parser.add_argument("--no-browser", action="store_true", help="Não abrir o navegador automaticamente")
     args = parser.parse_args()
     os.chdir(Path(__file__).resolve().parent)
-    address = "http://127.0.0.1:8000"
+    preferred_port = 8000
+    address = f"http://127.0.0.1:{preferred_port}"
     server_status = existing_server_status(address)
     if server_status == "ready":
         print(f"SAST Studio já está em execução: {address}/dashboard")
         if not args.no_browser:
             webbrowser.open(address + "/dashboard?v=studio-2")
         return 0
-    if server_status == "stale":
-        print("Uma versão antiga do SAST ainda está usando a porta 8000.")
-        print("Feche a janela do servidor antigo com Ctrl+C e execute iniciar.bat novamente.")
-        print("Se não encontrar essa janela, reinicie o computador antes de iniciar o SAST.")
-        print(f"A página atual de apresentação não existe nesse servidor: {address}/apresentacao")
+
+    running_port = find_current_server(preferred_port + 1)
+    if running_port is not None:
+        address = f"http://127.0.0.1:{running_port}"
+        print(f"SAST Studio já está em execução: {address}/dashboard")
+        if not args.no_browser:
+            webbrowser.open(address + "/dashboard?v=studio-2")
+        return 0
+
+    port = find_free_port(preferred_port)
+    if port is None:
+        print("Não encontrei uma porta livre entre 8000 e 8099. Feche outro serviço e tente novamente.")
         return 1
-    with socket.socket() as connection:
-        if connection.connect_ex(("127.0.0.1", 8000)) == 0:
-            print("A porta 8000 está sendo usada por outro serviço. Encerre esse serviço antes de iniciar.")
-            return 1
+    address = f"http://127.0.0.1:{port}"
+    if port != preferred_port:
+        print(f"A porta 8000 está ocupada. A versão atual será iniciada em {address}.")
     try:
         import uvicorn
         import fastapi
@@ -64,6 +100,10 @@ def main():
     except ImportError:
         print("Instale as dependências primeiro: python -m pip install -r requirements.txt")
         return 1
+    scanners = Path(__file__).resolve().parent / ".venv-scanners" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    if scanners.exists() and "SAST_ENGINES" not in os.environ:
+        os.environ["SAST_ENGINES"] = "native,bandit,semgrep"
+        print("Motores: nativo + Bandit + Semgrep CE (ambiente de scanners instalado).")
     print(f"SAST Studio: {address}/dashboard")
     print("Mantenha esta janela aberta durante a apresentação. Ctrl+C encerra o servidor.")
     print("Abra o aplicativo Ollama para utilizar o modelo local nas remediações.")
@@ -71,7 +111,7 @@ def main():
         browser = threading.Timer(1.5, lambda: webbrowser.open(address + "/dashboard?v=studio-2"))
         browser.daemon = True
         browser.start()
-    uvicorn.run("api.main:app", host="127.0.0.1", port=8000)
+    uvicorn.run("api.main:app", host="127.0.0.1", port=port)
     return 0
 
 

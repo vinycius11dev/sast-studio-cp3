@@ -6,6 +6,7 @@ from .secrets_rule import HardcodedSecretsRule
 from .command_inj_rule import CommandInjectionRule
 from .taint_rule import TaintAnalysisRule
 from .ssrf_rule import ServerSideRequestForgeryRule
+from .python_security_rule import PythonSecurityRule
 
 DEFAULT_RULES: List[Type[BaseRule]] = [
     DangerousEvalRule,
@@ -13,6 +14,7 @@ DEFAULT_RULES: List[Type[BaseRule]] = [
     CommandInjectionRule,
     TaintAnalysisRule,
     ServerSideRequestForgeryRule,
+    PythonSecurityRule,
 ]
 
 __all__ = [
@@ -22,5 +24,6 @@ __all__ = [
     "CommandInjectionRule",
     "TaintAnalysisRule",
     "ServerSideRequestForgeryRule",
+    "PythonSecurityRule",
     "DEFAULT_RULES",
 ]

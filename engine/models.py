@@ -12,6 +12,34 @@ class Severity(str, Enum):
     INFO = "INFO"
 
 
+class FindingEvidence(BaseModel):
+    engine: str
+    rule_id: str
+    severity: Severity
+    message: str
+    confidence: Literal["high", "medium", "low"] = "medium"
+    line_number: int
+    column_number: int = 0
+
+
+class DataFlowStep(BaseModel):
+    role: Literal["source", "propagation", "sink"]
+    file_path: str
+    line_number: int
+    column_number: int = 0
+    code_snippet: str
+
+
+class EngineRun(BaseModel):
+    engine: str
+    status: Literal["completed", "skipped", "unavailable", "error", "timeout"]
+    version: Optional[str] = None
+    duration_ms: float = 0
+    findings_count: int = 0
+    files_count: int = 0
+    errors: List[str] = Field(default_factory=list)
+
+
 class Finding(BaseModel):
     rule_id: str = Field(..., description="Identificador único da regra (ex: PY-R001)")
     rule_name: str = Field(..., description="Nome descritivo da regra")
@@ -24,6 +52,13 @@ class Finding(BaseModel):
     code_snippet: str = Field(..., description="Trecho de código com a violação")
     remediation_advice: str = Field(..., description="Orientação de como corrigir a falha de forma segura")
     owasp: Optional[OwaspCategory] = Field(default=None, description="Categoria OWASP Top 10:2025 associada ao CWE")
+    engines: List[str] = Field(default_factory=lambda: ["native"])
+    evidence: List[FindingEvidence] = Field(default_factory=list)
+    confidence: Literal["high", "medium", "low"] = "medium"
+    analysis_scope: Literal["pattern", "local_dataflow", "external"] = "pattern"
+    data_flow: List[DataFlowStep] = Field(default_factory=list)
+    limitations: List[str] = Field(default_factory=list)
+    fingerprint: Optional[str] = None
 
     @model_validator(mode="after")
     def map_owasp_category(self):
@@ -80,6 +115,11 @@ class SemanticReview(BaseModel):
     provider: Literal["ollama", "unavailable"]
     model_used: str
     fallback_reason: Optional[str] = None
+    exploit_conditions: List[str] = Field(default_factory=list)
+    remediation_recommendation: str = ""
+    analysis_limitations: List[str] = Field(default_factory=list)
+    model_decision: Optional[dict] = None
+    validation_adjustments: List[str] = Field(default_factory=list)
 
 
 class ScanResult(BaseModel):
@@ -90,6 +130,7 @@ class ScanResult(BaseModel):
     files: List[ScannedFile] = Field(default_factory=list)
     ignored_files_count: int = 0
     semantic_reviews: List[SemanticReview] = Field(default_factory=list)
+    engine_runs: List[EngineRun] = Field(default_factory=list)
     target_path: str = Field(..., description="Caminho ou identificador do alvo analisado")
     scanned_files_count: int = Field(..., description="Quantidade de arquivos analisados com sucesso")
     total_findings: int = Field(..., description="Total de vulnerabilidades encontradas")

@@ -5,7 +5,7 @@ from .base_rule import BaseRule
 
 # Padrões de nomes de variáveis suspeitas de conter credenciais
 SECRET_NAME_PATTERN = re.compile(
-    r"(password|passwd|pwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|jwt[_-]?secret|private[_-]?key|db[_-]?pass)",
+    r"(password|passwd|pwd|secret|api[_-]?key|(?:^|_)token(?:$|_)|(?:access|auth|api|admin)[_-]?token|jwt[_-]?secret|private[_-]?key|db[_-]?pass)",
     re.IGNORECASE,
 )
 
@@ -55,6 +55,8 @@ class HardcodedSecretsRule(BaseRule):
                 var_name = target.id
             elif isinstance(target, ast.Attribute):
                 var_name = target.attr
+            elif isinstance(target, ast.Subscript) and isinstance(target.slice, ast.Constant) and isinstance(target.slice.value, str):
+                var_name = target.slice.value
 
             if var_name and SECRET_NAME_PATTERN.search(var_name):
                 if self._is_suspicious_literal(node.value):
@@ -64,6 +66,12 @@ class HardcodedSecretsRule(BaseRule):
                         remediation=self.remediation,
                     )
 
+        self.generic_visit(node)
+
+    def visit_Call(self, node: ast.Call) -> None:
+        for keyword in node.keywords:
+            if keyword.arg and SECRET_NAME_PATTERN.search(keyword.arg) and self._is_suspicious_literal(keyword.value):
+                self.add_finding(node=node, message=f"Argumento sensível '{keyword.arg}' contém credencial hardcoded.")
         self.generic_visit(node)
 
     def visit_AnnAssign(self, node: ast.AnnAssign) -> None:

@@ -1,113 +1,416 @@
 {
-  "scope": "Corpus curado do projeto; métricas não representam todos os códigos ou vulnerabilidades do mercado.",
-  "unit": "par (caso, regra)",
-  "case_count": 53,
-  "safe_cases": 24,
-  "true_positives": 30,
+  "scope": "Corpus curado do projeto; métricas não representam todos os códigos ou vulnerabilidades do mercado nem a qualidade do LLM.",
+  "unit": "ocorrência de regra por caso; localização exata quando rotulada",
+  "case_count": 320,
+  "safe_cases": 124,
+  "generated_at": "2026-10-19T22:22:12.828473+00:00",
+  "engine": "native",
+  "detection_fingerprint": "1e2e1cab978378626788b4dcc2c0fea53b21aeca9b9b93c99250200ca4527d28",
+  "corpus_sha256": "aa2c4ec6771d91715acbea8259148abaa0b79bae9a96d5a734a5fbe2c8003218",
+  "rule_count": 43,
+  "rules_exercised": 43,
+  "unexercised_rules": [],
+  "by_language": {
+    "java": {
+      "true_positives": 64,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 42,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "javascript": {
+      "true_positives": 64,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 43,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "python": {
+      "true_positives": 72,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 39,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    }
+  },
+  "by_cwe": {
+    "CWE-1336": {
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-16": {
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-22": {
+      "true_positives": 17,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-295": {
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-327": {
+      "true_positives": 12,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-328": {
+      "true_positives": 5,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-338": {
+      "true_positives": 12,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-377": {
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-489": {
+      "true_positives": 3,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-502": {
+      "true_positives": 12,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-532": {
+      "true_positives": 10,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-611": {
+      "true_positives": 9,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-78": {
+      "true_positives": 20,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-79": {
+      "true_positives": 10,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-798": {
+      "true_positives": 12,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-89": {
+      "true_positives": 40,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-918": {
+      "true_positives": 15,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    },
+    "CWE-95": {
+      "true_positives": 12,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    }
+  },
+  "by_engine": {
+    "native": {
+      "true_positives": 200,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "true_negatives": 124,
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": null
+    }
+  },
+  "true_positives": 200,
   "false_positives": 0,
   "false_negatives": 0,
   "precision": 1.0,
   "recall": 1.0,
   "safe_case_false_positive_rate": 0.0,
   "exact_case_accuracy": 1.0,
-  "median_ms": 0.1092,
-  "p95_ms": 0.3314,
+  "median_ms": 0.4606,
+  "p95_ms": 1.4504,
   "repeats": 5,
   "results": [
     {
-      "id": "py-eval",
+      "id": "cases/py-eval",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R001"
       ],
       "detected": [
         "PY-R001"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R001",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1582
+      "median_ms": 0.3563
     },
     {
-      "id": "py-exec",
+      "id": "cases/py-exec",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R001"
       ],
       "detected": [
         "PY-R001"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R001",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1677
+      "median_ms": 0.3346
     },
     {
-      "id": "py-secret",
+      "id": "cases/py-secret",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R002"
       ],
       "detected": [
         "PY-R002"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R002",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.3087
+      "median_ms": 0.3165
     },
     {
-      "id": "py-command",
+      "id": "cases/py-command",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R003"
       ],
       "detected": [
         "PY-R003"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R003",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.185
+      "median_ms": 0.3768
     },
     {
-      "id": "py-shell",
+      "id": "cases/py-shell",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R003"
       ],
       "detected": [
         "PY-R003"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R003",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1835
+      "median_ms": 0.4415
     },
     {
-      "id": "py-sql-flow",
+      "id": "cases/py-sql-flow",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-T001"
       ],
       "detected": [
         "PY-T001"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.2928
+      "median_ms": 0.7702
     },
     {
-      "id": "py-path-flow",
+      "id": "cases/py-path-flow",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-T002"
       ],
       "detected": [
         "PY-T002"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1727
+      "median_ms": 0.5844
     },
     {
-      "id": "py-ssrf-flow",
+      "id": "cases/py-ssrf-flow",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R004",
         "PY-T003"
@@ -116,498 +419,7102 @@
         "PY-R004",
         "PY-T003"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R004",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        },
+        {
+          "rule_id": "PY-T003",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.2043
+      "median_ms": 0.7832
     },
     {
-      "id": "py-http-url",
+      "id": "cases/py-http-url",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R004"
       ],
       "detected": [
         "PY-R004"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R004",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1203
+      "median_ms": 0.4307
     },
     {
-      "id": "py-http-keyword",
+      "id": "cases/py-http-keyword",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R004"
       ],
       "detected": [
         "PY-R004"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R004",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1308
+      "median_ms": 0.4768
     },
     {
-      "id": "py-request-method",
+      "id": "cases/py-request-method",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-R004"
       ],
       "detected": [
         "PY-R004"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R004",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1876
+      "median_ms": 0.4089
     },
     {
-      "id": "py-sanitizer-name-collision",
+      "id": "cases/py-sanitizer-name-collision",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-T001"
       ],
       "detected": [
         "PY-T001"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.2754
+      "median_ms": 0.8262
     },
     {
-      "id": "py-html-escape-is-not-sql-binding",
+      "id": "cases/py-html-escape-is-not-sql-binding",
       "filename": "demo.py",
+      "language": "python",
       "expected": [
         "PY-T001"
       ],
       "detected": [
         "PY-T001"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.3288
+      "median_ms": 1.4833
     },
     {
-      "id": "py-string-example",
+      "id": "cases/py-string-example",
       "filename": "safe.py",
+      "language": "python",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0802
+      "median_ms": 0.2167
     },
     {
-      "id": "py-comment-example",
+      "id": "cases/py-comment-example",
       "filename": "safe.py",
+      "language": "python",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0757
+      "median_ms": 0.1962
     },
     {
-      "id": "py-json",
+      "id": "cases/py-json",
       "filename": "safe.py",
+      "language": "python",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1725
+      "median_ms": 0.3687
     },
     {
-      "id": "py-secret-env",
+      "id": "cases/py-secret-env",
       "filename": "safe.py",
+      "language": "python",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7968
+    },
+    {
+      "id": "cases/py-argv-array",
+      "filename": "safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4949
+    },
+    {
+      "id": "cases/py-bound-sql",
+      "filename": "safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5291
+    },
+    {
+      "id": "cases/py-int-sanitizer",
+      "filename": "safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7036
+    },
+    {
+      "id": "cases/py-scope-isolation",
+      "filename": "safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3818
+    },
+    {
+      "id": "cases/py-static-url-variable",
+      "filename": "safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4648
+    },
+    {
+      "id": "cases/js-eval",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R001",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4255
+    },
+    {
+      "id": "cases/js-function-constructor",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R001",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4238
+    },
+    {
+      "id": "cases/js-secret",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R002"
+      ],
+      "detected": [
+        "JS-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R002",
+          "line_number": 1,
+          "column_number": 6,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4966
+    },
+    {
+      "id": "cases/js-command",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R003",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3403
+    },
+    {
+      "id": "cases/js-shell-option",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R003",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3891
+    },
+    {
+      "id": "cases/js-dom",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R004"
+      ],
+      "detected": [
+        "JS-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R004",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3018
+    },
+    {
+      "id": "cases/js-sql-template",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.37
+    },
+    {
+      "id": "cases/js-sql-multiline",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3588
+    },
+    {
+      "id": "cases/js-ssrf",
+      "filename": "demo.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R006"
+      ],
+      "detected": [
+        "JS-R006"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R006",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3359
+    },
+    {
+      "id": "cases/ts-typed-secret",
+      "filename": "demo.ts",
+      "language": "javascript",
+      "expected": [
+        "JS-R002"
+      ],
+      "detected": [
+        "JS-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R002",
+          "line_number": 1,
+          "column_number": 6,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2908
+    },
+    {
+      "id": "cases/js-string-example",
+      "filename": "safe.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0995
+    },
+    {
+      "id": "cases/js-comment-example",
+      "filename": "safe.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0991
+    },
+    {
+      "id": "cases/js-json",
+      "filename": "safe.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1719
+    },
+    {
+      "id": "cases/js-dom-text",
+      "filename": "safe.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1172
+    },
+    {
+      "id": "cases/js-bound-sql",
+      "filename": "safe.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1436
+    },
+    {
+      "id": "cases/js-static-sql-concat",
+      "filename": "safe.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1469
+    },
+    {
+      "id": "cases/js-static-url",
+      "filename": "safe.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1795
+    },
+    {
+      "id": "cases/tsx-safe-markup",
+      "filename": "safe.tsx",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1566
+    },
+    {
+      "id": "cases/java-sql",
+      "filename": "Demo.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 1,
+          "column_number": 26,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.7139
+    },
+    {
+      "id": "cases/java-secret",
+      "filename": "Demo.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R002"
+      ],
+      "detected": [
+        "JAVA-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R002",
+          "line_number": 1,
+          "column_number": 20,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9902
+    },
+    {
+      "id": "cases/java-command",
+      "filename": "Demo.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 1,
+          "column_number": 26,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.9821
+    },
+    {
+      "id": "cases/java-deserialize",
+      "filename": "Demo.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R004"
+      ],
+      "detected": [
+        "JAVA-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R004",
+          "line_number": 1,
+          "column_number": 26,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9148
+    },
+    {
+      "id": "cases/java-path",
+      "filename": "Demo.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R005"
+      ],
+      "detected": [
+        "JAVA-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R005",
+          "line_number": 1,
+          "column_number": 26,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.8225
+    },
+    {
+      "id": "cases/java-ssrf",
+      "filename": "Demo.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R006"
+      ],
+      "detected": [
+        "JAVA-R006"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R006",
+          "line_number": 1,
+          "column_number": 26,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4276
+    },
+    {
+      "id": "cases/java-comment-example",
+      "filename": "Safe.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.0972
+    },
+    {
+      "id": "cases/java-string-example",
+      "filename": "Safe.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.142
+    },
+    {
+      "id": "cases/java-secret-env",
+      "filename": "Safe.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2289
+    },
+    {
+      "id": "cases/java-bound-sql",
+      "filename": "Safe.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9526
+    },
+    {
+      "id": "cases/java-command-array",
+      "filename": "Safe.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1721
+    },
+    {
+      "id": "cases/java-static-file",
+      "filename": "Safe.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1397
+    },
+    {
+      "id": "cases/java-static-url",
+      "filename": "Safe.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1331
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-concat",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5157
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-variable-alias",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 6
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 6,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.748
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-format",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 5,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6449
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-formatted",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5498
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-stringbuilder",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 6,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.3395
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-compound-assignment",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 6,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7045
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-prepared-but-concatenated",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.45
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-raw-dynamic-query",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4005
+    },
+    {
+      "id": "coverage_java/java-coverage-jpa-native-query",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4573
+    },
+    {
+      "id": "coverage_java/java-coverage-jpa-jpql",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4613
+    },
+    {
+      "id": "coverage_java/java-coverage-spring-jdbc-template",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5451
+    },
+    {
+      "id": "coverage_java/java-coverage-spring-named-template",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5027
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-bound-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.632
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-template-bound-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3039
+    },
+    {
+      "id": "coverage_java/java-coverage-jpa-bound-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2939
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-literal-concat-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3771
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-reassignment-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5773
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-functions-isolated",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3459
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-block-scope",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 5,
+          "column_number": 30,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9467
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-fields-class-isolated",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3681
+    },
+    {
+      "id": "coverage_java/java-coverage-secret-literal",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R002"
+      ],
+      "detected": [
+        "JAVA-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R002",
+          "line_number": 2,
+          "column_number": 28,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3279
+    },
+    {
+      "id": "coverage_java/java-coverage-secret-assignment",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R002"
+      ],
+      "detected": [
+        "JAVA-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R002",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4075
+    },
+    {
+      "id": "coverage_java/java-coverage-secret-env-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2475
+    },
+    {
+      "id": "coverage_java/java-coverage-secret-label-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3884
+    },
+    {
+      "id": "coverage_java/java-coverage-runtime-dynamic",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5268
+    },
+    {
+      "id": "coverage_java/java-coverage-runtime-alias",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 4,
+          "column_number": 38,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.624
+    },
+    {
+      "id": "coverage_java/java-coverage-runtime-literal-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2697
+    },
+    {
+      "id": "coverage_java/java-coverage-processbuilder-shell",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5048
+    },
+    {
+      "id": "coverage_java/java-coverage-processbuilder-dynamic-executable",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4854
+    },
+    {
+      "id": "coverage_java/java-coverage-processbuilder-fixed-executable-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2552
+    },
+    {
+      "id": "coverage_java/java-coverage-deserialize-objectstream",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R004"
+      ],
+      "detected": [
+        "JAVA-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R004",
+          "line_number": 4,
+          "column_number": 52,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7043
+    },
+    {
+      "id": "coverage_java/java-coverage-deserialize-xml-decoder",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R004"
+      ],
+      "detected": [
+        "JAVA-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R004",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4037
+    },
+    {
+      "id": "coverage_java/java-coverage-deserialize-filter-allowlist-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6398
+    },
+    {
+      "id": "coverage_java/java-coverage-deserialize-filter-allow-all-unsafe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R004"
+      ],
+      "detected": [
+        "JAVA-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R004",
+          "line_number": 4,
+          "column_number": 121,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.8784
+    },
+    {
+      "id": "coverage_java/java-coverage-readobject-unrelated-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2496
+    },
+    {
+      "id": "coverage_java/java-coverage-path-file-inputstream",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R005"
+      ],
+      "detected": [
+        "JAVA-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R005",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4436
+    },
+    {
+      "id": "coverage_java/java-coverage-path-file-parent",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R005"
+      ],
+      "detected": [
+        "JAVA-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R005",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5369
+    },
+    {
+      "id": "coverage_java/java-coverage-path-nio",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R005"
+      ],
+      "detected": [
+        "JAVA-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R005",
+          "line_number": 4,
+          "column_number": 44,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7016
+    },
+    {
+      "id": "coverage_java/java-coverage-path-static-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3358
+    },
+    {
+      "id": "coverage_java/java-coverage-path-normalize-alone-unsafe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R005"
+      ],
+      "detected": [
+        "JAVA-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R005",
+          "line_number": 4,
+          "column_number": 78,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.0609
+    },
+    {
+      "id": "coverage_java/java-coverage-path-component-guard-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 5.1547
+    },
+    {
+      "id": "coverage_java/java-coverage-path-check-without-reject-unsafe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R005"
+      ],
+      "detected": [
+        "JAVA-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R005",
+          "line_number": 4,
+          "column_number": 130,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 2.7775
+    },
+    {
+      "id": "coverage_java/java-coverage-ssrf-url",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R006"
+      ],
+      "detected": [
+        "JAVA-R006"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R006",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5414
+    },
+    {
+      "id": "coverage_java/java-coverage-ssrf-url-alias",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R006"
+      ],
+      "detected": [
+        "JAVA-R006"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R006",
+          "line_number": 4,
+          "column_number": 37,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6048
+    },
+    {
+      "id": "coverage_java/java-coverage-ssrf-resttemplate",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R006"
+      ],
+      "detected": [
+        "JAVA-R006"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R006",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5858
+    },
+    {
+      "id": "coverage_java/java-coverage-ssrf-httpclient",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R006"
+      ],
+      "detected": [
+        "JAVA-R006"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R006",
+          "line_number": 4,
+          "column_number": 77,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.0665
+    },
+    {
+      "id": "coverage_java/java-coverage-ssrf-httpclient-static-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9408
+    },
+    {
+      "id": "coverage_java/java-coverage-ssrf-static-url-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1941
+    },
+    {
+      "id": "coverage_java/java-coverage-xss-servlet-direct",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R007"
+      ],
+      "detected": [
+        "JAVA-R007"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R007",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7416
+    },
+    {
+      "id": "coverage_java/java-coverage-xss-servlet-writer-alias",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R007"
+      ],
+      "detected": [
+        "JAVA-R007"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R007",
+          "line_number": 4,
+          "column_number": 75,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.322
+    },
+    {
+      "id": "coverage_java/java-coverage-xss-html-encoder-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3942
+    },
+    {
+      "id": "coverage_java/java-coverage-xss-static-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2586
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-documentbuilder",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R008"
+      ],
+      "detected": [
+        "JAVA-R008"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R008",
+          "line_number": 4,
+          "column_number": 105,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9375
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-doctype-disabled-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9212
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-wrong-flag-value",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R008"
+      ],
+      "detected": [
+        "JAVA-R008"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R008",
+          "line_number": 4,
+          "column_number": 182,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.2072
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-expansion-only-unsafe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R008"
+      ],
+      "detected": [
+        "JAVA-R008"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R008",
+          "line_number": 4,
+          "column_number": 141,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.092
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-external-flags-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.3607
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-sibling-factory-unsafe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R008"
+      ],
+      "detected": [
+        "JAVA-R008"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R008",
+          "line_number": 4,
+          "column_number": 250,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.2278
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-stax",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R008"
+      ],
+      "detected": [
+        "JAVA-R008"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R008",
+          "line_number": 4,
+          "column_number": 48,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7242
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-stax-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.174
+    },
+    {
+      "id": "coverage_java/java-coverage-weak-md5",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R009"
+      ],
+      "detected": [
+        "JAVA-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R009",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.346
+    },
+    {
+      "id": "coverage_java/java-coverage-weak-sha1-alias",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R009"
+      ],
+      "detected": [
+        "JAVA-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R009",
+          "line_number": 4,
+          "column_number": 26,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4517
+    },
+    {
+      "id": "coverage_java/java-coverage-weak-des",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R009"
+      ],
+      "detected": [
+        "JAVA-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R009",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3519
+    },
+    {
+      "id": "coverage_java/java-coverage-weak-aes-default-ecb",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R009"
+      ],
+      "detected": [
+        "JAVA-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R009",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3814
+    },
+    {
+      "id": "coverage_java/java-coverage-sha256-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2008
+    },
+    {
+      "id": "coverage_java/java-coverage-aes-gcm-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1917
+    },
+    {
+      "id": "coverage_java/java-coverage-weak-random-token",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R010"
+      ],
+      "detected": [
+        "JAVA-R010"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R010",
+          "line_number": 4,
+          "column_number": 56,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7058
+    },
+    {
+      "id": "coverage_java/java-coverage-weak-random-session",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R010"
+      ],
+      "detected": [
+        "JAVA-R010"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R010",
+          "line_number": 4,
+          "column_number": 32,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6096
+    },
+    {
+      "id": "coverage_java/java-coverage-weak-random-nextbytes",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R010"
+      ],
+      "detected": [
+        "JAVA-R010"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R010",
+          "line_number": 4,
+          "column_number": 60,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6006
+    },
+    {
+      "id": "coverage_java/java-coverage-secure-random-token-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5091
+    },
+    {
+      "id": "coverage_java/java-coverage-ordinary-random-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4299
+    },
+    {
+      "id": "coverage_java/java-coverage-log-password",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R011"
+      ],
+      "detected": [
+        "JAVA-R011"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R011",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4036
+    },
+    {
+      "id": "coverage_java/java-coverage-log-secret-alias",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R011"
+      ],
+      "detected": [
+        "JAVA-R011"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R011",
+          "line_number": 4,
+          "column_number": 23,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6531
+    },
+    {
+      "id": "coverage_java/java-coverage-log-system-error",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R011"
+      ],
+      "detected": [
+        "JAVA-R011"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R011",
+          "line_number": 4,
+          "column_number": 0,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3875
+    },
+    {
+      "id": "coverage_java/java-coverage-log-nonsensitive-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2569
+    },
+    {
+      "id": "coverage_java/java-coverage-comments-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1793
+    },
+    {
+      "id": "coverage_java/java-coverage-script-engine-eval",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R012"
+      ],
+      "detected": [
+        "JAVA-R012"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R012",
+          "line_number": 1,
+          "column_number": 59,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5144
+    },
+    {
+      "id": "coverage_java/java-coverage-groovy-eval",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R012"
+      ],
+      "detected": [
+        "JAVA-R012"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R012",
+          "line_number": 1,
+          "column_number": 38,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4508
+    },
+    {
+      "id": "coverage_java/java-coverage-script-literal-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3319
+    },
+    {
+      "id": "coverage_java/java-coverage-custom-eval-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6128
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-append-chain",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 1,
+          "column_number": 114,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.3949
+    },
+    {
+      "id": "coverage_java/java-coverage-jdbc-conditional-taint",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 1,
+          "column_number": 101,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7198
+    },
+    {
+      "id": "coverage_java/java-coverage-xxe-conditional-config",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R008"
+      ],
+      "detected": [
+        "JAVA-R008"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R008",
+          "line_number": 1,
+          "column_number": 253,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.2111
+    },
+    {
+      "id": "coverage_java/java-coverage-conditional-input-through-alias",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R001"
+      ],
+      "detected": [
+        "JAVA-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R001",
+          "line_number": 1,
+          "column_number": 112,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.8246
+    },
+    {
+      "id": "coverage_java/java-coverage-conditional-constant-through-alias-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9165
+    },
+    {
+      "id": "coverage_java/java-coverage-conditional-overwritten-alias-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6351
+    },
+    {
+      "id": "coverage_java/java-coverage-configured-shell-process",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 1,
+          "column_number": 78,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.1587
+    },
+    {
+      "id": "coverage_java/java-coverage-configured-shell-list-process",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 1,
+          "column_number": 182,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.9818
+    },
+    {
+      "id": "coverage_java/java-coverage-configured-fixed-list-process-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.1219
+    },
+    {
+      "id": "coverage_java/java-coverage-fixed-process-array-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4685
+    },
+    {
+      "id": "coverage_java/java-coverage-mutated-process-array",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 1,
+          "column_number": 90,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.8037
+    },
+    {
+      "id": "coverage_java/java-coverage-conditional-shell-executable",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [
+        "JAVA-R003"
+      ],
+      "detected": [
+        "JAVA-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JAVA-R003",
+          "line_number": 1,
+          "column_number": 175,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.6389
+    },
+    {
+      "id": "coverage_java/java-coverage-conditional-fixed-executable-safe",
+      "filename": "Sample.java",
+      "language": "java",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9024
+    },
+    {
+      "id": "coverage_javascript/js-eval",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R001",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2729
+    },
+    {
+      "id": "coverage_javascript/js-eval-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R001",
+          "line_number": 1,
+          "column_number": 18,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3481
+    },
+    {
+      "id": "coverage_javascript/js-eval-shadow",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2239
+    },
+    {
+      "id": "coverage_javascript/js-function-constructor",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R001",
+          "line_number": 1,
+          "column_number": 12,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4775
+    },
+    {
+      "id": "coverage_javascript/js-vm-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R001"
+      ],
+      "detected": [
+        "JS-R001"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R001",
+          "line_number": 1,
+          "column_number": 50,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4317
+    },
+    {
+      "id": "coverage_javascript/js-json-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1802
+    },
+    {
+      "id": "coverage_javascript/js-code-in-string",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1092
+    },
+    {
+      "id": "coverage_javascript/js-secret-object",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R002"
+      ],
+      "detected": [
+        "JS-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R002",
+          "line_number": 1,
+          "column_number": 17,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3358
+    },
+    {
+      "id": "coverage_javascript/js-secret-assignment",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R002"
+      ],
+      "detected": [
+        "JS-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R002",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2714
+    },
+    {
+      "id": "coverage_javascript/js-secret-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R002"
+      ],
+      "detected": [
+        "JS-R002"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R002",
+          "line_number": 1,
+          "column_number": 42,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3487
+    },
+    {
+      "id": "coverage_javascript/js-secret-env",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1763
+    },
+    {
+      "id": "coverage_javascript/js-secret-empty",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1008
+    },
+    {
+      "id": "coverage_javascript/js-command-esm-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R003",
+          "line_number": 1,
+          "column_number": 48,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4259
+    },
+    {
+      "id": "coverage_javascript/js-command-cjs-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R003",
+          "line_number": 1,
+          "column_number": 51,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6461
+    },
+    {
+      "id": "coverage_javascript/js-command-namespace",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R003",
+          "line_number": 1,
+          "column_number": 42,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4964
+    },
+    {
+      "id": "coverage_javascript/js-command-shell-options",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R003",
+          "line_number": 1,
+          "column_number": 62,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7179
+    },
+    {
+      "id": "coverage_javascript/js-command-arguments-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2991
+    },
+    {
+      "id": "coverage_javascript/js-command-constant-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2703
+    },
+    {
+      "id": "coverage_javascript/js-command-shadow-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
       "median_ms": 0.1733
     },
     {
-      "id": "py-argv-array",
-      "filename": "safe.py",
+      "id": "coverage_javascript/js-regex-exec-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1618
+      "median_ms": 0.1633
     },
     {
-      "id": "py-bound-sql",
-      "filename": "safe.py",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.2053
-    },
-    {
-      "id": "py-int-sanitizer",
-      "filename": "safe.py",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.358
-    },
-    {
-      "id": "py-scope-isolation",
-      "filename": "safe.py",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.2804
-    },
-    {
-      "id": "py-static-url-variable",
-      "filename": "safe.py",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.1638
-    },
-    {
-      "id": "js-eval",
-      "filename": "demo.js",
-      "expected": [
-        "JS-R001"
-      ],
-      "detected": [
-        "JS-R001"
-      ],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.081
-    },
-    {
-      "id": "js-function-constructor",
-      "filename": "demo.js",
-      "expected": [
-        "JS-R001"
-      ],
-      "detected": [
-        "JS-R001"
-      ],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0541
-    },
-    {
-      "id": "js-secret",
-      "filename": "demo.js",
-      "expected": [
-        "JS-R002"
-      ],
-      "detected": [
-        "JS-R002"
-      ],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.1242
-    },
-    {
-      "id": "js-command",
-      "filename": "demo.js",
-      "expected": [
-        "JS-R003"
-      ],
-      "detected": [
-        "JS-R003"
-      ],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0867
-    },
-    {
-      "id": "js-shell-option",
-      "filename": "demo.js",
-      "expected": [
-        "JS-R003"
-      ],
-      "detected": [
-        "JS-R003"
-      ],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0937
-    },
-    {
-      "id": "js-dom",
-      "filename": "demo.js",
+      "id": "coverage_javascript/js-xss-dom",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
         "JS-R004"
       ],
       "detected": [
         "JS-R004"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R004",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0627
+      "median_ms": 0.4121
     },
     {
-      "id": "js-sql-template",
-      "filename": "demo.js",
+      "id": "coverage_javascript/js-xss-express",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R004"
+      ],
+      "detected": [
+        "JS-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R004",
+          "line_number": 1,
+          "column_number": 28,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.8292
+    },
+    {
+      "id": "coverage_javascript/js-xss-adjacent",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R004"
+      ],
+      "detected": [
+        "JS-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R004",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3186
+    },
+    {
+      "id": "coverage_javascript/js-xss-constant-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2591
+    },
+    {
+      "id": "coverage_javascript/js-xss-sanitizer-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3195
+    },
+    {
+      "id": "coverage_javascript/js-xss-textcontent-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2109
+    },
+    {
+      "id": "coverage_javascript/js-sql-query",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
         "JS-R005"
       ],
       "detected": [
         "JS-R005"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0994
+      "median_ms": 0.4473
     },
     {
-      "id": "js-sql-multiline",
-      "filename": "demo.js",
+      "id": "coverage_javascript/js-sql-config",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
         "JS-R005"
       ],
       "detected": [
         "JS-R005"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 65,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0944
+      "median_ms": 0.5568
     },
     {
-      "id": "js-ssrf",
-      "filename": "demo.js",
+      "id": "coverage_javascript/js-sql-cjs-destructure",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 24,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6621
+    },
+    {
+      "id": "coverage_javascript/js-sql-bind",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 29,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5829
+    },
+    {
+      "id": "coverage_javascript/js-sql-augmented",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 62,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5549
+    },
+    {
+      "id": "coverage_javascript/js-sql-multiple",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005",
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005",
+        "JS-R005"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1
+        },
+        {
+          "rule_id": "JS-R005",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        },
+        {
+          "rule_id": "JS-R005",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7276
+    },
+    {
+      "id": "coverage_javascript/js-sql-direct-input",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3818
+    },
+    {
+      "id": "coverage_javascript/js-sql-placeholder-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.194
+    },
+    {
+      "id": "coverage_javascript/js-sql-config-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2484
+    },
+    {
+      "id": "coverage_javascript/js-sql-constant-concat-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1966
+    },
+    {
+      "id": "coverage_javascript/js-sql-block-shadow-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.235
+    },
+    {
+      "id": "coverage_javascript/js-sql-parameter-shadow-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3062
+    },
+    {
+      "id": "coverage_javascript/js-sql-later-assignment-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2294
+    },
+    {
+      "id": "coverage_javascript/js-sql-closure",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 48,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5162
+    },
+    {
+      "id": "coverage_javascript/js-ssrf-import-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
         "JS-R006"
       ],
       "detected": [
         "JS-R006"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R006",
+          "line_number": 1,
+          "column_number": 44,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0842
+      "median_ms": 0.366
     },
     {
-      "id": "ts-typed-secret",
-      "filename": "demo.ts",
+      "id": "coverage_javascript/js-ssrf-axios-config",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
-        "JS-R002"
+        "JS-R006"
       ],
       "detected": [
-        "JS-R002"
+        "JS-R006"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R006",
+          "line_number": 1,
+          "column_number": 34,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0983
+      "median_ms": 0.3874
     },
     {
-      "id": "js-string-example",
-      "filename": "safe.js",
+      "id": "coverage_javascript/js-ssrf-fetch-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0657
+      "median_ms": 0.1091
     },
     {
-      "id": "js-comment-example",
-      "filename": "safe.js",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.052
-    },
-    {
-      "id": "js-json",
-      "filename": "safe.js",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0815
-    },
-    {
-      "id": "js-dom-text",
-      "filename": "safe.js",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0405
-    },
-    {
-      "id": "js-bound-sql",
-      "filename": "safe.js",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.071
-    },
-    {
-      "id": "js-static-sql-concat",
-      "filename": "safe.js",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0611
-    },
-    {
-      "id": "js-static-url",
-      "filename": "safe.js",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0738
-    },
-    {
-      "id": "tsx-safe-markup",
-      "filename": "safe.tsx",
-      "expected": [],
-      "detected": [],
-      "errors": [],
-      "exact_match": true,
-      "median_ms": 0.0735
-    },
-    {
-      "id": "java-sql",
-      "filename": "Demo.java",
+      "id": "coverage_javascript/js-path-fs-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
-        "JAVA-R001"
+        "JS-R007"
       ],
       "detected": [
-        "JAVA-R001"
+        "JS-R007"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R007",
+          "line_number": 1,
+          "column_number": 51,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1506
+      "median_ms": 0.397
     },
     {
-      "id": "java-secret",
-      "filename": "Demo.java",
+      "id": "coverage_javascript/js-path-join",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
-        "JAVA-R002"
+        "JS-R007"
       ],
       "detected": [
-        "JAVA-R002"
+        "JS-R007"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R007",
+          "line_number": 1,
+          "column_number": 52,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0826
+      "median_ms": 0.927
     },
     {
-      "id": "java-command",
-      "filename": "Demo.java",
+      "id": "coverage_javascript/js-path-sendfile",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
-        "JAVA-R003"
+        "JS-R007"
       ],
       "detected": [
-        "JAVA-R003"
+        "JS-R007"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R007",
+          "line_number": 1,
+          "column_number": 33,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.112
+      "median_ms": 0.5433
     },
     {
-      "id": "java-deserialize",
-      "filename": "Demo.java",
+      "id": "coverage_javascript/js-path-constant-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2382
+    },
+    {
+      "id": "coverage_javascript/js-path-env-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2429
+    },
+    {
+      "id": "coverage_javascript/js-path-basename-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9463
+    },
+    {
+      "id": "coverage_javascript/js-deserialize",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
-        "JAVA-R004"
+        "JS-R008"
       ],
       "detected": [
-        "JAVA-R004"
+        "JS-R008"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R008",
+          "line_number": 1,
+          "column_number": 43,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.078
+      "median_ms": 0.9072
     },
     {
-      "id": "java-path",
-      "filename": "Demo.java",
+      "id": "coverage_javascript/js-deserialize-import",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
-        "JAVA-R005"
+        "JS-R008"
       ],
       "detected": [
-        "JAVA-R005"
+        "JS-R008"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R008",
+          "line_number": 1,
+          "column_number": 54,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1146
+      "median_ms": 0.5691
     },
     {
-      "id": "java-ssrf",
-      "filename": "Demo.java",
+      "id": "coverage_javascript/js-deserialize-yaml-full",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [
-        "JAVA-R006"
+        "JS-R008"
       ],
       "detected": [
-        "JAVA-R006"
+        "JS-R008"
       ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R008",
+          "line_number": 1,
+          "column_number": 31,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1217
+      "median_ms": 0.5547
     },
     {
-      "id": "java-comment-example",
-      "filename": "Safe.java",
+      "id": "coverage_javascript/js-deserialize-yaml-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0395
+      "median_ms": 0.2299
     },
     {
-      "id": "java-string-example",
-      "filename": "Safe.java",
-      "expected": [],
-      "detected": [],
+      "id": "coverage_javascript/js-hash-md5",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R009"
+      ],
+      "detected": [
+        "JS-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R009",
+          "line_number": 1,
+          "column_number": 48,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0682
+      "median_ms": 0.9179
     },
     {
-      "id": "java-secret-env",
-      "filename": "Safe.java",
-      "expected": [],
-      "detected": [],
+      "id": "coverage_javascript/js-hash-sha1-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R009"
+      ],
+      "detected": [
+        "JS-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R009",
+          "line_number": 1,
+          "column_number": 56,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0807
+      "median_ms": 0.4677
     },
     {
-      "id": "java-bound-sql",
-      "filename": "Safe.java",
-      "expected": [],
-      "detected": [],
+      "id": "coverage_javascript/js-hash-webcrypto",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R009"
+      ],
+      "detected": [
+        "JS-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R009",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.1357
+      "median_ms": 0.3404
     },
     {
-      "id": "java-command-array",
-      "filename": "Safe.java",
-      "expected": [],
-      "detected": [],
+      "id": "coverage_javascript/js-cipher-ecb",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R009"
+      ],
+      "detected": [
+        "JS-R009"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R009",
+          "line_number": 1,
+          "column_number": 32,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0776
+      "median_ms": 0.4628
     },
     {
-      "id": "java-static-file",
-      "filename": "Safe.java",
+      "id": "coverage_javascript/js-hash-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
       "expected": [],
       "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0688
+      "median_ms": 0.2964
     },
     {
-      "id": "java-static-url",
-      "filename": "Safe.java",
-      "expected": [],
-      "detected": [],
+      "id": "coverage_javascript/js-random-secret",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R010"
+      ],
+      "detected": [
+        "JS-R010"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R010",
+          "line_number": 1,
+          "column_number": 6,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
       "errors": [],
       "exact_match": true,
-      "median_ms": 0.0633
+      "median_ms": 0.388
+    },
+    {
+      "id": "coverage_javascript/js-random-alias",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R010"
+      ],
+      "detected": [
+        "JS-R010"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R010",
+          "line_number": 1,
+          "column_number": 29,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5109
+    },
+    {
+      "id": "coverage_javascript/js-random-return",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R010"
+      ],
+      "detected": [
+        "JS-R010"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R010",
+          "line_number": 1,
+          "column_number": 27,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4431
+    },
+    {
+      "id": "coverage_javascript/js-random-ui-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2562
+    },
+    {
+      "id": "coverage_javascript/js-random-crypto-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4282
+    },
+    {
+      "id": "coverage_javascript/js-sensitive-log",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R011"
+      ],
+      "detected": [
+        "JS-R011"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R011",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.31
+    },
+    {
+      "id": "coverage_javascript/js-sensitive-alias-log",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R011"
+      ],
+      "detected": [
+        "JS-R011"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R011",
+          "line_number": 1,
+          "column_number": 39,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3514
+    },
+    {
+      "id": "coverage_javascript/js-sensitive-bound-log",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R011"
+      ],
+      "detected": [
+        "JS-R011"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R011",
+          "line_number": 1,
+          "column_number": 35,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3823
+    },
+    {
+      "id": "coverage_javascript/js-log-label-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2095
+    },
+    {
+      "id": "coverage_javascript/js-log-redacted-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2469
+    },
+    {
+      "id": "coverage_javascript/js-express-cookie",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R012",
+        "JS-R012"
+      ],
+      "detected": [
+        "JS-R012",
+        "JS-R012"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R012",
+          "line_number": 1,
+          "column_number": 30,
+          "cwe": "CWE-16"
+        },
+        {
+          "rule_id": "JS-R012",
+          "line_number": 1,
+          "column_number": 44,
+          "cwe": "CWE-16"
+        }
+      ],
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7008
+    },
+    {
+      "id": "coverage_javascript/js-express-session",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R012"
+      ],
+      "detected": [
+        "JS-R012"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R012",
+          "line_number": 1,
+          "column_number": 65,
+          "cwe": "CWE-16"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5788
+    },
+    {
+      "id": "coverage_javascript/js-express-development",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R012"
+      ],
+      "detected": [
+        "JS-R012"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R012",
+          "line_number": 1,
+          "column_number": 55,
+          "cwe": "CWE-16"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4923
+    },
+    {
+      "id": "coverage_javascript/js-express-cookie-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2718
+    },
+    {
+      "id": "coverage_javascript/js-express-generic-object-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2042
+    },
+    {
+      "id": "coverage_javascript/js-tls-disabled",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R013"
+      ],
+      "detected": [
+        "JS-R013"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R013",
+          "line_number": 1,
+          "column_number": 59,
+          "cwe": "CWE-295"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4267
+    },
+    {
+      "id": "coverage_javascript/js-tls-env-disabled",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R013"
+      ],
+      "detected": [
+        "JS-R013"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R013",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-295"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3193
+    },
+    {
+      "id": "coverage_javascript/js-tls-safe",
+      "filename": "coverage.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3
+    },
+    {
+      "id": "coverage_javascript/js-typescript",
+      "filename": "handler.ts",
+      "language": "javascript",
+      "expected": [
+        "JS-R003"
+      ],
+      "detected": [
+        "JS-R003"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R003",
+          "line_number": 1,
+          "column_number": 84,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5191
+    },
+    {
+      "id": "coverage_javascript/js-tsx-safe",
+      "filename": "Button.tsx",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1534
+    },
+    {
+      "id": "coverage_javascript/js-xss-renamed-route",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R004"
+      ],
+      "detected": [
+        "JS-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R004",
+          "line_number": 1,
+          "column_number": 94,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7485
+    },
+    {
+      "id": "coverage_javascript/js-xss-composed-sanitizer-safe",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2969
+    },
+    {
+      "id": "coverage_javascript/js-xss-pretend-sanitizer",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R004"
+      ],
+      "detected": [
+        "JS-R004"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R004",
+          "line_number": 1,
+          "column_number": 42,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4606
+    },
+    {
+      "id": "coverage_javascript/js-xss-plaintext-safe",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1941
+    },
+    {
+      "id": "coverage_javascript/js-sql-conditional-overwrite",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 84,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5645
+    },
+    {
+      "id": "coverage_javascript/js-sql-branch-taint",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 66,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5658
+    },
+    {
+      "id": "coverage_javascript/js-import-shadow-safe",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2626
+    },
+    {
+      "id": "coverage_javascript/js-sql-typescript-alias",
+      "filename": "flow.ts",
+      "language": "javascript",
+      "expected": [
+        "JS-R005"
+      ],
+      "detected": [
+        "JS-R005"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R005",
+          "line_number": 1,
+          "column_number": 76,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5535
+    },
+    {
+      "id": "coverage_javascript/js-ssrf-route-renamed",
+      "filename": "flow.js",
+      "language": "javascript",
+      "expected": [
+        "JS-R006"
+      ],
+      "detected": [
+        "JS-R006"
+      ],
+      "expected_locations": [],
+      "detected_locations": [
+        {
+          "rule_id": "JS-R006",
+          "line_number": 1,
+          "column_number": 94,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6919
+    },
+    {
+      "id": "coverage_python/py-eval",
+      "filename": "eval.py",
+      "language": "python",
+      "expected": [
+        "PY-R001"
+      ],
+      "detected": [
+        "PY-R001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R001",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R001",
+          "line_number": 2,
+          "column_number": 11,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3712
+    },
+    {
+      "id": "coverage_python/py-exec-alias",
+      "filename": "exec-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R001"
+      ],
+      "detected": [
+        "PY-R001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R001",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R001",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-95"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4043
+    },
+    {
+      "id": "coverage_python/py-safe-json",
+      "filename": "safe-json.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5473
+    },
+    {
+      "id": "coverage_python/py-safe-custom-eval",
+      "filename": "safe-custom-eval.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7185
+    },
+    {
+      "id": "coverage_python/py-secret-attribute",
+      "filename": "secret-attribute.py",
+      "language": "python",
+      "expected": [
+        "PY-R002"
+      ],
+      "detected": [
+        "PY-R002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R002",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R002",
+          "line_number": 2,
+          "column_number": 4,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5808
+    },
+    {
+      "id": "coverage_python/py-secret-keyword",
+      "filename": "secret-keyword.py",
+      "language": "python",
+      "expected": [
+        "PY-R002"
+      ],
+      "detected": [
+        "PY-R002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R002",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R002",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3905
+    },
+    {
+      "id": "coverage_python/py-secret-subscript",
+      "filename": "secret-subscript.py",
+      "language": "python",
+      "expected": [
+        "PY-R002"
+      ],
+      "detected": [
+        "PY-R002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R002",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R002",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-798"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2974
+    },
+    {
+      "id": "coverage_python/py-secret-env",
+      "filename": "secret-env.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3043
+    },
+    {
+      "id": "coverage_python/py-command-alias",
+      "filename": "command-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R003"
+      ],
+      "detected": [
+        "PY-R003"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R003",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R003",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4285
+    },
+    {
+      "id": "coverage_python/py-command-shell-flag",
+      "filename": "command-shell-flag.py",
+      "language": "python",
+      "expected": [
+        "PY-R003"
+      ],
+      "detected": [
+        "PY-R003"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R003",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R003",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-78"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4884
+    },
+    {
+      "id": "coverage_python/py-command-safe-args",
+      "filename": "command-safe-args.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2859
+    },
+    {
+      "id": "coverage_python/py-safe-local-system",
+      "filename": "safe-local-system.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.231
+    },
+    {
+      "id": "coverage_python/py-ssrf-alias",
+      "filename": "ssrf-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R004"
+      ],
+      "detected": [
+        "PY-R004"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R004",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R004",
+          "line_number": 3,
+          "column_number": 11,
+          "cwe": "CWE-918"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4793
+    },
+    {
+      "id": "coverage_python/py-ssrf-safe-static",
+      "filename": "ssrf-safe-static.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3188
+    },
+    {
+      "id": "coverage_python/py-pickle-alias",
+      "filename": "pickle-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R005"
+      ],
+      "detected": [
+        "PY-R005"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2,
+          "column_number": 8,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5176
+    },
+    {
+      "id": "coverage_python/py-dill-load",
+      "filename": "dill-load.py",
+      "language": "python",
+      "expected": [
+        "PY-R005"
+      ],
+      "detected": [
+        "PY-R005"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2,
+          "column_number": 8,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4404
+    },
+    {
+      "id": "coverage_python/py-marshal-loads",
+      "filename": "marshal-loads.py",
+      "language": "python",
+      "expected": [
+        "PY-R005"
+      ],
+      "detected": [
+        "PY-R005"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2,
+          "column_number": 8,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5177
+    },
+    {
+      "id": "coverage_python/py-yaml-implicit-loader",
+      "filename": "yaml-implicit-loader.py",
+      "language": "python",
+      "expected": [
+        "PY-R005"
+      ],
+      "detected": [
+        "PY-R005"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2,
+          "column_number": 8,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5186
+    },
+    {
+      "id": "coverage_python/py-yaml-unsafe-loader",
+      "filename": "yaml-unsafe-loader.py",
+      "language": "python",
+      "expected": [
+        "PY-R005"
+      ],
+      "detected": [
+        "PY-R005"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R005",
+          "line_number": 2,
+          "column_number": 8,
+          "cwe": "CWE-502"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5356
+    },
+    {
+      "id": "coverage_python/py-yaml-safe-loader",
+      "filename": "yaml-safe-loader.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3917
+    },
+    {
+      "id": "coverage_python/py-yaml-safe-load",
+      "filename": "yaml-safe-load.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3671
+    },
+    {
+      "id": "coverage_python/py-hash-sha1-alias",
+      "filename": "hash-sha1-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R006"
+      ],
+      "detected": [
+        "PY-R006"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 2,
+          "column_number": 9,
+          "cwe": "CWE-328"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6082
+    },
+    {
+      "id": "coverage_python/py-hash-md5",
+      "filename": "hash-md5.py",
+      "language": "python",
+      "expected": [
+        "PY-R006"
+      ],
+      "detected": [
+        "PY-R006"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-328"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9718
+    },
+    {
+      "id": "coverage_python/py-hash-new-variable",
+      "filename": "hash-new-variable.py",
+      "language": "python",
+      "expected": [
+        "PY-R006"
+      ],
+      "detected": [
+        "PY-R006"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-328"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4927
+    },
+    {
+      "id": "coverage_python/py-hash-safe-sha256",
+      "filename": "hash-safe-sha256.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3244
+    },
+    {
+      "id": "coverage_python/py-hash-safe-nonsecurity",
+      "filename": "hash-safe-nonsecurity.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2357
+    },
+    {
+      "id": "coverage_python/py-cipher-des",
+      "filename": "cipher-des.py",
+      "language": "python",
+      "expected": [
+        "PY-R007"
+      ],
+      "detected": [
+        "PY-R007"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2,
+          "column_number": 9,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6528
+    },
+    {
+      "id": "coverage_python/py-cipher-ecb-alias",
+      "filename": "cipher-ecb-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R007"
+      ],
+      "detected": [
+        "PY-R007"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2,
+          "column_number": 9,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7091
+    },
+    {
+      "id": "coverage_python/py-cipher-cryptography-ecb",
+      "filename": "cipher-cryptography-ecb.py",
+      "language": "python",
+      "expected": [
+        "PY-R007"
+      ],
+      "detected": [
+        "PY-R007"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2,
+          "column_number": 9,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5637
+    },
+    {
+      "id": "coverage_python/py-cipher-safe-gcm",
+      "filename": "cipher-safe-gcm.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4829
+    },
+    {
+      "id": "coverage_python/py-random-token",
+      "filename": "random-token.py",
+      "language": "python",
+      "expected": [
+        "PY-R008"
+      ],
+      "detected": [
+        "PY-R008"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 2,
+          "column_number": 18,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.8651
+    },
+    {
+      "id": "coverage_python/py-random-otp-alias",
+      "filename": "random-otp-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R008"
+      ],
+      "detected": [
+        "PY-R008"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 2,
+          "column_number": 6,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.468
+    },
+    {
+      "id": "coverage_python/py-random-instance",
+      "filename": "random-instance.py",
+      "language": "python",
+      "expected": [
+        "PY-R008"
+      ],
+      "detected": [
+        "PY-R008"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 3,
+          "column_number": 14,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.9502
+    },
+    {
+      "id": "coverage_python/py-random-token-function",
+      "filename": "random-token-function.py",
+      "language": "python",
+      "expected": [
+        "PY-R008"
+      ],
+      "detected": [
+        "PY-R008"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 3,
+          "column_number": 11,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6491
+    },
+    {
+      "id": "coverage_python/py-random-safe-game",
+      "filename": "random-safe-game.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4475
+    },
+    {
+      "id": "coverage_python/py-random-safe-secrets",
+      "filename": "random-safe-secrets.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3863
+    },
+    {
+      "id": "coverage_python/py-log-password",
+      "filename": "log-password.py",
+      "language": "python",
+      "expected": [
+        "PY-R009"
+      ],
+      "detected": [
+        "PY-R009"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 3,
+          "column_number": 4,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4775
+    },
+    {
+      "id": "coverage_python/py-log-token-field",
+      "filename": "log-token-field.py",
+      "language": "python",
+      "expected": [
+        "PY-R009"
+      ],
+      "detected": [
+        "PY-R009"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6544
+    },
+    {
+      "id": "coverage_python/py-log-custom-logger",
+      "filename": "log-custom-logger.py",
+      "language": "python",
+      "expected": [
+        "PY-R009"
+      ],
+      "detected": [
+        "PY-R009"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6376
+    },
+    {
+      "id": "coverage_python/py-log-safe-event",
+      "filename": "log-safe-event.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1989
+    },
+    {
+      "id": "coverage_python/py-debug-true",
+      "filename": "debug-true.py",
+      "language": "python",
+      "expected": [
+        "PY-R010"
+      ],
+      "detected": [
+        "PY-R010"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R010",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R010",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-489"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2524
+    },
+    {
+      "id": "coverage_python/py-debug-run",
+      "filename": "debug-run.py",
+      "language": "python",
+      "expected": [
+        "PY-R010"
+      ],
+      "detected": [
+        "PY-R010"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R010",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R010",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-489"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3461
+    },
+    {
+      "id": "coverage_python/py-debug-config",
+      "filename": "debug-config.py",
+      "language": "python",
+      "expected": [
+        "PY-R010"
+      ],
+      "detected": [
+        "PY-R010"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R010",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R010",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-489"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.288
+    },
+    {
+      "id": "coverage_python/py-debug-safe",
+      "filename": "debug-safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3614
+    },
+    {
+      "id": "coverage_python/py-tempfile-mktemp-alias",
+      "filename": "tempfile-mktemp-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R011"
+      ],
+      "detected": [
+        "PY-R011"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R011",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R011",
+          "line_number": 2,
+          "column_number": 7,
+          "cwe": "CWE-377"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3727
+    },
+    {
+      "id": "coverage_python/py-tempfile-safe",
+      "filename": "tempfile-safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.337
+    },
+    {
+      "id": "coverage_python/py-xxe-resolve",
+      "filename": "xxe-resolve.py",
+      "language": "python",
+      "expected": [
+        "PY-R012"
+      ],
+      "detected": [
+        "PY-R012"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R012",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R012",
+          "line_number": 2,
+          "column_number": 9,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7239
+    },
+    {
+      "id": "coverage_python/py-xxe-dtd",
+      "filename": "xxe-dtd.py",
+      "language": "python",
+      "expected": [
+        "PY-R012"
+      ],
+      "detected": [
+        "PY-R012"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R012",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R012",
+          "line_number": 2,
+          "column_number": 9,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4658
+    },
+    {
+      "id": "coverage_python/py-xxe-sax-enabled",
+      "filename": "xxe-sax-enabled.py",
+      "language": "python",
+      "expected": [
+        "PY-R012"
+      ],
+      "detected": [
+        "PY-R012"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R012",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R012",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-611"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4605
+    },
+    {
+      "id": "coverage_python/py-xxe-safe",
+      "filename": "xxe-safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6189
+    },
+    {
+      "id": "coverage_python/py-xxe-safe-defused",
+      "filename": "xxe-safe-defused.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5212
+    },
+    {
+      "id": "coverage_python/py-tls-disabled",
+      "filename": "tls-disabled.py",
+      "language": "python",
+      "expected": [
+        "PY-R013"
+      ],
+      "detected": [
+        "PY-R013"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R013",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R013",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-295"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6676
+    },
+    {
+      "id": "coverage_python/py-tls-unverified-context",
+      "filename": "tls-unverified-context.py",
+      "language": "python",
+      "expected": [
+        "PY-R013"
+      ],
+      "detected": [
+        "PY-R013"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R013",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R013",
+          "line_number": 2,
+          "column_number": 10,
+          "cwe": "CWE-295"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.444
+    },
+    {
+      "id": "coverage_python/py-tls-safe",
+      "filename": "tls-safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2252
+    },
+    {
+      "id": "coverage_python/py-xss-mark-safe",
+      "filename": "xss-mark-safe.py",
+      "language": "python",
+      "expected": [
+        "PY-R014"
+      ],
+      "detected": [
+        "PY-R014"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R014",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R014",
+          "line_number": 3,
+          "column_number": 11,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4872
+    },
+    {
+      "id": "coverage_python/py-xss-markup",
+      "filename": "xss-markup.py",
+      "language": "python",
+      "expected": [
+        "PY-R014"
+      ],
+      "detected": [
+        "PY-R014"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R014",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R014",
+          "line_number": 2,
+          "column_number": 7,
+          "cwe": "CWE-79"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5674
+    },
+    {
+      "id": "coverage_python/py-xss-safe-static",
+      "filename": "xss-safe-static.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2547
+    },
+    {
+      "id": "coverage_python/py-xss-safe-escape",
+      "filename": "xss-safe-escape.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.258
+    },
+    {
+      "id": "coverage_python/py-template-dynamic",
+      "filename": "template-dynamic.py",
+      "language": "python",
+      "expected": [
+        "PY-R015"
+      ],
+      "detected": [
+        "PY-R015"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R015",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R015",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-1336"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2869
+    },
+    {
+      "id": "coverage_python/py-template-jinja",
+      "filename": "template-jinja.py",
+      "language": "python",
+      "expected": [
+        "PY-R015"
+      ],
+      "detected": [
+        "PY-R015"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R015",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R015",
+          "line_number": 2,
+          "column_number": 7,
+          "cwe": "CWE-1336"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3787
+    },
+    {
+      "id": "coverage_python/py-template-safe-context",
+      "filename": "template-safe-context.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1922
+    },
+    {
+      "id": "coverage_python/py-sql-direct-http",
+      "filename": "sql-direct-http.py",
+      "language": "python",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5183
+    },
+    {
+      "id": "coverage_python/py-sql-annotated",
+      "filename": "sql-annotated.py",
+      "language": "python",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 4
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 4,
+          "column_number": 4,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.0726
+    },
+    {
+      "id": "coverage_python/py-sql-dynamic-parameter",
+      "filename": "sql-dynamic-parameter.py",
+      "language": "python",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 2,
+          "column_number": 4,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4814
+    },
+    {
+      "id": "coverage_python/py-sql-safe-parameters",
+      "filename": "sql-safe-parameters.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3744
+    },
+    {
+      "id": "coverage_python/py-sql-safe-integer",
+      "filename": "sql-safe-integer.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5212
+    },
+    {
+      "id": "coverage_python/py-sql-generic-validator-not-safe",
+      "filename": "sql-generic-validator-not-safe.py",
+      "language": "python",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6769
+    },
+    {
+      "id": "coverage_python/py-sql-branch-join",
+      "filename": "sql-branch-join.py",
+      "language": "python",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 5
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 5,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.1256
+    },
+    {
+      "id": "coverage_python/py-sql-augmented",
+      "filename": "sql-augmented.py",
+      "language": "python",
+      "expected": [
+        "PY-T001"
+      ],
+      "detected": [
+        "PY-T001"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T001",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-89"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7168
+    },
+    {
+      "id": "coverage_python/py-path-direct",
+      "filename": "path-direct.py",
+      "language": "python",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5431
+    },
+    {
+      "id": "coverage_python/py-path-annotated",
+      "filename": "path-annotated.py",
+      "language": "python",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5879
+    },
+    {
+      "id": "coverage_python/py-path-pathlib",
+      "filename": "path-pathlib.py",
+      "language": "python",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 4
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 4,
+          "column_number": 10,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.8848
+    },
+    {
+      "id": "coverage_python/py-path-keyword",
+      "filename": "path-keyword.py",
+      "language": "python",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 1
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 1,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.49
+    },
+    {
+      "id": "coverage_python/py-path-safe-fixed",
+      "filename": "path-safe-fixed.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2682
+    },
+    {
+      "id": "coverage_python/py-safe-scope-alias",
+      "filename": "safe-scope-alias.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2946
+    },
+    {
+      "id": "coverage_python/py-safe-source-string",
+      "filename": "safe-source-string.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.2725
+    },
+    {
+      "id": "coverage_python/py-distinct-same-cwe",
+      "filename": "distinct-same-cwe.py",
+      "language": "python",
+      "expected": [
+        "PY-R006",
+        "PY-R006"
+      ],
+      "detected": [
+        "PY-R006",
+        "PY-R006"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 2
+        },
+        {
+          "rule_id": "PY-R006",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R006",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-328"
+        },
+        {
+          "rule_id": "PY-R006",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-328"
+        }
+      ],
+      "true_positives": 2,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5854
+    },
+    {
+      "id": "coverage_python/py-path-inline-open",
+      "filename": "path-inline-open.py",
+      "language": "python",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.6536
+    },
+    {
+      "id": "coverage_python/py-path-join",
+      "filename": "path-join.py",
+      "language": "python",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 3,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 1.3502
+    },
+    {
+      "id": "coverage_python/py-path-tuple",
+      "filename": "path-tuple.py",
+      "language": "python",
+      "expected": [
+        "PY-T002"
+      ],
+      "detected": [
+        "PY-T002"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-T002",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-22"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7697
+    },
+    {
+      "id": "coverage_python/py-path-safe-tuple",
+      "filename": "path-safe-tuple.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4502
+    },
+    {
+      "id": "coverage_python/py-cipher-ecb-numeric",
+      "filename": "cipher-ecb-numeric.py",
+      "language": "python",
+      "expected": [
+        "PY-R007"
+      ],
+      "detected": [
+        "PY-R007"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R007",
+          "line_number": 2,
+          "column_number": 0,
+          "cwe": "CWE-327"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3521
+    },
+    {
+      "id": "coverage_python/py-log-print-sensitive",
+      "filename": "log-print-sensitive.py",
+      "language": "python",
+      "expected": [
+        "PY-R009"
+      ],
+      "detected": [
+        "PY-R009"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R009",
+          "line_number": 2,
+          "column_number": 4,
+          "cwe": "CWE-532"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.3613
+    },
+    {
+      "id": "coverage_python/py-log-print-safe",
+      "filename": "log-print-safe.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.1523
+    },
+    {
+      "id": "coverage_python/py-random-same-alias",
+      "filename": "random-same-alias.py",
+      "language": "python",
+      "expected": [
+        "PY-R008"
+      ],
+      "detected": [
+        "PY-R008"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 3
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 3,
+          "column_number": 14,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.7549
+    },
+    {
+      "id": "coverage_python/py-random-safe-dict-sibling",
+      "filename": "random-safe-dict-sibling.py",
+      "language": "python",
+      "expected": [],
+      "detected": [],
+      "expected_locations": [],
+      "detected_locations": [],
+      "true_positives": 0,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.4602
+    },
+    {
+      "id": "coverage_python/py-random-dict-token",
+      "filename": "random-dict-token.py",
+      "language": "python",
+      "expected": [
+        "PY-R008"
+      ],
+      "detected": [
+        "PY-R008"
+      ],
+      "expected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 2
+        }
+      ],
+      "detected_locations": [
+        {
+          "rule_id": "PY-R008",
+          "line_number": 2,
+          "column_number": 32,
+          "cwe": "CWE-338"
+        }
+      ],
+      "true_positives": 1,
+      "false_positives": 0,
+      "false_negatives": 0,
+      "errors": [],
+      "exact_match": true,
+      "median_ms": 0.5543
     }
   ]
 }

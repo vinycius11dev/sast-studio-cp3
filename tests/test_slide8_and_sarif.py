@@ -20,11 +20,12 @@ def test_slide8_samples_exact_finding_counts(engine):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     samples_dir = os.path.join(base_dir, "samples")
 
-    # 1. auth_controller.py -> 12 Falhas (Slide 8)
+    # Expanded credential recognition also reports the previously missed admin_token.
     auth_file = os.path.join(samples_dir, "auth_controller.py")
     assert os.path.exists(auth_file)
     auth_result = engine.scan_file(auth_file)
-    assert auth_result.total_findings == 12
+    assert auth_result.total_findings == 13
+    assert any(f.rule_id == "PY-R002" and f.line_number == 14 for f in auth_result.findings)
     assert auth_result.summary_by_severity["CRITICAL"] >= 4
 
     # 2. db_config.js -> 8 Falhas (Slide 8)

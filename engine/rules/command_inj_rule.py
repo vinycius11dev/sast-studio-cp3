@@ -1,6 +1,6 @@
 import ast
 from engine.models import Severity
-from .base_rule import BaseRule
+from .python_context import PythonContextRule
 
 DANGEROUS_SUBPROCESS_FUNCS = {
     "Popen",
@@ -11,7 +11,7 @@ DANGEROUS_SUBPROCESS_FUNCS = {
 }
 
 
-class CommandInjectionRule(BaseRule):
+class CommandInjectionRule(PythonContextRule):
     """Detecta execuções de comandos do sistema operacional suscetíveis a injeção (CWE-78)."""
 
     rule_id: str = "PY-R003"
@@ -28,37 +28,12 @@ class CommandInjectionRule(BaseRule):
     )
 
     def visit_Call(self, node: ast.Call) -> None:
-        # Caso 1: os.system(...) ou os.popen(...)
-        if isinstance(node.func, ast.Attribute):
-            obj = node.func.value
-            attr = node.func.attr
-
-            if isinstance(obj, ast.Name) and obj.id == "os" and attr in ("system", "popen"):
-                self.add_finding(
-                    node=node,
-                    message=f"Uso inseguro de 'os.{attr}()' para execução de comandos do sistema.",
-                    remediation=self.remediation,
-                )
-
-            # Caso 2: subprocess.run(..., shell=True)
-            elif isinstance(obj, ast.Name) and obj.id == "subprocess" and attr in DANGEROUS_SUBPROCESS_FUNCS:
-                for keyword in node.keywords:
-                    if keyword.arg == "shell":
-                        # Verifica se shell=True
-                        if isinstance(keyword.value, ast.Constant) and keyword.value.value is True:
-                            self.add_finding(
-                                node=node,
-                                message=f"Chamada a 'subprocess.{attr}()' com 'shell=True' habilitado.",
-                                remediation=self.remediation,
-                            )
-
-        # Caso 3: import direto, ex: from os import system -> system(...)
-        elif isinstance(node.func, ast.Name):
-            if node.func.id in ("system", "popen"):
-                self.add_finding(
-                    node=node,
-                    message=f"Chamada direta à função '{node.func.id}()' para execução de comandos do SO.",
-                    remediation=self.remediation,
-                )
-
+        resolved = self.resolve(node.func)
+        if resolved in {"os.system", "os.popen", "subprocess.getoutput", "subprocess.getstatusoutput", "asyncio.create_subprocess_shell"}:
+            self.add_finding(node=node, message=f"Uso de '{resolved}()' com interpretador de comandos; valide a origem e prefira argumentos separados.")
+        elif resolved.startswith("subprocess.") and resolved.split(".")[-1] in DANGEROUS_SUBPROCESS_FUNCS:
+            for keyword in node.keywords:
+                if keyword.arg == "shell" and self.literal(keyword.value) is True:
+                    self.add_finding(node=node, message=f"Chamada a '{resolved}()' com shell=True habilitado.")
+                    break
         self.generic_visit(node)

@@ -22,16 +22,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Optional tools use a separate interpreter, without changing API dependencies.
+ARG WITH_SCANNERS=0
+COPY requirements-scanners.txt .
+RUN if [ "$WITH_SCANNERS" = "1" ]; then python -m venv /opt/scanners && /opt/scanners/bin/pip install --no-cache-dir -r requirements-scanners.txt; fi
+
 # Criação de usuário não-root para execução segura (Princípio do Menor Privilégio)
 RUN useradd -m -u 1001 sastuser
 
 # Cópia do código-fonte da aplicação
 COPY engine/ /app/engine/
+COPY config/ /app/config/
 COPY api/ /app/api/
 COPY static/ /app/static/
 COPY samples/ /app/samples/
 COPY demonstracao/ /app/demonstracao/
 COPY docs/screenshots/readme/ /app/docs/screenshots/readme/
+COPY docs/benchmark-results.json /app/docs/benchmark-results.json
+COPY docs/quality/owasp-native-results.json /app/docs/quality/owasp-native-results.json
 COPY cli.py /app/cli.py
 COPY .github/workflows/ /app/.github/workflows/
 

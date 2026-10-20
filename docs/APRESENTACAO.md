@@ -1,20 +1,18 @@
 # Roteiro de defesa — entrega final CP3
 
-A página de apresentação do projeto fica em http://127.0.0.1:8000/apresentacao.
-Ela reúne a proposta, o fluxo técnico, capturas reais e os comandos para iniciar.
+A página de apresentação usa o endereço exibido ao iniciar o aplicativo
+(normalmente http://127.0.0.1:8000/apresentacao). Ela reúne a proposta, o fluxo
+técnico, capturas reais e os comandos para iniciar.
 Use **Abrir sistema** para sair da apresentação e voltar ao dashboard.
 
 ## Antes da aula
 
 1. Abra o Ollama e execute `ollama list`: o modelo deve ser `llama3.2:3b`.
-2. Dê dois cliques em `iniciar.bat` e abra http://127.0.0.1:8000/dashboard.
-   Se o iniciador avisar que uma versão antiga ainda usa a porta 8000, feche
-   a janela do servidor antigo com Ctrl+C e execute `iniciar.bat` novamente.
-   Se não encontrar essa janela, reinicie o computador antes da aula.
+2. Dê dois cliques em `iniciar.bat` e abra o endereço que ele mostrar. Se a
+   porta 8000 estiver ocupada, o iniciador reutiliza outra instância atual ou
+   escolhe uma porta livre para não abrir uma versão antiga.
 3. Em **Integrações**, confirme API, worker da fila e Ollama disponíveis.
-4. Gere uma sugestão antes de apresentar para carregar o modelo na memória.
-   A primeira chamada fria levou 81 segundos nesta máquina; depois que o modelo
-   carregou, a remediação levou 28 segundos. Inferências têm limite de 90 segundos.
+4. Antes da aula, aqueça o modelo no terminal com `ollama run llama3.2:3b "Responda apenas OK"` e depois execute `verificar_apresentacao.bat`. Em 20/10, a primeira inferência fria excedeu o limite de 90 segundos; com o modelo aquecido, o smoke integral passou: triagem real em 29,07 s e geração de patch com diff em 16,57 s. Reserve alguns minutos para esse aquecimento e para o smoke.
 5. Abra antecipadamente os Pull Requests e os logs de Actions indicados em
    `docs/GITHUB_CP3.md` (PR #1 vulnerável e PR #2 corrigido).
 6. Mantenha notebook, carregador, servidor e Ollama ligados. A análise e a IA locais
@@ -25,9 +23,9 @@ Use **Abrir sistema** para sair da apresentação e voltar ao dashboard.
 | Tempo | Ação e explicação |
 | --- | --- |
 | 0–1 min | Explique que SAST inspeciona fontes sem executar o projeto. Mostre a arquitetura: API, fila persistente, worker, parsers, histórico e LLM. Python usa AST; JS/TS e Java usam Tree-sitter. |
-| 1–3 min | Scanner → **Carregar pasta vulnerável** → **Executar análise**. São 3 arquivos, 9 achados (6 críticos e 3 altos), gate bloqueado. A tela envia um job e acompanha o worker. Abra um achado e mostre regra, CWE, arquivo, linha e contexto. |
+| 1–3 min | Scanner → **Carregar pasta vulnerável** → **Executar análise**. A versão atual tem 4 arquivos e 22 achados (9 críticos, 12 altos e 1 médio), gate bloqueado. A tela envia um job e acompanha o worker. Abra um achado e mostre regra, CWE, arquivo, linha e contexto. |
 | 3–5 min | Selecione **PY-R001** em `backend/servico.py`, clique **Revisar com IA** e mostre a classificação contextual, severidade sugerida, confiança e evidências. Depois clique **Gerar remediação**: mostre o selo Ollama, a sugestão e **Ver alterações (diff)**. Vermelho remove, verde adiciona. **Analisar sugestão** roda novamente o scanner. |
-| 5–6 min | Scanner → **Carregar pasta corrigida** → executar. São 3 arquivos, 0 achados nas regras atuais e gate aprovado. Volte à Visão geral: compare as duas execuções salvas e mostre o ranking de arquivos da análise vulnerável. Clique em um arquivo para abrir seus achados filtrados. A IA não sobrescreve os arquivos do computador. |
+| 5–6 min | Scanner → **Carregar pasta corrigida** → executar. O motor nativo retorna 0 achados e o gate aprova; Bandit pode acrescentar avisos LOW sobre `subprocess`, sem bloquear o limiar `HIGH`. Volte à Visão geral: compare as duas execuções salvas e mostre o ranking de arquivos da análise vulnerável. Clique em um arquivo para abrir seus achados filtrados. A IA não sobrescreve os arquivos do computador. |
 | 6–7 min | Escolha a pasta `demonstracao/03-triagem-semantica`: há dois eval detectados. Revise os dois pela IA: um opera sobre constante e o outro recebe `input()`. Compare o contexto e o filtro de possíveis falsos positivos. Respostas do LLM variam; o gate original permanece rastreável. |
 | 7–8 min | Histórico → reabra a execução vulnerável → exporte JSON, Markdown ou SARIF. Mostre CWE e OWASP Top 10:2025 nos achados e relatórios, a análise correta e as revisões de IA persistidas. |
 | 8–10 min | GitHub → PR vulnerável com Security Gate vermelho, depois PR corrigido com checks verdes. Mostre o log, a regra detectada e os relatórios. Mostre que main exige os checks: o PR #1 fica bloqueado e o #2 passa. |
@@ -79,3 +77,8 @@ apresentado como resposta do LLM.
 - **O que significa zero achados?** Nenhuma regra atual detectou risco naquela entrada. Não comprova segurança absoluta.
 - **Limites?** Fluxo Python básico, sem prova completa entre arquivos; LLM pode errar; fila SQLite local; sem autenticação multiusuário.
 - **Onde roda?** Localmente ou em um servidor configurado. GitHub Actions executa a análise e guarda evidências; publicar o código no GitHub não hospeda automaticamente o dashboard.
+
+
+## Demonstração após ampliar os motores
+
+As capturas antigas mostram o conjunto original de três arquivos e 9 achados no perfil nativo. A versão atual do projeto vulnerável tem quatro arquivos e 22 achados nativos; Bandit e Semgrep podem acrescentar evidências dependendo dos motores instalados. Use a contagem real da execução. Em **Regras de análise**, mostre o corpus curado e o OWASP Benchmark separadamente e explique as limitações. Em **Integrações**, confirme os motores ativos; em **Achados**, abra as evidências e, quando existente, o fluxo local rastreado. A aprovação estática de um patch não equivale a executar testes da aplicação.

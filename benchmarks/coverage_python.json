@@ -1,0 +1,1159 @@
+[
+  {
+    "id": "py-eval",
+    "filename": "eval.py",
+    "language": "python",
+    "code": "def calculate(value):\n    return eval(value)\n",
+    "description": "eval",
+    "expected_rules": [
+      "PY-R001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R001",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-exec-alias",
+    "filename": "exec-alias.py",
+    "language": "python",
+    "code": "from builtins import exec as run_code\nrun_code(payload)\n",
+    "description": "exec alias",
+    "expected_rules": [
+      "PY-R001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R001",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-safe-json",
+    "filename": "safe-json.py",
+    "language": "python",
+    "code": "import json\nvalue = json.loads(payload)\n",
+    "description": "safe json",
+    "expected_rules": []
+  },
+  {
+    "id": "py-safe-custom-eval",
+    "filename": "safe-custom-eval.py",
+    "language": "python",
+    "code": "def evaluate(eval):\n    return eval(value)\nclient.eval(expression)\n",
+    "description": "safe custom eval",
+    "expected_rules": []
+  },
+  {
+    "id": "py-secret-attribute",
+    "filename": "secret-attribute.py",
+    "language": "python",
+    "code": "class Config:\n    db_password = \"example-credential-for-test\"\n",
+    "description": "secret attribute",
+    "expected_rules": [
+      "PY-R002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R002",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-secret-keyword",
+    "filename": "secret-keyword.py",
+    "language": "python",
+    "code": "database.connect(password=\"example-credential-for-test\")\n",
+    "description": "secret keyword",
+    "expected_rules": [
+      "PY-R002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R002",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-secret-subscript",
+    "filename": "secret-subscript.py",
+    "language": "python",
+    "code": "settings[\"API_TOKEN\"] = \"example-token-not-real\"\n",
+    "description": "secret subscript",
+    "expected_rules": [
+      "PY-R002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R002",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-secret-env",
+    "filename": "secret-env.py",
+    "language": "python",
+    "code": "import os\npassword = os.environ[\"DB_PASSWORD\"]\n",
+    "description": "secret env",
+    "expected_rules": []
+  },
+  {
+    "id": "py-command-alias",
+    "filename": "command-alias.py",
+    "language": "python",
+    "code": "from os import system as launch\nlaunch(\"ping \" + host)\n",
+    "description": "command alias",
+    "expected_rules": [
+      "PY-R003"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R003",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-command-shell-flag",
+    "filename": "command-shell-flag.py",
+    "language": "python",
+    "code": "import subprocess as sp\nenabled = True\nsp.run(command, shell=enabled)\n",
+    "description": "command shell flag",
+    "expected_rules": [
+      "PY-R003"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R003",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-command-safe-args",
+    "filename": "command-safe-args.py",
+    "language": "python",
+    "code": "import subprocess as sp\nsp.run([\"ping\", host], shell=False, check=True)\n",
+    "description": "command safe args",
+    "expected_rules": []
+  },
+  {
+    "id": "py-safe-local-system",
+    "filename": "safe-local-system.py",
+    "language": "python",
+    "code": "def system(value):\n    return value\nsystem(\"status\")\n",
+    "description": "safe local system",
+    "expected_rules": []
+  },
+  {
+    "id": "py-ssrf-alias",
+    "filename": "ssrf-alias.py",
+    "language": "python",
+    "code": "import requests as http\ndef forward(url):\n    return http.get(url)\n",
+    "description": "ssrf alias",
+    "expected_rules": [
+      "PY-R004"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R004",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-ssrf-safe-static",
+    "filename": "ssrf-safe-static.py",
+    "language": "python",
+    "code": "import requests as http\nendpoint = \"https://example.invalid/status\"\nhttp.get(endpoint)\n",
+    "description": "ssrf safe static",
+    "expected_rules": []
+  },
+  {
+    "id": "py-pickle-alias",
+    "filename": "pickle-alias.py",
+    "language": "python",
+    "code": "import pickle as serializer\nvalue = serializer.loads(payload)\n",
+    "description": "pickle alias",
+    "expected_rules": [
+      "PY-R005"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R005",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-dill-load",
+    "filename": "dill-load.py",
+    "language": "python",
+    "code": "from dill import load as restore\nvalue = restore(stream)\n",
+    "description": "dill load",
+    "expected_rules": [
+      "PY-R005"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R005",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-marshal-loads",
+    "filename": "marshal-loads.py",
+    "language": "python",
+    "code": "import marshal\nvalue = marshal.loads(payload)\n",
+    "description": "marshal loads",
+    "expected_rules": [
+      "PY-R005"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R005",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-yaml-implicit-loader",
+    "filename": "yaml-implicit-loader.py",
+    "language": "python",
+    "code": "import yaml\nvalue = yaml.load(payload)\n",
+    "description": "yaml implicit loader",
+    "expected_rules": [
+      "PY-R005"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R005",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-yaml-unsafe-loader",
+    "filename": "yaml-unsafe-loader.py",
+    "language": "python",
+    "code": "from yaml import load, UnsafeLoader as Loader\nvalue = load(payload, Loader=Loader)\n",
+    "description": "yaml unsafe loader",
+    "expected_rules": [
+      "PY-R005"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R005",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-yaml-safe-loader",
+    "filename": "yaml-safe-loader.py",
+    "language": "python",
+    "code": "from yaml import load, SafeLoader as Loader\nvalue = load(payload, Loader=Loader)\n",
+    "description": "yaml safe loader",
+    "expected_rules": []
+  },
+  {
+    "id": "py-yaml-safe-load",
+    "filename": "yaml-safe-load.py",
+    "language": "python",
+    "code": "import yaml\nvalue = yaml.safe_load(payload)\n",
+    "description": "yaml safe load",
+    "expected_rules": []
+  },
+  {
+    "id": "py-hash-sha1-alias",
+    "filename": "hash-sha1-alias.py",
+    "language": "python",
+    "code": "from hashlib import sha1 as digest\nresult = digest(payload).hexdigest()\n",
+    "description": "hash sha1 alias",
+    "expected_rules": [
+      "PY-R006"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R006",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-hash-md5",
+    "filename": "hash-md5.py",
+    "language": "python",
+    "code": "import hashlib as h\nh.md5(payload)\n",
+    "description": "hash md5",
+    "expected_rules": [
+      "PY-R006"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R006",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-hash-new-variable",
+    "filename": "hash-new-variable.py",
+    "language": "python",
+    "code": "import hashlib\nalgorithm = \"md5\"\nhashlib.new(algorithm, payload)\n",
+    "description": "hash new variable",
+    "expected_rules": [
+      "PY-R006"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R006",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-hash-safe-sha256",
+    "filename": "hash-safe-sha256.py",
+    "language": "python",
+    "code": "import hashlib\nhashlib.sha256(payload)\n",
+    "description": "hash safe sha256",
+    "expected_rules": []
+  },
+  {
+    "id": "py-hash-safe-nonsecurity",
+    "filename": "hash-safe-nonsecurity.py",
+    "language": "python",
+    "code": "import hashlib\nhashlib.md5(payload, usedforsecurity=False)\n",
+    "description": "hash safe nonsecurity",
+    "expected_rules": []
+  },
+  {
+    "id": "py-cipher-des",
+    "filename": "cipher-des.py",
+    "language": "python",
+    "code": "from Crypto.Cipher import DES\ncipher = DES.new(key, DES.MODE_CBC, iv)\n",
+    "description": "cipher des",
+    "expected_rules": [
+      "PY-R007"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R007",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-cipher-ecb-alias",
+    "filename": "cipher-ecb-alias.py",
+    "language": "python",
+    "code": "from Crypto.Cipher import AES as A\ncipher = A.new(key, A.MODE_ECB)\n",
+    "description": "cipher ecb alias",
+    "expected_rules": [
+      "PY-R007"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R007",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-cipher-cryptography-ecb",
+    "filename": "cipher-cryptography-ecb.py",
+    "language": "python",
+    "code": "from cryptography.hazmat.primitives.ciphers import modes\ncipher = modes.ECB()\n",
+    "description": "cipher cryptography ecb",
+    "expected_rules": [
+      "PY-R007"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R007",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-cipher-safe-gcm",
+    "filename": "cipher-safe-gcm.py",
+    "language": "python",
+    "code": "from Crypto.Cipher import AES\ncipher = AES.new(key, AES.MODE_GCM)\n",
+    "description": "cipher safe gcm",
+    "expected_rules": []
+  },
+  {
+    "id": "py-random-token",
+    "filename": "random-token.py",
+    "language": "python",
+    "code": "import random\nreset_token = str(random.getrandbits(64))\n",
+    "description": "random token",
+    "expected_rules": [
+      "PY-R008"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R008",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-random-otp-alias",
+    "filename": "random-otp-alias.py",
+    "language": "python",
+    "code": "from random import randint as number\notp = number(100000, 999999)\n",
+    "description": "random otp alias",
+    "expected_rules": [
+      "PY-R008"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R008",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-random-instance",
+    "filename": "random-instance.py",
+    "language": "python",
+    "code": "import random\nrng = random.Random()\nreset_token = rng.randbytes(24)\n",
+    "description": "random instance",
+    "expected_rules": [
+      "PY-R008"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R008",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-random-token-function",
+    "filename": "random-token-function.py",
+    "language": "python",
+    "code": "import random\ndef make_token():\n    return random.choice(alphabet)\n",
+    "description": "random token function",
+    "expected_rules": [
+      "PY-R008"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R008",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-random-safe-game",
+    "filename": "random-safe-game.py",
+    "language": "python",
+    "code": "import random\ndice = random.randint(1, 6)\n",
+    "description": "random safe game",
+    "expected_rules": []
+  },
+  {
+    "id": "py-random-safe-secrets",
+    "filename": "random-safe-secrets.py",
+    "language": "python",
+    "code": "import secrets\nreset_token = secrets.token_urlsafe(32)\n",
+    "description": "random safe secrets",
+    "expected_rules": []
+  },
+  {
+    "id": "py-log-password",
+    "filename": "log-password.py",
+    "language": "python",
+    "code": "import logging\ndef login(password):\n    logging.info(\"credential=%s\", password)\n",
+    "description": "log password",
+    "expected_rules": [
+      "PY-R009"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R009",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-log-token-field",
+    "filename": "log-token-field.py",
+    "language": "python",
+    "code": "import logging\nlogging.error(\"failure %s\", request.headers[\"Authorization\"])\n",
+    "description": "Authorization header is sensitive even without a password variable",
+    "expected_rules": [
+      "PY-R009"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R009",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-log-custom-logger",
+    "filename": "log-custom-logger.py",
+    "language": "python",
+    "code": "import logging\naudit = logging.getLogger(__name__)\naudit.warning(\"credential=%s\", user.password)\n",
+    "description": "log custom logger",
+    "expected_rules": [
+      "PY-R009"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R009",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-log-safe-event",
+    "filename": "log-safe-event.py",
+    "language": "python",
+    "code": "import logging\nlogging.info(\"Password reset completed\")\n",
+    "description": "log safe event",
+    "expected_rules": []
+  },
+  {
+    "id": "py-debug-true",
+    "filename": "debug-true.py",
+    "language": "python",
+    "code": "DEBUG = True\n",
+    "description": "debug true",
+    "expected_rules": [
+      "PY-R010"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R010",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-debug-run",
+    "filename": "debug-run.py",
+    "language": "python",
+    "code": "app.run(host=\"127.0.0.1\", debug=True)\n",
+    "description": "debug run",
+    "expected_rules": [
+      "PY-R010"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R010",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-debug-config",
+    "filename": "debug-config.py",
+    "language": "python",
+    "code": "app.config[\"DEBUG\"] = True\n",
+    "description": "debug config",
+    "expected_rules": [
+      "PY-R010"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R010",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-debug-safe",
+    "filename": "debug-safe.py",
+    "language": "python",
+    "code": "DEBUG = False\napp.run(debug=False)\n",
+    "description": "debug safe",
+    "expected_rules": []
+  },
+  {
+    "id": "py-tempfile-mktemp-alias",
+    "filename": "tempfile-mktemp-alias.py",
+    "language": "python",
+    "code": "from tempfile import mktemp as name\npath = name()\n",
+    "description": "tempfile mktemp alias",
+    "expected_rules": [
+      "PY-R011"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R011",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-tempfile-safe",
+    "filename": "tempfile-safe.py",
+    "language": "python",
+    "code": "import tempfile\nwith tempfile.NamedTemporaryFile() as handle:\n    handle.write(b\"example\")\n",
+    "description": "tempfile safe",
+    "expected_rules": []
+  },
+  {
+    "id": "py-xxe-resolve",
+    "filename": "xxe-resolve.py",
+    "language": "python",
+    "code": "from lxml import etree as ET\nparser = ET.XMLParser(resolve_entities=True)\n",
+    "description": "xxe resolve",
+    "expected_rules": [
+      "PY-R012"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R012",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-xxe-dtd",
+    "filename": "xxe-dtd.py",
+    "language": "python",
+    "code": "from lxml.etree import XMLParser\nparser = XMLParser(load_dtd=True)\n",
+    "description": "xxe dtd",
+    "expected_rules": [
+      "PY-R012"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R012",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-xxe-sax-enabled",
+    "filename": "xxe-sax-enabled.py",
+    "language": "python",
+    "code": "parser.setFeature(\"http://xml.org/sax/features/external-general-entities\", True)\n",
+    "description": "xxe sax enabled",
+    "expected_rules": [
+      "PY-R012"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R012",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-xxe-safe",
+    "filename": "xxe-safe.py",
+    "language": "python",
+    "code": "from lxml.etree import XMLParser\nparser = XMLParser(resolve_entities=False, load_dtd=False, no_network=True)\n",
+    "description": "xxe safe",
+    "expected_rules": []
+  },
+  {
+    "id": "py-xxe-safe-defused",
+    "filename": "xxe-safe-defused.py",
+    "language": "python",
+    "code": "from defusedxml import ElementTree\nroot = ElementTree.fromstring(payload)\n",
+    "description": "xxe safe defused",
+    "expected_rules": []
+  },
+  {
+    "id": "py-tls-disabled",
+    "filename": "tls-disabled.py",
+    "language": "python",
+    "code": "import requests\nrequests.get(\"https://example.invalid\", verify=False)\n",
+    "description": "tls disabled",
+    "expected_rules": [
+      "PY-R013"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R013",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-tls-unverified-context",
+    "filename": "tls-unverified-context.py",
+    "language": "python",
+    "code": "import ssl\ncontext = ssl._create_unverified_context()\n",
+    "description": "tls unverified context",
+    "expected_rules": [
+      "PY-R013"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R013",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-tls-safe",
+    "filename": "tls-safe.py",
+    "language": "python",
+    "code": "import requests\nrequests.get(\"https://example.invalid\", verify=True)\n",
+    "description": "tls safe",
+    "expected_rules": []
+  },
+  {
+    "id": "py-xss-mark-safe",
+    "filename": "xss-mark-safe.py",
+    "language": "python",
+    "code": "from django.utils.safestring import mark_safe\ndef preview(value):\n    return mark_safe(value)\n",
+    "description": "xss mark safe",
+    "expected_rules": [
+      "PY-R014"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R014",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-xss-markup",
+    "filename": "xss-markup.py",
+    "language": "python",
+    "code": "from markupsafe import Markup as TrustedHtml\nhtml = TrustedHtml(user_input)\n",
+    "description": "xss markup",
+    "expected_rules": [
+      "PY-R014"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R014",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-xss-safe-static",
+    "filename": "xss-safe-static.py",
+    "language": "python",
+    "code": "from markupsafe import Markup\nhtml = Markup(\"<b>Static text</b>\")\n",
+    "description": "xss safe static",
+    "expected_rules": []
+  },
+  {
+    "id": "py-xss-safe-escape",
+    "filename": "xss-safe-escape.py",
+    "language": "python",
+    "code": "from markupsafe import escape\nhtml = escape(user_input)\n",
+    "description": "xss safe escape",
+    "expected_rules": []
+  },
+  {
+    "id": "py-template-dynamic",
+    "filename": "template-dynamic.py",
+    "language": "python",
+    "code": "from flask import render_template_string as render\nrender(template_content)\n",
+    "description": "template dynamic",
+    "expected_rules": [
+      "PY-R015"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R015",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-template-jinja",
+    "filename": "template-jinja.py",
+    "language": "python",
+    "code": "from jinja2 import Template\nview = Template(user_input)\n",
+    "description": "template jinja",
+    "expected_rules": [
+      "PY-R015"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R015",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-template-safe-context",
+    "filename": "template-safe-context.py",
+    "language": "python",
+    "code": "from flask import render_template_string\nrender_template_string(\"Hello {{ name }}\", name=user_name)\n",
+    "description": "template safe context",
+    "expected_rules": []
+  },
+  {
+    "id": "py-sql-direct-http",
+    "filename": "sql-direct-http.py",
+    "language": "python",
+    "code": "cursor.execute(\"SELECT * FROM users WHERE name = \" + request.args[\"name\"])\n",
+    "description": "sql direct http",
+    "expected_rules": [
+      "PY-T001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T001",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-sql-annotated",
+    "filename": "sql-annotated.py",
+    "language": "python",
+    "code": "def search(request, cursor):\n    username: str = request.form[\"name\"]\n    query = f\"SELECT * FROM users WHERE name = '{username}'\"\n    cursor.execute(query)\n",
+    "description": "sql annotated",
+    "expected_rules": [
+      "PY-T001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T001",
+        "line_number": 4
+      }
+    ]
+  },
+  {
+    "id": "py-sql-dynamic-parameter",
+    "filename": "sql-dynamic-parameter.py",
+    "language": "python",
+    "code": "def search(name, cursor):\n    cursor.execute(\"SELECT * FROM users WHERE name = '%s'\" % name)\n",
+    "description": "sql dynamic parameter",
+    "expected_rules": [
+      "PY-T001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T001",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-sql-safe-parameters",
+    "filename": "sql-safe-parameters.py",
+    "language": "python",
+    "code": "name = request.args[\"name\"]\ncursor.execute(\"SELECT * FROM users WHERE name = ?\", (name,))\n",
+    "description": "sql safe parameters",
+    "expected_rules": []
+  },
+  {
+    "id": "py-sql-safe-integer",
+    "filename": "sql-safe-integer.py",
+    "language": "python",
+    "code": "value = int(request.args[\"id\"])\nquery = f\"SELECT * FROM users WHERE id = {value}\"\ncursor.execute(query)\n",
+    "description": "sql safe integer",
+    "expected_rules": []
+  },
+  {
+    "id": "py-sql-generic-validator-not-safe",
+    "filename": "sql-generic-validator-not-safe.py",
+    "language": "python",
+    "code": "value = sanitize(request.args[\"name\"])\ncursor.execute(\"SELECT * FROM users WHERE name = \" + value)\n",
+    "description": "sql generic validator not safe",
+    "expected_rules": [
+      "PY-T001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T001",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-sql-branch-join",
+    "filename": "sql-branch-join.py",
+    "language": "python",
+    "code": "if debug:\n    value = request.args[\"name\"]\nelse:\n    value = \"public\"\ncursor.execute(\"SELECT * FROM users WHERE name = \" + value)\n",
+    "description": "sql branch join",
+    "expected_rules": [
+      "PY-T001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T001",
+        "line_number": 5
+      }
+    ]
+  },
+  {
+    "id": "py-sql-augmented",
+    "filename": "sql-augmented.py",
+    "language": "python",
+    "code": "query = \"SELECT * FROM users WHERE name = \"\nquery += request.args[\"name\"]\ncursor.execute(query)\n",
+    "description": "sql augmented",
+    "expected_rules": [
+      "PY-T001"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T001",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-path-direct",
+    "filename": "path-direct.py",
+    "language": "python",
+    "code": "open(request.args[\"filename\"])\n",
+    "description": "path direct",
+    "expected_rules": [
+      "PY-T002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T002",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-path-annotated",
+    "filename": "path-annotated.py",
+    "language": "python",
+    "code": "filename: str = request.cookies[\"filename\"]\nopen(filename)\n",
+    "description": "path annotated",
+    "expected_rules": [
+      "PY-T002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T002",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-path-pathlib",
+    "filename": "path-pathlib.py",
+    "language": "python",
+    "code": "from pathlib import Path\nfilename = request.args[\"filename\"]\npath = Path(filename)\ncontent = path.read_text()\n",
+    "description": "path pathlib",
+    "expected_rules": [
+      "PY-T002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T002",
+        "line_number": 4
+      }
+    ]
+  },
+  {
+    "id": "py-path-keyword",
+    "filename": "path-keyword.py",
+    "language": "python",
+    "code": "open(file=request.args[\"filename\"])\n",
+    "description": "path keyword",
+    "expected_rules": [
+      "PY-T002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T002",
+        "line_number": 1
+      }
+    ]
+  },
+  {
+    "id": "py-path-safe-fixed",
+    "filename": "path-safe-fixed.py",
+    "language": "python",
+    "code": "filename = \"/srv/application/README.txt\"\nopen(filename)\n",
+    "description": "path safe fixed",
+    "expected_rules": []
+  },
+  {
+    "id": "py-safe-scope-alias",
+    "filename": "safe-scope-alias.py",
+    "language": "python",
+    "code": "import hashlib\ndef calculate(hashlib):\n    return hashlib.md5(value)\n",
+    "description": "safe scope alias",
+    "expected_rules": []
+  },
+  {
+    "id": "py-safe-source-string",
+    "filename": "safe-source-string.py",
+    "language": "python",
+    "code": "query = \"SELECT request.args and input() are documentation\"\ncursor.execute(query)\n",
+    "description": "safe source string",
+    "expected_rules": []
+  },
+  {
+    "id": "py-distinct-same-cwe",
+    "filename": "distinct-same-cwe.py",
+    "language": "python",
+    "code": "import hashlib\nhashlib.md5(first)\nhashlib.sha1(second)\n",
+    "description": "distinct same cwe",
+    "expected_rules": [
+      "PY-R006",
+      "PY-R006"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R006",
+        "line_number": 2
+      },
+      {
+        "rule_id": "PY-R006",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-path-inline-open",
+    "filename": "path-inline-open.py",
+    "language": "python",
+    "code": "from pathlib import Path\nPath(request.args[\"filename\"]).open()\n",
+    "description": "path inline open",
+    "expected_rules": [
+      "PY-T002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T002",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-path-join",
+    "filename": "path-join.py",
+    "language": "python",
+    "code": "from pathlib import Path\npath = Path(\"/srv/docs\") / request.args[\"filename\"]\npath.read_text()\n",
+    "description": "path join",
+    "expected_rules": [
+      "PY-T002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T002",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-path-tuple",
+    "filename": "path-tuple.py",
+    "language": "python",
+    "code": "filename, count = request.args[\"filename\"], 3\nopen(filename)\n",
+    "description": "path tuple",
+    "expected_rules": [
+      "PY-T002"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-T002",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-path-safe-tuple",
+    "filename": "path-safe-tuple.py",
+    "language": "python",
+    "code": "filename, user = \"/srv/docs/README.txt\", request.args[\"user\"]\nopen(filename)\n",
+    "description": "path safe tuple",
+    "expected_rules": []
+  },
+  {
+    "id": "py-cipher-ecb-numeric",
+    "filename": "cipher-ecb-numeric.py",
+    "language": "python",
+    "code": "from Crypto.Cipher import AES\nAES.new(key, 1)\n",
+    "description": "cipher ecb numeric",
+    "expected_rules": [
+      "PY-R007"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R007",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-log-print-sensitive",
+    "filename": "log-print-sensitive.py",
+    "language": "python",
+    "code": "def login(password):\n    print(\"Password:\", password)\n",
+    "description": "log print sensitive",
+    "expected_rules": [
+      "PY-R009"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R009",
+        "line_number": 2
+      }
+    ]
+  },
+  {
+    "id": "py-log-print-safe",
+    "filename": "log-print-safe.py",
+    "language": "python",
+    "code": "print(\"Password reset completed\")\n",
+    "description": "log print safe",
+    "expected_rules": []
+  },
+  {
+    "id": "py-random-same-alias",
+    "filename": "random-same-alias.py",
+    "language": "python",
+    "code": "import random as rng\nrng = rng.Random()\nreset_token = rng.randbytes(24)\n",
+    "description": "random same alias",
+    "expected_rules": [
+      "PY-R008"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R008",
+        "line_number": 3
+      }
+    ]
+  },
+  {
+    "id": "py-random-safe-dict-sibling",
+    "filename": "random-safe-dict-sibling.py",
+    "language": "python",
+    "description": "Random in a simulation field must not inherit security intent from a sibling dict key",
+    "code": "import random\nconfiguration = {\"reset_token\": supplied_value, \"game_sample\": random.random()}\n",
+    "expected_rules": []
+  },
+  {
+    "id": "py-random-dict-token",
+    "filename": "random-dict-token.py",
+    "language": "python",
+    "description": "Random contributes to the token value in a dictionary",
+    "code": "import random\nconfiguration = {\"reset_token\": random.getrandbits(64)}\n",
+    "expected_rules": [
+      "PY-R008"
+    ],
+    "expected_locations": [
+      {
+        "rule_id": "PY-R008",
+        "line_number": 2
+      }
+    ]
+  }
+]

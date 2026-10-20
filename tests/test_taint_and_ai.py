@@ -373,7 +373,10 @@ def test_ollama_secret_patch_rejects_hardcoded_default(monkeypatch):
     remediation = ai_engine.remediate_finding(finding)
 
     assert "Fallback" in remediation.model_used
-    assert 'process.env.API_KEY || ""' in remediation.suggested_patch
+    assert "process.env.API_KEY" in remediation.suggested_patch
+    assert "if (!apiKey)" in remediation.suggested_patch
+    assert "throw new Error" in remediation.suggested_patch
+    assert '|| ""' not in remediation.suggested_patch
     assert "defaultApiKey" not in remediation.suggested_patch
 
 

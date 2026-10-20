@@ -1,7 +1,8 @@
 import os
 import time
 from typing import List, Type, Dict, Tuple
-from engine.models import Finding, ScanResult, RuleMetadata, Severity
+from engine.models import Finding, ScanResult, RuleMetadata, Severity, ScannedFile, EngineRun
+from engine.orchestration import ExternalScanners, NATIVE_VERSION, normalize_findings
 from engine.rules import BaseRule, DEFAULT_RULES
 from engine.languages import (
     LanguageScanner,
@@ -16,6 +17,9 @@ IGNORE_DIRS = {
     "__pycache__",
     "venv",
     ".venv",
+    ".venv-scanners",
+    "tmp",
+    "graphify-out",
     "env",
     ".env",
     "node_modules",
@@ -33,11 +37,12 @@ IGNORE_DIRS = {
 class SASTEngine:
     """Motor central de análise estática de segurança (SAST) Multi-Linguagem (Python, JavaScript, Java)."""
 
-    def __init__(self, rule_classes: List[Type[BaseRule]] = None):
+    def __init__(self, rule_classes: List[Type[BaseRule]] = None, engines=None, external_scanners=None):
         self.rule_classes = rule_classes or list(DEFAULT_RULES)
         self.python_scanner = PythonScanner(rule_classes=self.rule_classes)
         self.js_scanner = JavaScriptScanner()
         self.java_scanner = JavaScanner()
+        self.external_scanners = external_scanners or ExternalScanners(engines=engines)
 
         self.scanners_by_lang: Dict[str, LanguageScanner] = {
             "python": self.python_scanner,
@@ -78,23 +83,45 @@ class SASTEngine:
 
     def scan_code(self, source_code: str, identifier: str = "<snippet>") -> ScanResult:
         """Executa varredura SAST sobre um snippet de código em memória identificando a linguagem."""
-        start_time = time.perf_counter()
+        return self.scan_sources({identifier: source_code}, target=identifier)
 
-        scanner = self._resolve_scanner(file_path=identifier, source_code=source_code)
-        findings, errors = scanner.scan_source(source_code=source_code, file_path=identifier)
-
-        duration_ms = (time.perf_counter() - start_time) * 1000
-
-        return ScanResult(
-            target_path=identifier,
-            scanned_files_count=1 if not errors else 0,
-            total_findings=len(findings),
-            findings=findings,
-            summary_by_severity=self._build_summary(findings),
-            scan_duration_ms=round(duration_ms, 2),
-            has_errors=bool(errors),
-            errors=errors,
-        )
+    def scan_sources(self, sources: Dict[str, str], target="project") -> ScanResult:
+        """Analyze the whole upload once per engine; preserve partial results on failure."""
+        started = time.perf_counter()
+        sources = {str(path).replace("\\", "/"): source for path, source in sources.items()}
+        findings, errors, files = [], [], []
+        external_sources, path_map = {}, {}
+        for index, (path, source) in enumerate(sorted(sources.items())):
+            scanner = self._resolve_scanner(path, source)
+            try:
+                items, failures = scanner.scan_source(source, path)
+            except Exception as error:
+                items, failures = [], [f"Motor nativo falhou em {path}: {type(error).__name__}. Análise incompleta."]
+            findings.extend(items)
+            errors.extend(failures)
+            files.append(ScannedFile(path=path, language=next(key for key, value in self.scanners_by_lang.items() if value is scanner),
+                size_bytes=len(source.encode("utf-8")), findings_count=len(items), status="error" if failures else "completed"))
+            # CLI absolute paths never become filesystem paths inside the subprocess workspace.
+            extension = os.path.splitext(path)[1] or {"python": ".py", "javascript": ".js", "java": ".java"}[files[-1].language]
+            virtual = f"file-{index}{extension}" if os.path.isabs(path) or path.startswith("<") else path
+            if not failures:
+                external_sources[virtual], path_map[virtual] = source, path
+        native = EngineRun(engine="native", status="error" if errors else "completed", version=NATIVE_VERSION,
+            duration_ms=round((time.perf_counter() - started) * 1000, 2), findings_count=len(findings),
+            files_count=sum(item.status == "completed" for item in files), errors=list(errors))
+        extra, engine_runs, engine_errors = self.external_scanners.scan(external_sources)
+        for finding in extra:
+            finding.file_path = path_map[finding.file_path]
+        findings = normalize_findings(findings + extra, sources)
+        for file in files:
+            file.findings_count = sum(finding.file_path == file.path for finding in findings)
+        errors.extend(engine_errors)
+        if not sources:
+            errors.append("Nenhum arquivo de código suportado foi analisado.")
+        return ScanResult(target_path=target, scanned_files_count=sum(file.status == "completed" for file in files),
+            files=files, total_findings=len(findings), findings=findings, summary_by_severity=self._build_summary(findings),
+            scan_duration_ms=round((time.perf_counter() - started) * 1000, 2),
+            engine_runs=[native] + engine_runs, has_errors=bool(errors), errors=errors)
 
     def scan_file(self, file_path: str) -> ScanResult:
         """Executa varredura SAST sobre um arquivo no disco, detectando sua extensão."""
@@ -132,30 +159,15 @@ class SASTEngine:
                     errors=[f"Erro ao ler arquivo {norm_path}: {e}"],
                 )
 
-        scanner = self._resolve_scanner(file_path=norm_path, source_code=source_code)
-        findings, errors = scanner.scan_source(source_code=source_code, file_path=norm_path)
-
-        duration_ms = (time.perf_counter() - start_time) * 1000
-
-        return ScanResult(
-            target_path=norm_path,
-            scanned_files_count=1 if not errors else 0,
-            total_findings=len(findings),
-            findings=findings,
-            summary_by_severity=self._build_summary(findings),
-            scan_duration_ms=round(duration_ms, 2),
-            has_errors=bool(errors),
-            errors=errors,
-        )
+        return self.scan_code(source_code, identifier=norm_path)
 
     def scan_directory(self, dir_path: str, recursive: bool = True) -> ScanResult:
         """Varre um diretório procurando arquivos suportados (.py, .js, .jsx, .ts, .tsx, .java)."""
         start_time = time.perf_counter()
         norm_dir = os.path.abspath(dir_path)
 
-        all_findings: List[Finding] = []
         all_errors: List[str] = []
-        files_scanned = 0
+        sources = {}
 
         if not os.path.exists(norm_dir):
             return ScanResult(
@@ -189,25 +201,14 @@ class SASTEngine:
                             all_errors.append(f"Erro ao ler {full_path}: {e}")
                             continue
 
-                    scanner = self._resolve_scanner(file_path=full_path, source_code=code)
                     relative_path = os.path.relpath(full_path, norm_dir).replace(os.sep, "/")
-                    f_list, err_list = scanner.scan_source(source_code=code, file_path=relative_path)
-                    all_findings.extend(f_list)
-                    all_errors.extend(err_list)
-                    files_scanned += 0 if err_list else 1
+                    sources[relative_path] = code
 
             if not recursive:
                 break
 
-        duration_ms = (time.perf_counter() - start_time) * 1000
-
-        return ScanResult(
-            target_path=norm_dir,
-            scanned_files_count=files_scanned,
-            total_findings=len(all_findings),
-            findings=all_findings,
-            summary_by_severity=self._build_summary(all_findings),
-            scan_duration_ms=round(duration_ms, 2),
-            has_errors=bool(all_errors) or files_scanned == 0,
-            errors=all_errors or (["Nenhum arquivo de código suportado foi analisado."] if files_scanned == 0 else []),
-        )
+        result = self.scan_sources(sources, target=norm_dir)
+        result.errors.extend(all_errors)
+        result.has_errors = bool(result.errors)
+        result.scan_duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        return result

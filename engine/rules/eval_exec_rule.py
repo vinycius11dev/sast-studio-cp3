@@ -1,9 +1,9 @@
 import ast
 from engine.models import Severity
-from .base_rule import BaseRule
+from .python_context import PythonContextRule
 
 
-class DangerousEvalRule(BaseRule):
+class DangerousEvalRule(PythonContextRule):
     """Detecta o uso de funções perigosas de execução dinâmica como eval() e exec()."""
 
     rule_id: str = "PY-R001"
@@ -20,14 +20,9 @@ class DangerousEvalRule(BaseRule):
     )
 
     def visit_Call(self, node: ast.Call) -> None:
-        func_name = None
+        func_name = self.resolve(node.func)
 
-        if isinstance(node.func, ast.Name):
-            func_name = node.func.id
-        elif isinstance(node.func, ast.Attribute):
-            func_name = node.func.attr
-
-        if func_name in ("eval", "exec"):
+        if func_name in ("eval", "exec", "builtins.eval", "builtins.exec"):
             self.add_finding(
                 node=node,
                 message=f"Chamada detectada à função perigosa '{func_name}()'.",
