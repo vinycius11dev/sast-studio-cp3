@@ -1,0 +1,263 @@
+[
+  {
+    "id": "py-typed-source",
+    "filename": "demo.py",
+    "code": "path: str = input()\nopen(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-typed-reset",
+    "filename": "safe.py",
+    "code": "path = input()\npath: str = 'readme.txt'\nopen(path)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-inline-path",
+    "filename": "demo.py",
+    "code": "open(request.args['path'])",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-keyword-path",
+    "filename": "demo.py",
+    "code": "open(file=request.args.get('path'))",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-source-text-is-not-code",
+    "filename": "safe.py",
+    "code": "path = 'request.args'\nopen(path)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-input-text-is-not-source",
+    "filename": "safe.py",
+    "code": "query = 'input('\ndb.execute(query)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-if-else-flow",
+    "filename": "demo.py",
+    "code": "if choose:\n    path = input()\nelse:\n    path = 'readme.txt'\nopen(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-if-unconditional-reset",
+    "filename": "safe.py",
+    "code": "path = input()\npath = 'readme.txt'\nopen(path)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-zero-trip-loop",
+    "filename": "demo.py",
+    "code": "path = input()\nfor item in values:\n    path = 'readme.txt'\nopen(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-loop-backedge",
+    "filename": "demo.py",
+    "code": "a = 'safe'\nb = 'safe'\nfor item in values:\n    open(a)\n    a = b\n    b = input()",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-unpacking-source",
+    "filename": "demo.py",
+    "code": "path, label = input(), 'label'\nopen(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-unpacking-safe-element",
+    "filename": "safe.py",
+    "code": "path, label = 'readme.txt', input()\nopen(path)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-augmented-flow",
+    "filename": "demo.py",
+    "code": "path: str = 'docs/'\npath += input()\nopen(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-http-method-url",
+    "filename": "demo.py",
+    "code": "url = input()\nrequests.request('GET', url)",
+    "expected_rules": [
+      "PY-R004",
+      "PY-T003"
+    ]
+  },
+  {
+    "id": "py-http-keyword-flow",
+    "filename": "demo.py",
+    "code": "requests.get(url=input())",
+    "expected_rules": [
+      "PY-R004",
+      "PY-T003"
+    ]
+  },
+  {
+    "id": "py-httpx-flow",
+    "filename": "demo.py",
+    "code": "url = input()\nhttpx.get(url)",
+    "expected_rules": [
+      "PY-R004",
+      "PY-T003"
+    ]
+  },
+  {
+    "id": "py-http-source-text",
+    "filename": "safe.py",
+    "code": "requests.get('https://request.args.example.org')",
+    "expected_rules": []
+  },
+  {
+    "id": "py-typed-fixed-url",
+    "filename": "safe.py",
+    "code": "url: str = 'https://example.org'\nrequests.get(url)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-typed-dynamic-url",
+    "filename": "demo.py",
+    "code": "url: str = input()\nrequests.get(url)",
+    "expected_rules": [
+      "PY-R004",
+      "PY-T003"
+    ]
+  },
+  {
+    "id": "py-http-conditional-override",
+    "filename": "demo.py",
+    "code": "url = 'https://example.org'\nif choose:\n    url = input()\nelse:\n    url = 'https://example.net'\nrequests.get(url)",
+    "expected_rules": [
+      "PY-R004",
+      "PY-T003"
+    ]
+  },
+  {
+    "id": "py-import-http-alias",
+    "filename": "demo.py",
+    "code": "import requests as rq\nrq.get(input())",
+    "expected_rules": [
+      "PY-R004",
+      "PY-T003"
+    ]
+  },
+  {
+    "id": "py-from-http-alias",
+    "filename": "demo.py",
+    "code": "from urllib.request import urlopen as fetch\nfetch(input())",
+    "expected_rules": [
+      "PY-R004",
+      "PY-T003"
+    ]
+  },
+  {
+    "id": "py-shadowed-conversion",
+    "filename": "demo.py",
+    "code": "def unsafe(int):\n    value = int(input())\n    db.execute(value)",
+    "expected_rules": [
+      "PY-T001"
+    ]
+  },
+  {
+    "id": "py-exception-path",
+    "filename": "demo.py",
+    "code": "path = input()\ntry:\n    risky()\n    path = 'readme.txt'\nexcept OSError:\n    pass\nopen(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-finally-reset",
+    "filename": "safe.py",
+    "code": "path = input()\ntry:\n    risky()\nfinally:\n    path = 'readme.txt'\nopen(path)",
+    "expected_rules": []
+  },
+  {
+    "id": "py-named-expression",
+    "filename": "demo.py",
+    "code": "if (path := input()):\n    open(path)",
+    "expected_rules": [
+      "PY-T002"
+    ]
+  },
+  {
+    "id": "py-parameter-values-safe",
+    "filename": "safe.py",
+    "code": "value = input()\ndb.execute('SELECT * FROM users WHERE id=?', (value,))",
+    "expected_rules": []
+  },
+  {
+    "id": "py-sql-sink-name-collision",
+    "filename": "safe.py",
+    "code": "notdb.execute(input())",
+    "expected_rules": []
+  },
+  {
+    "id": "py-nested-numeric-conversion",
+    "filename": "safe.py",
+    "code": "db.execute('SELECT * FROM users WHERE id=' + str(int(request.args['id'])))",
+    "expected_rules": []
+  },
+  {
+    "id": "js-parameter-shadows-url",
+    "filename": "demo.js",
+    "code": "const url = 'https://example.org'; function load(url) { fetch(url); }",
+    "expected_rules": [
+      "JS-R006"
+    ]
+  },
+  {
+    "id": "js-parameter-shadows-id",
+    "filename": "demo.js",
+    "code": "const value = '1'; function load(value) { db.query('SELECT * FROM users WHERE id=' + value); }",
+    "expected_rules": [
+      "JS-R005"
+    ]
+  },
+  {
+    "id": "ts-parameter-shadows-url",
+    "filename": "demo.ts",
+    "code": "const url: string = 'https://example.org'; function load(url: string) { fetch(url); }",
+    "expected_rules": [
+      "JS-R006"
+    ]
+  },
+  {
+    "id": "java-parameter-shadows-url",
+    "filename": "Demo.java",
+    "code": "class Demo { String url = \"https://example.org\"; void load(String url) { new URL(url); } }",
+    "expected_rules": [
+      "JAVA-R006"
+    ]
+  },
+  {
+    "id": "js-fixed-global-url",
+    "filename": "safe.js",
+    "code": "const url = 'https://example.org'; function health() { fetch(url); }",
+    "expected_rules": []
+  },
+  {
+    "id": "py-both-branches-static-url",
+    "filename": "safe.py",
+    "code": "if choose:\n    url = 'https://example.org'\nelse:\n    url = 'https://example.net'\nrequests.get(url)",
+    "expected_rules": []
+  }
+]

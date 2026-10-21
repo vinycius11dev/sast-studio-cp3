@@ -397,6 +397,17 @@ html,body{max-width:100%;overflow-x:clip}
 .comparison-change>span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#e9eef6;color:#627590}
 .comparison-change>.icon{width:16px;height:16px}
 .comparison-change.improved{background:#f0f8f3;color:#39785a}.comparison-change.improved>span{background:#dcefe3;color:#28734d}
+.button.danger-outline{color:#a73143;border:1px solid #edc3cb;background:#fff}
+.button.danger-outline:hover:not(:disabled){background:#fff2f4;border-color:#ca7180}
+.button.danger{color:#fff;background:#b82f46;border:1px solid #b82f46}
+.button.danger:hover:not(:disabled){background:#99243a}
+#clear-history-dialog{width:min(520px,calc(100vw - 28px));padding:0;border:1px solid #dce3ed;color:#243651}
+#clear-history-dialog::backdrop{background:#12213ab8}
+#clear-history-dialog .dialog-body>p{font-size:14px;line-height:1.7;margin:0 0 20px}
+#clear-history-dialog .note-box{margin:0;font-size:12px}
+.clear-history-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:24px}
+.clear-history-error{color:#a73143;margin-top:18px!important}
+.history-reset-notice{padding:14px 18px;border:1px solid #bfdfd2;border-radius:10px;background:#effaf5;color:#25614b;overflow-wrap:anywhere;font-size:12px;line-height:1.7;margin-bottom:20px}
 .comparison-change.increased{background:#fff5f1;color:#ae5d44}.comparison-change.increased>span{background:#fbe4dc;color:#ad5038}
 .comparison-change strong{font-size:11px;line-height:1.4}
 .comparison-change small{font-size:9px;line-height:1.5;color:#8694a8}

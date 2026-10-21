@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def evaluate(cases=None, repeats=5):
-    cases = cases if cases is not None else json.loads((ROOT / "benchmarks/cases.json").read_text(encoding="utf-8"))
+    if cases is None:
+        cases = json.loads((ROOT / "benchmarks/cases.json").read_text(encoding="utf-8"))
+        cases += json.loads((ROOT / "benchmarks/precision-regressions.json").read_text(encoding="utf-8"))
     engine = SASTEngine()
     results, timings = [], []
     tp = fp = fn = safe = safe_flagged = 0
@@ -53,7 +55,7 @@ def markdown(report):
             f"- Precisão: {report['precision']:.1%}; recall: {report['recall']:.1%}.",
             f"- Falsos positivos: {report['false_positives']}; falsos negativos: {report['false_negatives']}.",
             f"- Latência mediana: {report['median_ms']} ms; p95: {report['p95_ms']} ms; repetições: {report['repeats']}.", "",
-            "Os rótulos são explícitos em benchmarks/cases.json. Este conjunto não substitui uma avaliação externa nem mede a precisão do LLM.", "",
+            "Os rótulos são explícitos em benchmarks/cases.json e benchmarks/precision-regressions.json. Este conjunto não substitui uma avaliação externa nem mede a precisão do LLM.", "",
             "| Caso | Esperado | Detectado | Resultado |", "| --- | --- | --- | --- |"]
     for case in report["results"]:
         rows.append(f"| {case['id']} | {', '.join(case['expected']) or 'Nenhum'} | {', '.join(case['detected']) or 'Nenhum'} | {'OK' if case['exact_match'] else 'Divergente'} |")
