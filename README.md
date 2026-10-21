@@ -6,6 +6,12 @@ Workspace de análise estática de segurança de código feito como projeto acad
 
 Depois de iniciar o aplicativo, abra a [tela de apresentação](http://127.0.0.1:8000/apresentacao) para explicar o projeto em sala e mostrar o estado local da API e do Ollama.
 
+A apresentação tem sete slides, navegação pelas setas do teclado, tela cheia (`F`) e notas de quem apresenta (`N`). Os atalhos da demonstração carregam os exemplos vulnerável e corrigido no Scanner; a execução da análise continua sendo iniciada por você no workspace.
+
+Melhorias locais de precisão (20/10/2026): fluxo Python em desvios/laços/exceções, fontes estruturais, aliases HTTP e escopo de parâmetros JS/TS/Java. Veja a [comparação antes/depois e os limites da medição](docs/PRECISION-IMPROVEMENTS.md): 88 casos internos, sem equivalência a uma avaliação independente.
+
+Para começar um novo ensaio, use **Visão geral → Limpar** ou **Histórico → Zerar histórico** e confirme. Os indicadores voltam a zero e os gráficos e comparações são limpos. O sistema salva os bancos de análises e jobs em `data/history-backups/<data-hora>/` antes de remover análises, fontes guardadas, revisões e tarefas encerradas. A interface informa o caminho exato da cópia. A limpeza é bloqueada enquanto há análises na fila ou em processamento; o Ollama, as regras e os arquivos originais dos projetos continuam disponíveis.
+
 <p align="center">
   <img src="docs/screenshots/readme/01-visao-geral.png" alt="Visão geral do SAST Studio com comparação entre análises vulnerável e corrigida" width="100%">
 </p>

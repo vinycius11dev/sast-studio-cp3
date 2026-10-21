@@ -60,7 +60,12 @@ class Expressions:
     """Resolve atribuições anteriores no mesmo escopo; não interpreta o código."""
     def __init__(self, root):
         self.bindings = {}
+        self.parameters = set()
         for node in walk(root):
+            if node.type in SCOPE_TYPES:
+                parameters = field(node, "parameters") or field(node, "parameter")
+                if parameters is not None:
+                    self._parameters(node.id, parameters)
             if node.type == "variable_declarator":
                 name, value = field(node, "name"), field(node, "value")
             elif node.type in {"assignment_expression", "assignment"}:
@@ -69,6 +74,26 @@ class Expressions:
                 continue
             if name is not None and value is not None and name.type == "identifier":
                 self.bindings.setdefault((scope(node), text(name)), []).append((node.start_byte, value))
+
+    def _parameters(self, scope_id, node):
+        """Parâmetros ocultam nomes globais, mesmo sem atribuições locais."""
+        if node.type in {"identifier", "shorthand_property_identifier_pattern"}:
+            self.parameters.add((scope_id, text(node)))
+        elif node.type in {"formal_parameter", "spread_parameter"}:
+            name = field(node, "name")
+            if name is not None:
+                self._parameters(scope_id, name)
+        elif node.type in {"required_parameter", "optional_parameter"}:
+            pattern = field(node, "pattern")
+            if pattern is not None:
+                self._parameters(scope_id, pattern)
+        elif node.type in {"assignment_pattern", "object_assignment_pattern", "pair_pattern"}:
+            target = field(node, "left") or field(node, "value")
+            if target is not None:
+                self._parameters(scope_id, target)
+        else:
+            for child in node.named_children:
+                self._parameters(scope_id, child)
 
     def resolve(self, node, seen=None):
         if node is None or node.type != "identifier":
@@ -79,7 +104,7 @@ class Expressions:
             return node
         seen.add(key)
         candidates = self.bindings.get(key, [])
-        if not candidates and key[0]:
+        if not candidates and key[0] and key not in self.parameters:
             candidates = self.bindings.get((0, key[1]), [])
         previous = [value for position, value in candidates if position < node.start_byte]
         return self.resolve(previous[-1], seen) if previous else node

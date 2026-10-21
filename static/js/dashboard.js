@@ -14,7 +14,7 @@
     scans: [], active: null, rules: [], capabilities: null, health: null, aiStatus: null, queueStatus: null,
     view: "overview", mode: "files", pending: [], ignored: 0, selectionType: "file", busy: false,
     selected: null, page: 0, pageSize: 40, sources: new Map(), aiResults: new Map(), aiBusy: null, semanticBusy: null, validations: new Map(),
-    overviewFilesScanId: null, overviewCompareBeforeId: null, overviewCompareAfterId: null,
+    overviewFilesScanId: null, overviewCompareBeforeId: null, overviewCompareAfterId: null, historyClearing: false,
   };
 
   function size(bytes) {
@@ -161,9 +161,10 @@
     return `<section class="panel comparison-panel"><div class="panel-heading"><div><h2>Comparação entre análises</h2><p>Compare execuções reais. A diferença não atribui causalidade a uma alteração específica.</p></div><span class="outline-tag">${state.scans.length} no histórico</span></div>${controls}<div class="comparison-result"><div class="comparison-pair">${card(before, "REFERÊNCIA")}<div class="comparison-change ${delta < 0 ? "improved" : delta > 0 ? "increased" : "unchanged"}"><span>${icon(delta < 0 ? "arrow" : delta > 0 ? "alert" : "check")}</span><strong>${deltaLabel}</strong><small>${detail}</small></div>${card(after, "COMPARAÇÃO")}</div></div><div class="comparison-footnote">A distribuição considera os achados e os gates salvos em cada execução.</div></section>`;
   }
   function renderOverview() {
+    updateClearButtons();
     const latest = state.scans[0];
     if (!latest) {
-      $("overview-content").innerHTML = `<div class="metric-grid">${[["Análises salvas", "0", "clock"], ["Arquivos analisados", "—", "file"], ["Achados críticos", "—", "alert"], ["Regras ativas", number(state.rules.length), "rules"]].map(([label, value, symbol]) => `<div class="metric"><div class="metric-top">${label}<span class="metric-icon">${icon(symbol)}</span></div><div class="metric-number">${value}</div><div class="metric-bottom">Dados desta instalação</div></div>`).join("")}</div><div class="panel">${empty("Seu workspace está pronto", "Carregue uma pasta ou use o projeto de exemplo para executar a primeira análise.", '<a class="button primary" href="#scanner">' + icon("scan") + 'Começar análise</a>')}</div>`;
+      $("overview-content").innerHTML = `<div class="metric-grid">${[["Arquivos analisados", "file"], ["Achados críticos", "alert"], ["Achados de nível alto", "shield"], ["Total de achados", "bar"]].map(([label, symbol]) => `<div class="metric"><div class="metric-top">${label}<span class="metric-icon">${icon(symbol)}</span></div><div class="metric-number">0</div><div class="metric-bottom">Nenhuma análise salva</div></div>`).join("")}</div><div class="panel">${empty("Seu workspace está pronto", "Carregue uma pasta ou use o projeto de exemplo para executar a primeira análise.", '<a class="button primary" href="#scanner">' + icon("scan") + 'Começar análise</a>')}</div>`;
       return;
     }
     ensureAnalyticsSelections();
@@ -196,6 +197,7 @@
     const query = $("history-search").value.trim().toLowerCase();
     const items = state.scans.filter((scan) => `${scan.project_name} ${scan.scan_id}`.toLowerCase().includes(query));
     $("history-count").textContent = number(state.scans.length);
+    updateClearButtons();
     $("history-table").innerHTML = items.length ? table(items) : empty("Nenhuma análise encontrada", query ? "Tente outro nome de projeto." : "Execute uma análise no Scanner para começar.", "", true);
   }
   function scanOptions() {
@@ -209,6 +211,65 @@
     scanOptions();
     renderOverview();
     renderHistory();
+  }
+  function updateClearButtons() {
+    for (const id of ["clear-history", "clear-overview"]) {
+      $(id).disabled = !state.scans.length || state.historyClearing;
+    }
+  }
+  function confirmClearHistory() {
+    if (state.busy || state.aiBusy || state.semanticBusy) {
+      toast("Aguarde a análise ou a revisão de IA terminar antes de zerar o histórico.", true);
+      return;
+    }
+    $("clear-history-error").hidden = true;
+    $("clear-history-dialog").showModal();
+  }
+  async function clearHistory() {
+    if (state.historyClearing) return;
+    state.historyClearing = true;
+    updateClearButtons();
+    const buttons = ["confirm-clear-history", "cancel-clear-history", "close-clear-history"];
+    buttons.forEach((id) => { $(id).disabled = true; });
+    $("confirm-clear-history").textContent = "Criando backup…";
+    $("clear-history-error").hidden = true;
+    try {
+      const result = await api("/api/v1/scans", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirmation: "CLEAR_HISTORY" }) });
+      state.scans = [];
+      state.active = null;
+      state.sources.clear();
+      state.aiResults.clear();
+      state.validations.clear();
+      state.overviewFilesScanId = state.overviewCompareBeforeId = state.overviewCompareAfterId = null;
+      for (const key of ["sast-active-scan", "sast-overview-files", "sast-overview-compare-before", "sast-overview-compare-after"]) {
+        try { localStorage.removeItem(key); } catch { /* storage may be disabled */ }
+      }
+      if (state.queueStatus) state.queueStatus.counts = { queued: 0, running: 0, completed: 0, failed: 0 };
+      $("history-search").value = "";
+      $("export-menu").hidden = true;
+      resetFilters();
+      setStatus("");
+      renderScanOptions();
+      renderFindings();
+      renderOverview();
+      renderHistory();
+      renderPolicy();
+      renderServices();
+      for (const id of ["history-reset-notice", "overview-reset-notice"]) {
+        $(id).textContent = result.backup_path ? `Análises e indicadores zerados. Cópia de segurança: ${result.backup_path}` : "As análises e os indicadores já estavam zerados.";
+        $(id).hidden = false;
+      }
+      $("clear-history-dialog").close();
+      toast("Histórico zerado. Pronto para uma nova demonstração.");
+    } catch (error) {
+      $("clear-history-error").textContent = error.message;
+      $("clear-history-error").hidden = false;
+    } finally {
+      state.historyClearing = false;
+      buttons.forEach((id) => { $(id).disabled = false; });
+      $("confirm-clear-history").textContent = "Criar backup e zerar";
+      renderHistory();
+    }
   }
   function resetFilters() {
     $("findings-search").value = "";
@@ -643,6 +704,11 @@
   window.addEventListener("hashchange", showView);
   $("menu-toggle").addEventListener("click", () => { const open = $("sidebar").classList.toggle("mobile-open"); $("menu-toggle").setAttribute("aria-expanded", String(open)); });
   $("guide-button").addEventListener("click", () => $("guide-dialog").showModal());
+  $("clear-history").addEventListener("click", confirmClearHistory);
+  $("clear-overview").addEventListener("click", confirmClearHistory);
+  $("confirm-clear-history").addEventListener("click", clearHistory);
+  for (const id of ["close-clear-history", "cancel-clear-history"]) $(id).addEventListener("click", () => $("clear-history-dialog").close());
+  $("clear-history-dialog").addEventListener("cancel", (event) => { if (state.historyClearing) event.preventDefault(); });
   $("close-guide").addEventListener("click", () => $("guide-dialog").close());
   $("guide-dialog").addEventListener("click", (event) => { if (event.target === $("guide-dialog")) { const rect = $("guide-dialog").getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) $("guide-dialog").close(); } });
   $("file-upload").addEventListener("change", (event) => { const files = [...event.target.files]; event.target.value = ""; if (files.length) selectFiles(files, "file"); });
@@ -756,6 +822,11 @@
     } else renderFindings();
     if (!state.health) toast("A API local não está respondendo. Inicie o servidor e atualize a página.", true);
     updateEditor();
+    const demo = new URLSearchParams(location.search).get("demo");
+    if (["vulneravel", "corrigido"].includes(demo)) {
+      await loadDemo(false, demo);
+      navigate("scanner");
+    }
     setInterval(() => { if (document.visibilityState === "visible") refreshServices(true); }, 60000);
   }
   init().catch((error) => { toast(error.message, true); });

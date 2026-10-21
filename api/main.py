@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
-from api.store import ScanStore
+from api.store import HistoryBusyError, ScanStore
 from api.jobs import JobStore, ScanJob
 from engine.ai_remediation import AIRemediationEngine, AIRemediationResponse
 from engine.engine import IGNORE_DIRS, SASTEngine
@@ -54,7 +54,7 @@ app.mount("/presentation-assets", StaticFiles(directory=PRESENTATION_ASSETS_DIR)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(","),
-    allow_credentials=True, allow_methods=["GET", "POST"], allow_headers=["*"],
+    allow_credentials=True, allow_methods=["GET", "POST", "DELETE"], allow_headers=["*"],
 )
 sast_engine = SASTEngine()
 ai_engine = AIRemediationEngine()
@@ -255,6 +255,18 @@ def scans(limit: int = Query(100, ge=1, le=500)):
     return {"items": scan_store.list(limit)}
 
 
+class ClearHistoryRequest(BaseModel):
+    confirmation: Literal["CLEAR_HISTORY"]
+
+
+@app.delete("/api/v1/scans", tags=["Histórico"])
+def clear_history(payload: ClearHistoryRequest):
+    try:
+        return scan_store.clear(job_store)
+    except HistoryBusyError as error:
+        raise HTTPException(409, str(error)) from error
+
+
 def _get_scan(scan_id: str) -> ScanResult:
     result = scan_store.get(scan_id)
     if result is None:
@@ -354,4 +366,8 @@ def review_finding_endpoint(payload: SemanticReviewRequest):
     source = scan_store.source(payload.scan_id, original.file_path)
     if source is None:
         raise HTTPException(404, "Código-fonte indisponível para revisão.")
-    return scan_store.save_review(semantic_engine.review_finding(original, source, payload.scan_id))
+    review = semantic_engine.review_finding(original, source, payload.scan_id)
+    try:
+        return scan_store.save_review(review)
+    except ValueError as error:
+        raise HTTPException(409, str(error)) from error

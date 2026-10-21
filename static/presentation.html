@@ -3,210 +3,109 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#081426">
-  <meta name="description" content="Conheça o SAST Studio: análise estática de segurança, gate de qualidade e remediação assistida por IA local.">
-  <title>SAST Studio · Apresentação do projeto</title>
+  <meta name="theme-color" content="#101b2d">
+  <meta name="description" content="Apresentação do SAST Studio: análise estática, evidências, security gate e IA local.">
+  <title>SAST Studio · Apresentação</title>
   <link rel="icon" type="image/svg+xml" href="/static/brand.svg">
-  <link rel="stylesheet" href="/static/css/presentation.css?v=1">
-  <script src="/static/js/presentation.js?v=1" defer></script>
+  <link rel="stylesheet" href="/static/css/presentation.css?v=2">
+  <script src="/static/js/presentation.js?v=2" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <a class="site-brand" href="/apresentacao" aria-label="SAST Studio, apresentação">
-      <img src="/static/brand.svg" alt="" width="40" height="40">
-      <span>SAST <b>Studio</b><small>CODE SECURITY WORKSPACE</small></span>
-    </a>
-    <nav class="site-nav" aria-label="Navegação da apresentação">
-      <a href="#proposta">O projeto</a>
-      <a href="#fluxo">Como funciona</a>
-      <a href="#ia">IA local</a>
-      <a href="#executar">Como executar</a>
-    </nav>
-    <a class="header-cta" href="/dashboard">Abrir sistema <span aria-hidden="true">↗</span></a>
+  <a class="skip-link" href="#slide-stage">Ir para a apresentação</a>
+  <header class="deck-header">
+    <a class="brand" href="/apresentacao" aria-label="SAST Studio, início da apresentação"><img src="/static/brand.svg" alt="" width="36" height="36"><span>SAST <b>Studio</b><small>FIAP · ENGENHARIA DE SOFTWARE · CP3</small></span></a>
+    <div class="live-bar" aria-label="Serviços locais">
+      <span class="live-pill" id="api-pill" data-state="checking"><i></i><span id="api-live-status">API · consultando</span></span>
+      <span class="live-pill" id="ai-pill" data-state="checking"><i></i><span id="ai-live-status">IA · consultando</span></span>
+    </div>
+    <a class="button header-link" href="/dashboard" target="_blank" rel="noopener">Abrir workspace <span aria-hidden="true">↗</span></a>
   </header>
 
-  <main>
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-grid" aria-hidden="true"></div>
-      <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
-      <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> FIAP · ENGENHARIA DE SOFTWARE · CP3</p>
-          <h1 id="hero-title">Segurança do código,<br><span>antes do deploy.</span></h1>
-          <p class="hero-lead">O SAST Studio encontra padrões de risco no código, explica cada achado e ajuda a revisar uma correção — sem executar o projeto.</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="/dashboard">Explorar o sistema <span aria-hidden="true">→</span></a>
-            <a class="button button-quiet" href="#demonstracao">Ver a demonstração <span aria-hidden="true">↓</span></a>
-          </div>
-          <div class="hero-meta">
-            <span><i class="meta-mark meta-blue"></i> Análise estática</span>
-            <span><i class="meta-mark meta-green"></i> IA com Ollama local</span>
-            <span><i class="meta-mark meta-violet"></i> Python · JS/TS · Java</span>
-          </div>
-        </div>
-
-        <div class="hero-visual">
-          <div class="visual-window">
-            <div class="window-bar"><span class="window-lights"><i></i><i></i><i></i></span><span>workspace · visão geral</span><span class="window-lock" aria-hidden="true">●</span></div>
-            <img src="/presentation-assets/01-visao-geral.png" alt="Dashboard do SAST Studio comparando uma análise vulnerável bloqueada com uma análise corrigida aprovada">
-            <div class="visual-caption"><span class="caption-icon" aria-hidden="true">✓</span><span><b>Resultado rastreável</b><small>Da detecção ao gate, cada execução fica no histórico.</small></span></div>
-          </div>
-          <div class="floating-chip"><span class="live-spark" aria-hidden="true">✳</span> IA local · sem chave de API</div>
-        </div>
+  <main id="slide-stage" class="stage" tabindex="-1">
+    <section class="slide cover" id="slide-1" aria-labelledby="title-1" data-title="A proposta">
+      <div class="slide-copy">
+        <p class="eyebrow"><span class="short-line"></span> SEGURANÇA DE CÓDIGO · V3.0</p>
+        <h1 id="title-1">Encontre o risco.<br>Entenda a causa.<br><em>Revise a correção.</em></h1>
+        <p class="lead">Um workspace de análise estática que conecta código, evidências e IA local antes do deploy.</p>
+        <div class="cover-actions"><button class="button primary" type="button" data-go="2">Conhecer o projeto <span aria-hidden="true">→</span></button><a class="text-link" href="/dashboard?demo=vulneravel#scanner" target="_blank" rel="noopener">Ir direto à demonstração ↗</a></div>
+        <div class="language-row"><span>Python</span><span>JavaScript / TypeScript</span><span>Java</span></div>
       </div>
-
-      <div class="hero-proof" aria-label="Resumo do projeto">
-        <div><strong>3</strong><span>linguagens analisadas</span></div>
-        <div><strong>9 <em>→</em> 0</strong><span>achados no exemplo após correção*</span></div>
-        <div><strong>JSON <i>·</i> SARIF <i>·</i> MD</strong><span>formatos de relatório</span></div>
-        <p>* Nas regras atuais e no projeto de demonstração incluído.</p>
+      <div class="code-scene" aria-label="Exemplo ilustrativo de SQL Injection e correção parametrizada">
+        <div class="editor-bar"><span class="editor-dots"><i></i><i></i><i></i></span><span>src / consulta.py</span><span>PYTHON</span></div>
+        <div class="code-content"><span class="code-label">01 / DETECÇÃO</span><pre><span class="syntax-violet">def</span> buscar_usuario(nome):
+  consulta = <span class="syntax-red">f"""SELECT * FROM users
+              WHERE name = '{nome}'"""</span>
+  cursor.execute(consulta)</pre><div class="code-finding"><span class="risk-icon">!</span><div><b>SQL Injection</b><small>CWE-89 · Entrada concatenada à consulta</small></div><span class="risk-badge">CRÍTICA</span></div><div class="editor-divider"></div><span class="code-label">02 / CORREÇÃO PARA REVISÃO</span><pre><span class="syntax-green">cursor.execute(
+  "SELECT * FROM users WHERE name = ?",
+  (nome,)
+)</span></pre><div class="code-foot"><span class="green-dot"></span> Consulta parametrizada · exemplo ilustrativo</div></div>
+        <div class="scene-bottom"><span>AST + regras de segurança</span><b>evidência → decisão</b></div>
       </div>
+      <div class="slide-index" aria-hidden="true">01</div>
     </section>
 
-    <section class="section section-intro" id="proposta" aria-labelledby="proposal-title">
-      <div class="section-heading">
-        <p class="eyebrow eyebrow-light">O PROJETO</p>
-        <h2 id="proposal-title">Uma análise que dá para <span>entender e demonstrar.</span></h2>
-        <p>Em vez de apenas listar alertas, o workspace conecta código, evidências, decisão de gate, revisão por IA e histórico em um fluxo só.</p>
+    <section class="slide" id="slide-2" aria-labelledby="title-2" data-title="O problema" hidden>
+      <div class="section-head"><p class="eyebrow">01 / POR QUE ESSE PROJETO EXISTE</p><h2 id="title-2">Um alerta precisa virar<br><em>uma decisão clara.</em></h2><p class="lead">Encontrar padrões de risco é o começo. O desenvolvedor também precisa saber onde agir e o que bloqueia a entrega.</p></div>
+      <div class="three-cards">
+        <article class="idea-card"><span class="card-number">01</span><h3>Detectar cedo</h3><p>Identificar SQL Injection, execução de comandos, segredos e outros padrões nas estruturas do código.</p><span class="card-tag">Código-fonte → achados</span></article>
+        <article class="idea-card"><span class="card-number">02</span><h3>Mostrar a evidência</h3><p>Conectar cada alerta à regra, severidade, CWE, arquivo, linha e trecho que motivou a detecção.</p><span class="card-tag">Achados → contexto</span></article>
+        <article class="idea-card accent-card"><span class="card-number">03</span><h3>Decidir a entrega</h3><p>Aplicar uma política de bloqueio e levar os resultados para a revisão de código e o pipeline.</p><span class="card-tag">Contexto → security gate</span></article>
       </div>
-      <div class="capability-grid">
-        <article class="capability-card">
-          <span class="capability-icon icon-scan" aria-hidden="true">⌕</span>
-          <h3>Encontra padrões</h3>
-          <p>Python usa AST e fluxo de dados básico. JavaScript, TypeScript e Java usam parsers Tree-sitter e regras estruturais.</p>
-          <span class="card-foot">SEM EXECUTAR O CÓDIGO</span>
-        </article>
-        <article class="capability-card">
-          <span class="capability-icon icon-gate" aria-hidden="true">✓</span>
-          <h3>Aplica um gate</h3>
-          <p>Severidade, política e erros de processamento ficam visíveis. O resultado pode bloquear um Pull Request no CI.</p>
-          <span class="card-foot">POLÍTICA EXPLÍCITA</span>
-        </article>
-        <article class="capability-card">
-          <span class="capability-icon icon-ai" aria-hidden="true">✳</span>
-          <h3>Ajuda a corrigir</h3>
-          <p>Ollama revisa o contexto e propõe uma remediação. A pessoa confere o diff; nada é aplicado automaticamente.</p>
-          <span class="card-foot">REVISÃO HUMANA NO CONTROLE</span>
-        </article>
-      </div>
+      <p class="slide-footnote">Análise estática: o código enviado é inspecionado, sem executar suas funções.</p>
+      <div class="slide-index" aria-hidden="true">02</div>
     </section>
 
-    <section class="section section-flow" id="fluxo" aria-labelledby="flow-title">
-      <div class="section-heading section-heading-center">
-        <p class="eyebrow eyebrow-blue">DO CÓDIGO À EVIDÊNCIA</p>
-        <h2 id="flow-title">Um fluxo simples, <span>do começo ao fim.</span></h2>
-        <p>O mesmo motor atende a interface, a API e a CLI. A fila registra o processamento e os relatórios acompanham a análise.</p>
+    <section class="slide" id="slide-3" aria-labelledby="title-3" data-title="A arquitetura" hidden>
+      <div class="section-head"><p class="eyebrow">02 / COMO FUNCIONA</p><h2 id="title-3">Do código à evidência.<br><em>Um motor compartilhado.</em></h2></div>
+      <div class="pipeline" aria-label="Fluxo da análise">
+        <article><span>01</span><h3>Entrada</h3><p>Pasta, arquivo<br>ou trecho</p></article><b aria-hidden="true">→</b>
+        <article><span>02</span><h3>API + fila</h3><p>Validação e jobs<br>em SQLite</p></article><b aria-hidden="true">→</b>
+        <article class="pipeline-core"><span>03</span><h3>Motor SAST</h3><p>AST / Tree-sitter<br>e regras</p></article><b aria-hidden="true">→</b>
+        <article><span>04</span><h3>Resultado</h3><p>Achados, gate<br>e histórico</p></article>
       </div>
-      <div class="flow-track">
-        <article class="flow-step">
-          <span class="step-number">01</span>
-          <div class="step-icon" aria-hidden="true">⌘</div>
-          <h3>Receber o código</h3>
-          <p>Escolha uma pasta, arquivo ou trecho. Limites protegem a entrada e as fontes não são executadas.</p>
-          <span class="step-tag">PASTA · ARQUIVO · EDITOR</span>
-        </article>
-        <div class="flow-connector" aria-hidden="true">→</div>
-        <article class="flow-step">
-          <span class="step-number">02</span>
-          <div class="step-icon" aria-hidden="true">⌬</div>
-          <h3>Analisar estruturas</h3>
-          <p>Parsers e regras identificam padrões. Um worker processa a análise pela fila persistente em SQLite.</p>
-          <span class="step-tag">AST · TREE-SITTER · WORKER</span>
-        </article>
-        <div class="flow-connector" aria-hidden="true">→</div>
-        <article class="flow-step">
-          <span class="step-number">03</span>
-          <div class="step-icon" aria-hidden="true">▤</div>
-          <h3>Explicar e decidir</h3>
-          <p>Veja regra, CWE, linha e evidência. O gate usa o limiar configurado; JSON, SARIF e Markdown guardam o resultado.</p>
-          <span class="step-tag">ACHADOS · GATE · RELATÓRIOS</span>
-        </article>
-      </div>
-      <div class="architecture-strip">
-        <span class="architecture-label">ARQUITETURA</span>
-        <span>Dashboard</span><i>→</i><span>FastAPI</span><i>→</i><span>Fila SQLite</span><i>→</i><span>Worker</span><i>→</i><span>Motor SAST</span>
-        <b>+</b><span class="architecture-ai">Ollama local</span>
-      </div>
+      <div class="architecture-bottom"><article class="architecture-ai"><span class="symbol">✳</span><div><h3>Ollama local</h3><p>Revisa o contexto e sugere correções a partir dos achados.</p></div></article><div class="architecture-outputs"><span>Interface web</span><span>API</span><span>CLI / CI</span><small>Saídas: JSON · SARIF · Markdown</small></div></div>
+      <p class="slide-footnote">Python: AST e fluxo básico de dados. JavaScript/TypeScript e Java: Tree-sitter e regras estruturais.</p>
+      <div class="slide-index" aria-hidden="true">03</div>
     </section>
 
-    <section class="section section-demo" id="demonstracao" aria-labelledby="demo-title">
-      <div class="demo-heading">
-        <div>
-          <p class="eyebrow eyebrow-blue">DEMONSTRAÇÃO REAL</p>
-          <h2 id="demo-title">Detectar. Revisar. <span>Corrigir.</span></h2>
-        </div>
-        <p>Exemplos controlados incluídos no repositório. As capturas mostram a interface executando, e a resposta de IA está identificada pelo provedor.</p>
+    <section class="slide evidence-slide" id="slide-4" aria-labelledby="title-4" data-title="Antes e depois" hidden>
+      <div class="evidence-copy"><p class="eyebrow">03 / EVIDÊNCIA DO PROJETO</p><h2 id="title-4">Mesmo exemplo.<br><em>Outro resultado.</em></h2>
+        <div class="evidence-tabs" role="tablist" aria-label="Comparar exemplos"><button type="button" role="tab" id="evidence-before" aria-selected="true" aria-controls="evidence-panel" data-evidence="before">Antes da correção</button><button type="button" role="tab" id="evidence-after" aria-selected="false" aria-controls="evidence-panel" data-evidence="after" tabindex="-1">Depois da correção</button></div>
+        <div id="evidence-panel" role="tabpanel" aria-labelledby="evidence-before"><div class="evidence-value" id="evidence-value">9<span>achados</span></div><p class="gate-label" id="evidence-gate" data-state="blocked">Gate bloqueado · limiar HIGH</p><p class="evidence-description" id="evidence-description">3 arquivos · 6 achados críticos e 3 altos no exemplo vulnerável.</p></div>
+        <a class="button primary" id="evidence-demo-link" href="/dashboard?demo=vulneravel#scanner" target="_blank" rel="noopener">Carregar este exemplo ↗</a><p class="slide-footnote">Resultados de referência e capturas do repositório. A análise ao vivo é executada no workspace.</p>
       </div>
-      <div class="demo-story">
-        <article class="story-card story-vulnerable">
-          <div class="story-label"><span class="story-dot dot-red"></span> ANTES DA CORREÇÃO</div>
-          <h3>O gate encontra o risco.</h3>
-          <p>3 arquivos · 9 achados · 6 críticos · gate bloqueado</p>
-          <img src="/presentation-assets/02-achados-vulneraveis.png" alt="Lista de nove achados no exemplo vulnerável, com gate bloqueado e trecho de SQL Injection destacado" loading="lazy">
-        </article>
-        <article class="story-card story-ai" id="ia">
-          <div class="story-label"><span class="story-dot dot-violet"></span> REVISÃO ASSISTIDA</div>
-          <h3>O modelo explica o contexto.</h3>
-          <p>Ollama · llama3.2:3b · resposta real da IA</p>
-          <img src="/presentation-assets/03-triagem-ollama.png" alt="Revisão semântica real pelo Ollama, com risco confirmado, severidade e evidências" loading="lazy">
-        </article>
-        <article class="story-card story-diff">
-          <div class="story-label"><span class="story-dot dot-blue"></span> SUGESTÃO PARA REVISÃO</div>
-          <h3>O diff mostra a mudança.</h3>
-          <p>Linhas removidas e adicionadas, sem alterar o arquivo original.</p>
-          <img src="/presentation-assets/05-diff-remediacao.png" alt="Modal de diff da sugestão com uma linha removida e uma adicionada" loading="lazy">
-        </article>
-        <article class="story-card story-corrected">
-          <div class="story-label"><span class="story-dot dot-green"></span> DEPOIS DA CORREÇÃO</div>
-          <h3>O exemplo seguro passa.</h3>
-          <p>3 arquivos · 0 achados pelas regras atuais · gate aprovado</p>
-          <img src="/presentation-assets/06-projeto-corrigido.png" alt="Resultado do exemplo corrigido com zero achados e gate aprovado" loading="lazy">
-        </article>
-      </div>
-      <div class="demo-note"><span aria-hidden="true">i</span><p>Zero achados significa que as regras aplicadas não encontraram os padrões cobertos. Não é uma prova de segurança absoluta; a IA também pode errar e suas sugestões precisam de revisão.</p></div>
+      <figure class="evidence-figure"><div class="figure-bar"><span class="green-dot"></span> CAPTURA REAL DO WORKSPACE</div><img id="evidence-image" src="/presentation-assets/02-achados-vulneraveis.png" alt="Exemplo vulnerável com nove achados e gate bloqueado"><figcaption id="evidence-caption">Antes da correção · achados rastreáveis por arquivo, linha e regra.</figcaption></figure>
+      <div class="slide-index" aria-hidden="true">04</div>
     </section>
 
-    <section class="section section-runtime" id="executar" aria-labelledby="run-title">
-      <div class="runtime-copy">
-        <p class="eyebrow eyebrow-light">PRONTO PARA RODAR LOCALMENTE</p>
-        <h2 id="run-title">A apresentação começa <span>no seu computador.</span></h2>
-        <p>O dashboard é servido localmente. Para mostrar a IA, deixe o Ollama aberto com o modelo configurado; a página informa o estado atual do serviço.</p>
-        <div class="runtime-status" aria-label="Estado atual dos serviços locais">
-          <div class="status-row"><span class="status-indicator" id="api-indicator"></span><span id="api-live-status" aria-live="polite">Consultando a API…</span></div>
-          <div class="status-row"><span class="status-indicator" id="ai-indicator"></span><span id="ai-live-status" aria-live="polite">Consultando Ollama…</span></div>
-          <button class="status-refresh" type="button" id="refresh-status">Atualizar estado local <span aria-hidden="true">↻</span></button>
-        </div>
-      </div>
-      <div class="run-card">
-        <div class="run-card-top"><span class="terminal-dot"></span><span>PowerShell · preparação</span><span class="terminal-tag">WINDOWS</span></div>
-        <ol class="run-steps">
-          <li><span>01</span><div><b>Instale as dependências</b><code>py -3.11 -m pip install -r requirements.txt</code></div></li>
-          <li><span>02</span><div><b>Baixe o modelo local</b><code>ollama pull llama3.2:3b</code></div></li>
-          <li><span>03</span><div><b>Inicie o workspace</b><code>iniciar.bat</code></div></li>
-          <li><span>04</span><div><b>Faça o ensaio completo</b><code>verificar_apresentacao.bat</code></div></li>
-        </ol>
-        <div class="run-card-footer"><span class="run-check" aria-hidden="true">✓</span><span>Workspace <b>127.0.0.1:8000/dashboard</b></span></div>
-      </div>
+    <section class="slide ai-slide" id="slide-5" aria-labelledby="title-5" data-title="A IA local" hidden>
+      <div class="slide-copy"><p class="eyebrow">04 / INTELIGÊNCIA ARTIFICIAL</p><h2 id="title-5">Mais contexto.<br><em>Revisão humana.</em></h2><p class="lead">O modelo local explica o risco e propõe uma alteração. O desenvolvedor revisa o diff antes de aplicar.</p><ol class="compact-steps"><li><span>01</span><div><b>Revisar o achado</b><p>Classificação, confiança e evidências no contexto do arquivo.</p></div></li><li><span>02</span><div><b>Comparar a sugestão</b><p>Diff e reanálise estática do código proposto.</p></div></li><li><span>03</span><div><b>Manter a rastreabilidade</b><p>O achado e o gate originais permanecem registrados.</p></div></li></ol></div>
+      <figure class="evidence-figure ai-figure"><div class="figure-bar"><span class="model-star">✳</span> OLLAMA · LLAMA3.2:3B</div><img src="/presentation-assets/03-triagem-ollama.png" alt="Revisão semântica registrada no projeto, identificada como resposta do Ollama"><figcaption>Captura do repositório. Na demonstração ao vivo, confira o selo do provedor: Ollama ou fallback determinístico.</figcaption></figure>
+      <div class="slide-index" aria-hidden="true">05</div>
     </section>
 
-    <section class="closing-section">
-      <div class="closing-content">
-        <p class="eyebrow eyebrow-blue">SAST STUDIO · FIAP CP3</p>
-        <h2>Segurança não precisa ser uma caixa-preta.</h2>
-        <p>Explore o workspace, veja o fluxo completo e confira o código e as evidências do projeto.</p>
-        <div class="closing-actions">
-          <a class="button button-primary" href="/dashboard">Abrir o workspace <span aria-hidden="true">→</span></a>
-          <a class="button button-outline" href="https://github.com/vinycius11dev/sast-studio-cp3" target="_blank" rel="noopener">Ver no GitHub <span aria-hidden="true">↗</span></a>
-        </div>
-      </div>
+    <section class="slide demo-slide" id="slide-6" aria-labelledby="title-6" data-title="Demonstração ao vivo" hidden>
+      <div class="section-head demo-head"><div><p class="eyebrow">05 / DEMONSTRAÇÃO AO VIVO</p><h2 id="title-6">Agora, <em>na prática.</em></h2></div><button class="button secondary" type="button" id="refresh-status">Verificar ambiente ↻</button></div>
+      <div class="demo-layout"><div class="demo-path"><ol class="compact-steps"><li><span>01</span><div><b>Analise o exemplo vulnerável</b><p>Mostre o gate bloqueado e explique um achado pelo código.</p><a class="text-link" href="/dashboard?demo=vulneravel#scanner" target="_blank" rel="noopener">Preparar exemplo vulnerável ↗</a></div></li><li><span>02</span><div><b>Revise e sugira a correção com IA</b><p>Confira o provedor, a evidência e o diff da sugestão.</p></div></li><li><span>03</span><div><b>Analise o exemplo corrigido</b><p>Compare as duas execuções e exporte o relatório.</p><a class="text-link" href="/dashboard?demo=corrigido#scanner" target="_blank" rel="noopener">Preparar exemplo corrigido ↗</a></div></li></ol></div><aside class="environment"><div class="environment-heading"><span class="eyebrow">AMBIENTE LOCAL</span><span class="live-caption">AO VIVO</span></div><div class="environment-row"><span>API SAST</span><b id="runtime-api">Consultando…</b></div><div class="environment-row"><span>Worker</span><b id="runtime-worker">Consultando…</b></div><div class="environment-row"><span>Modelo local</span><b id="runtime-ai">Consultando…</b></div><div class="environment-row"><span>Histórico</span><b id="runtime-history">Consultando…</b></div><p id="status-updated" class="status-updated" aria-live="polite">Consultando serviços locais…</p><a class="button secondary" href="/dashboard#history" target="_blank" rel="noopener">Preparar histórico limpo ↗</a><p class="environment-note">No Histórico, use “Zerar histórico”. A limpeza pede confirmação e cria um backup local.</p></aside></div>
+      <div class="slide-index" aria-hidden="true">06</div>
+    </section>
+
+    <section class="slide closing" id="slide-7" aria-labelledby="title-7" data-title="O resultado" hidden>
+      <p class="eyebrow">06 / O QUE ENTREGAMOS</p><h2 id="title-7">Segurança que pode ser<br><em>explicada e revisada.</em></h2>
+      <div class="closing-points"><div><span>01</span><h3>Detecção estrutural</h3><p>Cobertura explícita por linguagem e regra.</p></div><div><span>02</span><h3>Decisão rastreável</h3><p>Gate, histórico e relatórios por execução.</p></div><div><span>03</span><h3>IA com contexto</h3><p>Revisão e remediação assistidas localmente.</p></div></div>
+      <p class="closing-limit">Limites: cobertura pelas regras atuais, fluxo Python básico e IA sujeita a erro. Zero achados não comprova ausência de vulnerabilidades.</p>
+      <div class="closing-links"><a class="button primary" href="/dashboard" target="_blank" rel="noopener">Explorar o workspace ↗</a><a class="text-link" href="https://github.com/vinycius11dev/sast-studio-cp3" target="_blank" rel="noopener">Código e evidências no GitHub ↗</a></div>
+      <div class="slide-index" aria-hidden="true">07</div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <a class="site-brand footer-brand" href="/apresentacao"><img src="/static/brand.svg" alt="" width="32" height="32"><span>SAST <b>Studio</b></span></a>
-    <span>Projeto acadêmico · FIAP Engenharia de Software · 2026</span>
-    <a href="/docs" target="_blank" rel="noopener">Documentação da API ↗</a>
+  <aside class="speaker-notes" id="speaker-notes" aria-labelledby="notes-title" hidden><b id="notes-title">Notas de quem apresenta</b><p id="notes-content"></p></aside>
+  <footer class="deck-footer">
+    <div class="chapter"><span class="chapter-index" id="slide-number" aria-live="polite">01 / 07</span><span id="chapter-title">A proposta</span></div>
+    <nav class="slide-dots" aria-label="Ir para um slide"><button type="button" data-go="1" aria-label="Slide 1: A proposta" aria-current="step"></button><button type="button" data-go="2" aria-label="Slide 2: O problema"></button><button type="button" data-go="3" aria-label="Slide 3: A arquitetura"></button><button type="button" data-go="4" aria-label="Slide 4: Antes e depois"></button><button type="button" data-go="5" aria-label="Slide 5: A IA local"></button><button type="button" data-go="6" aria-label="Slide 6: Demonstração ao vivo"></button><button type="button" data-go="7" aria-label="Slide 7: O resultado"></button></nav>
+    <div class="deck-tools"><button type="button" class="tool-button" id="toggle-notes" aria-expanded="false" aria-controls="speaker-notes">Notas <kbd>N</kbd></button><button type="button" class="tool-button" id="fullscreen" aria-label="Ativar tela cheia">Tela cheia <kbd>F</kbd></button><button type="button" class="arrow-button" id="previous-slide" aria-label="Slide anterior" disabled>←</button><button type="button" class="arrow-button next" id="next-slide" aria-label="Próximo slide">→</button></div>
+    <div class="deck-progress" aria-hidden="true"><span id="deck-progress"></span></div>
   </footer>
+  <p class="deck-message" id="deck-message" role="status" hidden></p>
 </body>
 </html>

@@ -11,6 +11,10 @@ from engine.models import ScanResult, SemanticReview
 from engine.policy import evaluate_gate
 
 
+class HistoryBusyError(RuntimeError):
+    """A fila ainda contém análises que podem gravar novos resultados."""
+
+
 def _top_files(findings, limit: int = 5):
     """Compact file-level severity counts for the dashboard history endpoint."""
     grouped = {}
@@ -90,6 +94,9 @@ class ScanStore:
         review.review_id = uuid4().hex
         review.created_at = datetime.now(timezone.utc).isoformat()
         with self.connection() as database:
+            database.execute("BEGIN IMMEDIATE")
+            if not database.execute("SELECT 1 FROM scans WHERE id = ?", (review.scan_id,)).fetchone():
+                raise ValueError("A análise foi removida do histórico. Execute uma nova análise para revisá-la.")
             database.execute("INSERT INTO semantic_reviews (id, scan_id, created_at, review_json) VALUES (?, ?, ?, ?)",
                              (review.review_id, review.scan_id, review.created_at, review.model_dump_json()))
         return review
@@ -112,6 +119,42 @@ class ScanStore:
             result["findings"] = []
             items.append(result)
         return items
+
+    def clear(self, job_store):
+        """Limpa resultados e jobs encerrados depois de um backup consistente.
+
+        Os dois bancos são bloqueados durante a checagem e a limpeza. Assim um
+        worker não pode assumir um job entre a verificação da fila e o DELETE.
+        Backups usam conexões de leitura separadas para incluir o conteúdo WAL.
+        """
+        job_store.initialize()
+        with self.connection() as database:
+            database.execute("ATTACH DATABASE ? AS queue_history", (str(job_store.path.resolve()),))
+            database.execute("BEGIN IMMEDIATE")
+            active = database.execute(
+                "SELECT COUNT(*) FROM queue_history.jobs WHERE status IN ('queued', 'running')"
+            ).fetchone()[0]
+            if active:
+                raise HistoryBusyError("Aguarde as análises na fila ou em processamento antes de zerar o histórico.")
+            counts = {
+                "deleted_scans": database.execute("SELECT COUNT(*) FROM scans").fetchone()[0],
+                "deleted_reviews": database.execute("SELECT COUNT(*) FROM semantic_reviews").fetchone()[0],
+                "deleted_jobs": database.execute("SELECT COUNT(*) FROM queue_history.jobs").fetchone()[0],
+            }
+            backup_path = None
+            if any(counts.values()):
+                stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
+                backup = self.path.parent / "history-backups" / f"{stamp}-{uuid4().hex[:8]}"
+                backup.mkdir(parents=True, exist_ok=False)
+                for source_path, name in ((self.path, "scans.sqlite3"), (job_store.path, "jobs.sqlite3")):
+                    with sqlite3.connect(source_path, timeout=15) as source:
+                        with sqlite3.connect(backup / name) as destination:
+                            source.backup(destination)
+                backup_path = str(backup.resolve())
+                database.execute("DELETE FROM semantic_reviews")
+                database.execute("DELETE FROM scans")
+                database.execute("DELETE FROM queue_history.jobs WHERE status IN ('completed', 'failed')")
+        return {**counts, "backup_path": backup_path}
 
     def source(self, scan_id: str, path: str):
         with self.connection() as database:
