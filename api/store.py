@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict
 from uuid import uuid4
 
-from engine.models import ScanResult, SemanticReview
+from engine.models import CitizenAlert, ScanResult, SemanticReview
 from engine.policy import evaluate_gate
 
 
@@ -60,6 +60,11 @@ class ScanStore:
                 "id TEXT PRIMARY KEY, scan_id TEXT NOT NULL, created_at TEXT NOT NULL, review_json TEXT NOT NULL)"
             )
             database.execute("CREATE INDEX IF NOT EXISTS semantic_reviews_scan ON semantic_reviews(scan_id, created_at)")
+            database.execute(
+                "CREATE TABLE IF NOT EXISTS citizen_alerts ("
+                "id TEXT PRIMARY KEY, scan_id TEXT NOT NULL, created_at TEXT NOT NULL, alert_json TEXT NOT NULL)"
+            )
+            database.execute("CREATE INDEX IF NOT EXISTS citizen_alerts_scan ON citizen_alerts(scan_id, created_at)")
             yield database
             database.commit()
         finally:
@@ -84,7 +89,22 @@ class ScanStore:
             return None
         result = ScanResult.model_validate_json(row["result_json"])
         result.semantic_reviews = self.reviews(scan_id)
+        result.citizen_alerts = self.alerts(scan_id)
         return result
+
+    def save_alert(self, alert: CitizenAlert) -> CitizenAlert:
+        alert.alert_id = uuid4().hex
+        alert.created_at = datetime.now(timezone.utc).isoformat()
+        with self.connection() as database:
+            database.execute("INSERT INTO citizen_alerts (id, scan_id, created_at, alert_json) VALUES (?, ?, ?, ?)",
+                             (alert.alert_id, alert.scan_id, alert.created_at, alert.model_dump_json()))
+        return alert
+
+    def alerts(self, scan_id: str):
+        with self.connection() as database:
+            rows = database.execute("SELECT alert_json FROM citizen_alerts WHERE scan_id = ? ORDER BY created_at DESC, rowid DESC",
+                                    (scan_id,)).fetchall()
+        return [CitizenAlert.model_validate_json(row["alert_json"]) for row in rows]
 
     def save_review(self, review: SemanticReview) -> SemanticReview:
         review.review_id = uuid4().hex
@@ -112,6 +132,11 @@ class ScanStore:
             result["findings"] = []
             items.append(result)
         return items
+
+    def sources(self, scan_id: str):
+        with self.connection() as database:
+            row = database.execute("SELECT sources_json FROM scans WHERE id = ?", (scan_id,)).fetchone()
+        return json.loads(row["sources_json"]) if row else None
 
     def source(self, scan_id: str, path: str):
         with self.connection() as database:

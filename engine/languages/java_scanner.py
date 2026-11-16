@@ -1,6 +1,7 @@
 import re
 from typing import List, Tuple
 from engine.models import Finding, RuleMetadata, Severity
+from engine.pii import SAUDE, classify_identifier, find_cards, find_cns, find_cpfs
 from .base import LanguageScanner
 from .syntax_tree import parse, walk, text, field, args, Expressions, syntax_error, finding_location
 
@@ -53,6 +54,42 @@ PATTERNS_JAVA = [
         "message": "Abertura de conexão HTTP com URL montada a partir de concatenação de parâmetros externos sem allow-list (CWE-918 / CVE-2020-13379).",
         "remediation": "Valide o esquema (apenas https) e restrinja os nomes de domínio permitidos via allow-list, bloqueando endereços IPv4 privados e portas internas.",
     },
+    {
+        "rule_id": "JAVA-P001",
+        "name": "CPF em texto claro no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Documento] CPF válido escrito como literal no código Java.",
+        "remediation": "Remova o CPF do código; use dados sintéticos em testes e mascare na exibição (***.***.***-NN).",
+        "categories": ["documento"],
+    },
+    {
+        "rule_id": "JAVA-P002",
+        "name": "Dado de saúde hardcoded no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Saúde] Valor de saúde (diagnóstico, prontuário, exame…) escrito direto no código. Dado pessoal sensível (LGPD art. 5º, II).",
+        "remediation": "Não grave dados de saúde no código; use dados sintéticos em testes e guarde registros reais criptografados.",
+        "categories": ["saude"],
+    },
+    {
+        "rule_id": "JAVA-P003",
+        "name": "CNS (Cartão Nacional de Saúde) em texto claro no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Documento] CNS válido (dígito verificador do SUS correto) escrito como literal no código Java.",
+        "remediation": "Remova o CNS do código; use números sintéticos inválidos em testes e mascare na exibição (*** **** **** NNNN).",
+        "categories": ["documento"],
+    },
+    {
+        "rule_id": "JAVA-P004",
+        "name": "Cartão de pagamento em texto claro no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Financeiro] Número de cartão de pagamento válido (Luhn) escrito como literal no código Java.",
+        "remediation": "Remova o número do código; use os números de teste do provedor de pagamento e nunca armazene o cartão completo.",
+        "categories": ["financeiro"],
+    },
 ]
 
 
@@ -90,9 +127,22 @@ class JavaScanner(LanguageScanner):
             if key in seen:
                 return
             seen.add(key)
-            findings.append(self.create_finding(rule["rule_id"], rule["name"], rule["severity"], rule["cwe"], rule["message"], file_path, line, column, snippet, rule["remediation"]))
+            findings.append(self.create_finding(rule["rule_id"], rule["name"], rule["severity"], rule["cwe"], rule["message"], file_path, line, column, snippet, rule["remediation"], rule.get("categories")))
 
         for node in walk(root):
+            if node.type == "string_literal" and find_cpfs(text(node).strip('"')):
+                add(7, node)
+            if node.type == "string_literal":
+                literal = text(node).strip('"')
+                if find_cns(literal):
+                    add(9, node)
+                if find_cards(literal):
+                    add(10, node)
+            if node.type == "variable_declarator":
+                health_name, health_value = field(node, "name"), field(node, "value")
+                if (health_value is not None and health_value.type == "string_literal" and len(text(health_value).strip('"')) >= 3
+                        and classify_identifier(text(health_name)) == SAUDE):
+                    add(8, node)
             if node.type == "variable_declarator":
                 name, value = field(node, "name"), field(node, "value")
                 if re.search(r"password|passwd|api[_-]?key|secret|token", text(name), re.I) and value is not None and value.type in {"string_literal", "character_literal"}:

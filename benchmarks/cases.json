@@ -375,5 +375,261 @@
     "filename": "Safe.java",
     "code": "class Safe { void run() { new URL(\"https://example.org\"); } }",
     "expected_rules": []
+  },
+  {
+    "id": "pii-cpf-literal",
+    "filename": "demo.py",
+    "code": "CPF = \"529.982.247-25\"",
+    "expected_rules": [
+      "PY-P001"
+    ]
+  },
+  {
+    "id": "pii-health-literal",
+    "filename": "demo.py",
+    "code": "diagnostico = \"Hipertensão arterial\"",
+    "expected_rules": [
+      "PY-P002"
+    ]
+  },
+  {
+    "id": "pii-weak-hash",
+    "filename": "demo.py",
+    "code": "import hashlib\nhashlib.md5(senha.encode()).hexdigest()",
+    "expected_rules": [
+      "PY-P003"
+    ]
+  },
+  {
+    "id": "pii-log-param",
+    "filename": "demo.py",
+    "code": "def registrar(cpf):\n    print(cpf)",
+    "expected_rules": [
+      "PY-T004"
+    ]
+  },
+  {
+    "id": "pii-log-fstring",
+    "filename": "demo.py",
+    "code": "def registrar(paciente):\n    cpf = paciente['cpf']\n    msg = f'Atendimento de {cpf}'\n    logger.info(msg)",
+    "expected_rules": [
+      "PY-T004"
+    ]
+  },
+  {
+    "id": "pii-response-route",
+    "filename": "demo.py",
+    "code": "@app.get('/p')\ndef ver(cpf):\n    return {'cpf': cpf}",
+    "expected_rules": [
+      "PY-T005"
+    ]
+  },
+  {
+    "id": "pii-storage-file",
+    "filename": "demo.py",
+    "code": "def salvar(senha):\n    open('u.txt', 'a').write(senha)",
+    "expected_rules": [
+      "PY-T006"
+    ]
+  },
+  {
+    "id": "pii-external-post",
+    "filename": "demo.py",
+    "code": "def enviar(cpf):\n    requests.post('https://parceiro.example/api', json={'cpf': cpf})",
+    "expected_rules": [
+      "PY-T007"
+    ]
+  },
+  {
+    "id": "pii-interprocedural",
+    "filename": "demo.py",
+    "code": "def obter(p):\n    return p.diagnostico\ndef usar(p):\n    print(obter(p))",
+    "expected_rules": [
+      "PY-T004"
+    ]
+  },
+  {
+    "id": "pii-js-cpf",
+    "filename": "demo.js",
+    "code": "const c = \"529.982.247-25\";",
+    "expected_rules": [
+      "JS-P001"
+    ]
+  },
+  {
+    "id": "pii-java-health",
+    "filename": "Demo.java",
+    "code": "class A { String diagnostico = \"Hipertensão arterial\"; }",
+    "expected_rules": [
+      "JAVA-P002"
+    ]
+  },
+  {
+    "id": "safe-pii-masked-log",
+    "filename": "demo.py",
+    "code": "def registrar(cpf):\n    print(mascarar_cpf(cpf))",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-password-hash",
+    "filename": "demo.py",
+    "code": "def criar(senha):\n    return bcrypt.hashpw(senha, bcrypt.gensalt())",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-short-slice",
+    "filename": "demo.py",
+    "code": "def registrar(cpf):\n    print(cpf[-2:])",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-non-sensitive",
+    "filename": "demo.py",
+    "code": "def registrar(nome, cidade):\n    print(nome, cidade)",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-invalid-cpf",
+    "filename": "demo.py",
+    "code": "exemplo = \"123.456.789-00\"",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-masked-response",
+    "filename": "demo.py",
+    "code": "@app.get('/p')\ndef ver(cpf):\n    return {'cpf': mascarar_cpf(cpf)}",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-db-cpf",
+    "filename": "demo.py",
+    "code": "def salvar(cpf, db):\n    db.execute('INSERT INTO t (cpf) VALUES (%s)', (cpf,))",
+    "expected_rules": []
+  },
+  {
+    "id": "py-cns-literal",
+    "filename": "demo.py",
+    "code": "CNS = \"700000000000005\"",
+    "expected_rules": [
+      "PY-P004"
+    ]
+  },
+  {
+    "id": "py-card-literal",
+    "filename": "demo.py",
+    "code": "cartao = \"5500 0000 0000 0004\"",
+    "expected_rules": [
+      "PY-P005"
+    ]
+  },
+  {
+    "id": "py-email-literal",
+    "filename": "demo.py",
+    "code": "responsavel = \"maria.silva@gmail.com\"",
+    "expected_rules": [
+      "PY-P006"
+    ]
+  },
+  {
+    "id": "py-phone-literal",
+    "filename": "demo.py",
+    "code": "contato = \"(11) 91234-5678\"",
+    "expected_rules": [
+      "PY-P006"
+    ]
+  },
+  {
+    "id": "py-card-log-flow",
+    "filename": "demo.py",
+    "code": "def pagar(numero_cartao):\n    print(numero_cartao)",
+    "expected_rules": [
+      "PY-T004"
+    ]
+  },
+  {
+    "id": "py-card-response-flow",
+    "filename": "demo.py",
+    "code": "@app.get('/c')\ndef ver(cartao_credito):\n    return {'cartao': cartao_credito}",
+    "expected_rules": [
+      "PY-T005"
+    ]
+  },
+  {
+    "id": "py-email-log-flow",
+    "filename": "demo.py",
+    "code": "def avisar(email):\n    logger.info(email)",
+    "expected_rules": [
+      "PY-T004"
+    ]
+  },
+  {
+    "id": "js-cns-literal",
+    "filename": "demo.js",
+    "code": "const cns = \"700000000000005\";",
+    "expected_rules": [
+      "JS-P003"
+    ]
+  },
+  {
+    "id": "java-card-literal",
+    "filename": "Demo.java",
+    "code": "class Demo { String cartao = \"5500 0000 0000 0004\"; }",
+    "expected_rules": [
+      "JAVA-P004"
+    ]
+  },
+  {
+    "id": "safe-pii-test-card",
+    "filename": "demo.py",
+    "code": "cartao = \"4111 1111 1111 1111\"",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-invalid-card",
+    "filename": "demo.py",
+    "code": "cartao = \"1234 5678 9012 3456\"",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-invalid-cns",
+    "filename": "demo.py",
+    "code": "cns = \"700000000000006\"",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-role-mailbox",
+    "filename": "demo.py",
+    "code": "suporte = \"suporte@orgao.gov.br\"",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-example-email",
+    "filename": "demo.py",
+    "code": "email = \"teste@example.com\"",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-invalid-ddd",
+    "filename": "demo.py",
+    "code": "fone = \"(00) 91234-5678\"",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-doc-email",
+    "filename": "demo.py",
+    "code": "\"\"\"Autor: dev.pessoa@gmail.com\"\"\"\nx = 1",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-card-masked-log",
+    "filename": "demo.py",
+    "code": "def pagar(numero_cartao):\n    print(mascarar_cartao(numero_cartao))",
+    "expected_rules": []
+  },
+  {
+    "id": "safe-pii-email-response",
+    "filename": "demo.py",
+    "code": "@app.get('/me')\ndef me(email):\n    return {'email': email}",
+    "expected_rules": []
   }
 ]

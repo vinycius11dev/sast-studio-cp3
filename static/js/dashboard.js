@@ -9,12 +9,15 @@
   const severityLabels = { CRITICAL: "Crítica", HIGH: "Alta", MEDIUM: "Média", LOW: "Baixa", INFO: "Informativa" };
   const severityColors = { CRITICAL: "#d3354b", HIGH: "#e19643", MEDIUM: "#d7b342", LOW: "#5a8fce", INFO: "#9aa8bb" };
   const languageLabels = { python: "Python", javascript: "JavaScript / TS", java: "Java" };
-  const views = { overview: "Visão geral", scanner: "Scanner", findings: "Achados", history: "Histórico", rules: "Regras de análise", integrations: "Integrações" };
+  const views = { overview: "Visão geral", scanner: "Scanner", findings: "Achados", citizen: "Risco Cidadão", history: "Histórico", rules: "Regras de análise", integrations: "Integrações" };
+  const riskColors = { none: "#168563", low: "#5a8fce", moderate: "#d7b342", high: "#e19643", critical: "#d3354b" };
+  const alertLevels = { baixo: "Risco baixo", moderado: "Risco moderado", alto: "Risco alto", critico: "Risco crítico" };
+  const dataLabels = { documento: "CPF / documento", saude: "Saúde", senha: "Senha", financeiro: "Cartão", contato: "Contato" };
   const state = {
     scans: [], active: null, rules: [], capabilities: null, health: null, aiStatus: null, queueStatus: null,
     view: "overview", mode: "files", pending: [], ignored: 0, selectionType: "file", busy: false,
     selected: null, page: 0, pageSize: 40, sources: new Map(), aiResults: new Map(), aiBusy: null, semanticBusy: null, validations: new Map(),
-    overviewFilesScanId: null, overviewCompareBeforeId: null, overviewCompareAfterId: null,
+    overviewFilesScanId: null, overviewCompareBeforeId: null, overviewCompareAfterId: null, citizenBusy: new Set(), citizenFix: {}, citizenFixBusy: false,
   };
 
   function size(bytes) {
@@ -97,6 +100,7 @@
     $("menu-toggle").setAttribute("aria-expanded", "false");
     if (state.view === "overview") renderOverview();
     if (state.view === "history") renderHistory();
+    if (state.view === "citizen") renderCitizen();
     if (state.view === "findings") renderFindings();
     if (state.view === "rules") renderRules();
     if (state.view === "integrations") { renderServices(); renderPolicy(); loadWorkflow(); }
@@ -192,6 +196,116 @@
       <section class="panel trend-panel"><div class="panel-heading"><div><h2>Achados por execução</h2><p>Volume total nas análises salvas mais recentes.</p></div><span class="outline-tag">Histórico real</span></div>${trend.length > 1 ? `<div class="trend-content">${trend.map((scan) => `<div class="trend-column" title="${escape(scan.project_name)} · ${date(scan.created_at)}" aria-label="${escape(scan.project_name)}: ${number(scan.total_findings)} achados em ${date(scan.created_at)}"><strong>${number(scan.total_findings)}</strong><div class="trend-bar" style="height:${Math.max(3, scan.total_findings / max * 72)}px"></div><small>${escape(trendScanLabel(scan))}</small></div>`).join("")}</div>` : empty("A evolução começa na próxima análise", "O gráfico será formado por suas próximas execuções.", "", true)}</section></div>
       <div class="panel overview-history"><div class="panel-heading"><div><h2>Análises recentes</h2><p>Histórico persistido desta instalação.</p></div><a href="#history" class="text-link">Ver histórico ${icon("arrow", "small")}</a></div>${table(state.scans.slice(0, 5))}</div><p class="section-footnote">Gráficos e indicadores são calculados a partir das análises salvas nesta instalação.</p>`;
   }
+  // ---- Risco Cidadão (GS CitizenTech) -------------------------------------------------------
+  function traceFlow(trace) {
+    return `<ol class="trace-flow" aria-label="Caminho do dado sensível">${trace.map((step, index) => `<li class="${index === trace.length - 1 ? "sink" : index === 0 ? "origin" : ""}">${escape(step.replace(/ ← saída insegura$/, ""))}</li>`).join("")}</ol>`;
+  }
+  function traceMarkup(finding) {
+    if (!finding.taint_trace?.length) return "";
+    const chips = (finding.data_categories || []).map((item) => `<span class="data-chip ${escape(item)}">${escape(dataLabels[item] || item)}</span>`).join("");
+    return `<div class="detail-section-title"><span>Caminho do dado (Taint Analysis)</span><span class="data-chips">${chips}</span></div>${traceFlow(finding.taint_trace)}`;
+  }
+  function citizenAlertFor(finding) {
+    return (state.active?.citizen_alerts || []).find((item) => item.rule_id === finding.rule_id && item.file_path === finding.file_path && item.line_number === finding.line_number);
+  }
+  function gaugeMarkup(risk) {
+    const color = riskColors[risk.level] || riskColors.none;
+    return `<svg class="risk-gauge" viewBox="0 0 200 124" role="img" aria-label="Risco Cidadão ${risk.score} de 100, nível ${escape(risk.level_label)}"><path class="gauge-track" d="M20 100A80 80 0 0 1 180 100" pathLength="100"/><path class="gauge-value" d="M20 100A80 80 0 0 1 180 100" pathLength="100" stroke="${color}" stroke-dasharray="${risk.score} 100"/><text x="100" y="92" class="gauge-score" fill="${color}">${risk.score}</text><text x="100" y="114" class="gauge-scale">de 100</text></svg>`;
+  }
+  function alertMarkup(alert) {
+    const fallback = alert.provider !== "ollama";
+    return `<div class="citizen-alert level-${escape(alert.risk_level)}"><div class="citizen-alert-top"><span class="provider-tag ${fallback ? "fallback" : ""}">${escape(alert.model_used)}</span><span class="alert-level ${escape(alert.risk_level)}">${escape(alertLevels[alert.risk_level] || alert.risk_level)}</span></div><h4>${escape(alert.headline)}</h4><dl><dt>O que acontece</dt><dd>${escape(alert.what_happened)}</dd><dt>Risco para o cidadão</dt><dd>${escape(alert.risk_for_citizen)}</dd><dt>Quem é afetado</dt><dd>${escape(alert.who_is_affected)}</dd><dt>O que fazer</dt><dd>${escape(alert.what_to_do)}</dd></dl><p class="field-help">${escape(alert.lgpd_reference)} · salvo em ${date(alert.created_at)}${fallback && alert.fallback_reason ? ` · ${escape(alert.fallback_reason)}` : ""}</p></div>`;
+  }
+  function exposureMarkup({ finding, index }) {
+    const alert = citizenAlertFor(finding);
+    const pending = state.citizenBusy.has(`${state.active.scan_id}:${index}`);
+    const chips = finding.data_categories.map((item) => `<span class="data-chip ${escape(item)}">${escape(dataLabels[item] || item)}</span>`).join("");
+    return `<article class="exposure"><div class="exposure-top">${severityBadge(finding.severity)}<code>${escape(finding.rule_id)}</code><span class="data-chips">${chips}</span></div><h3>${escape(finding.rule_name)}</h3><div class="detail-location">${icon("file")}<span>${escape(finding.file_path)}<strong> : ${finding.line_number}</strong></span></div>${finding.taint_trace?.length ? traceFlow(finding.taint_trace) : ""}${alert ? alertMarkup(alert) : ""}<div class="exposure-actions"><button class="button ${alert ? "secondary" : "primary"} small-button" data-citizen-alert="${index}" ${state.citizenBusy.size ? "disabled" : ""}>${pending ? '<span class="spinner"></span>Traduzindo…' : icon("spark") + (alert ? "Traduzir novamente" : "Traduzir para o cidadão")}</button></div></article>`;
+  }
+  function fixDiffMarkup(diff) {
+    return `<pre class="fix-diff" tabindex="0">${diff.trimEnd().split("\n").map((line) => `<span class="${/^(\+\+\+|---)/.test(line) ? "meta" : line.startsWith("@@") ? "hunk" : line.startsWith("+") ? "add" : line.startsWith("-") ? "del" : ""}">${escape(line)}</span>`).join("\n")}</pre>`;
+  }
+  function fixScoreMarkup(label, risk) {
+    return `<div class="fix-score" style="--risk:${riskColors[risk.level] || riskColors.none}"><small>${label}</small><strong>${risk.score}</strong><span>${escape(risk.level_label)}</span></div>`;
+  }
+  function fixPanelMarkup(scan, risk) {
+    const fix = state.citizenFix[scan.scan_id];
+    const busy = state.citizenFixBusy;
+    const heading = (action) => `<div class="panel-heading"><div><h2>Corrigir e provar</h2><p>Aplica proteções ao código e reanalisa: a correção só vale se o indicador cair.</p></div>${action}</div>`;
+    if (!fix) {
+      if (!risk.pii_findings) return "";
+      const button = `<button class="button primary small-button" data-citizen-fix ${busy ? "disabled" : ""}>${busy ? '<span class="spinner"></span>Corrigindo…' : icon("spark") + "Corrigir e provar"}</button>`;
+      return `<div class="panel fix-panel">${heading(button)}<div class="panel-body"><p class="muted">O SAST Studio mascara os dados que saem em log, resposta ou parceiro, troca MD5/SHA-1 por bcrypt, tira do código os dados pessoais escritos nele e depois <strong>analisa o código corrigido de novo</strong>. A análise original é mantida e a versão corrigida entra no histórico para comparar.</p></div></div>`;
+    }
+    const open = fix.fixed_scan_id ? `<a class="button secondary small-button" href="#citizen" data-citizen-scan="${escape(fix.fixed_scan_id)}">Abrir análise corrigida</a>` : "";
+    const changed = fix.files.map((file, index) => ({ file, index })).filter(({ file }) => file.applied.length);
+    const applied = changed.map(({ file }) => `<div class="fix-file"><div class="detail-location">${icon("file")}<span>${escape(file.file_path)}</span></div><ul class="fix-list">${file.applied.map((item) => `<li><div><code>${escape(item.rule_id)}</code> <span class="fix-line">linha ${item.line}</span> · ${escape(item.action)}</div><div class="fix-code"><del>${escape(item.before.slice(0, 90))}</del><span aria-hidden="true">→</span><ins>${escape(item.after.slice(0, 90))}</ins></div></li>`).join("")}</ul></div>`).join("");
+    const pending = fix.files.filter((file) => file.remaining.length || file.skipped_reason).map((file) => `<li><strong>${escape(file.file_path)}</strong>: ${file.skipped_reason ? escape(file.skipped_reason) : `${file.remaining.length} exposição(ões) exigem revisão manual (${[...new Set(file.remaining.map((item) => item.rule_id))].map(escape).join(", ")}).`}</li>`).join("");
+    const diffs = changed.map(({ file, index }) => `<details class="fix-details"><summary>Ver mudanças em ${escape(file.file_path)}</summary>${fixDiffMarkup(file.diff)}<button class="button secondary small-button" data-fix-download="${index}">Baixar arquivo corrigido</button></details>`).join("");
+    return `<div class="panel fix-panel ${fix.verified ? "proved" : "partial"}">${heading(open)}<div class="panel-body"><div class="fix-compare">${fixScoreMarkup("Antes", fix.before)}<span class="fix-arrow" aria-hidden="true">→</span>${fixScoreMarkup("Depois", fix.after)}<div class="fix-verdict"><span class="fix-badge ${fix.verified ? "ok" : "warn"}">${fix.verified ? "Provado pelo motor" : "Revisão manual necessária"}</span><p>${escape(fix.summary)}</p></div></div>${applied}${pending ? `<div class="fix-pending"><h4>Fica para revisão manual</h4><ul>${pending}</ul></div>` : ""}${diffs}<ul class="fix-notes">${fix.notes.map((note) => `<li>${escape(note)}</li>`).join("")}</ul></div></div>`;
+  }
+  function renderCitizen() {
+    const scan = state.active;
+    $("citizen-scan-select").innerHTML = scanOptionsMarkup(scan?.scan_id);
+    $("citizen-scan-select").disabled = !state.scans.length;
+    const target = $("citizen-content");
+    if (!scan?.citizen_risk) {
+      target.innerHTML = empty("Nenhuma análise para avaliar", "Carregue a demonstração da UBS no Scanner e execute a análise para ver o indicador Risco Cidadão.", '<a class="button primary" href="#scanner">Ir para o Scanner</a>');
+      return;
+    }
+    const risk = scan.citizen_risk;
+    const rank = Object.fromEntries(severityOrder.map((item, position) => [item, position]));
+    const exposures = scan.findings.map((finding, index) => ({ finding, index })).filter(({ finding }) => finding.data_categories?.length)
+      .sort((a, b) => rank[a.finding.severity] - rank[b.finding.severity] || a.index - b.index);
+    const maxPoints = Math.max(...risk.drivers.map((driver) => driver.points), 1);
+    const drivers = risk.drivers.length ? risk.drivers.map((driver) => `<div class="driver-row"><div class="driver-label"><span class="data-chip ${escape(driver.category)}">${escape(driver.label)}</span><small>${number(driver.findings)} achado(s) · ${number(driver.leaks)} vazamento(s)</small></div><div class="driver-bar" role="img" aria-label="${escape(driver.label)}: ${driver.points} pontos"><span style="width:${Math.max(4, Math.round(driver.points / maxPoints * 100))}%"></span></div><strong>${driver.points}</strong></div>`).join("") : '<p class="field-help">Nenhum dado pessoal exposto neste projeto pelas regras aplicadas.</p>';
+    const history = state.scans.filter((item) => item.citizen_risk).slice(0, 6).map((item) => `<a href="#citizen" class="trend-row ${item.scan_id === scan.scan_id ? "current" : ""}" data-citizen-scan="${escape(item.scan_id)}"><span class="trend-name">${escape(item.project_name || item.target_path)}<small>${date(item.created_at)}</small></span><span class="trend-score" style="--risk:${riskColors[item.citizen_risk.level] || riskColors.none}">${item.citizen_risk.score}</span></a>`).join("");
+    const untranslated = exposures.filter(({ finding }) => !citizenAlertFor(finding)).length;
+    target.innerHTML = `<div class="citizen-hero"><div class="panel risk-card"><div class="risk-card-top"><span class="eyebrow">INDICADOR EXECUTIVO</span>${gateBadge(scan.security_gate)}</div>${gaugeMarkup(risk)}<div class="risk-level" style="color:${riskColors[risk.level]}">${escape(risk.level_label)}</div><p class="risk-summary">${escape(risk.summary)}</p></div><div class="citizen-kpis"><div class="metric ${risk.confirmed_leaks ? "critical" : "total"}"><div class="metric-top">Vazamentos confirmados<span class="metric-icon">${icon("alert")}</span></div><div class="metric-number">${number(risk.confirmed_leaks)}</div><div class="metric-bottom">Dado sensível chega a log, resposta, arquivo ou serviço externo</div></div><div class="metric ${risk.pii_findings ? "high" : "total"}"><div class="metric-top">Achados com dados pessoais<span class="metric-icon">${icon("people")}</span></div><div class="metric-number">${number(risk.pii_findings)}</div><div class="metric-bottom">CPF, saúde ou senha</div></div><div class="panel drivers-panel"><div class="panel-heading"><div><h2>O que mais pesa no indicador</h2><p>Pontos por tipo de dado</p></div></div><div class="panel-body">${drivers}</div></div></div></div>
+      ${fixPanelMarkup(scan, risk)}<div class="panel exposures-panel"><div class="panel-heading"><div><h2>Exposições e alertas ao cidadão</h2><p>Do dado sensível à saída insegura, traduzido pela IA em risco real</p></div><button class="button primary small-button" data-citizen-top ${!untranslated || state.citizenBusy.size ? "disabled" : ""}>${state.citizenBusy.size ? '<span class="spinner"></span>Traduzindo…' : icon("spark") + "Traduzir os 3 mais graves"}</button></div><div class="exposure-list">${exposures.length ? exposures.map(exposureMarkup).join("") : empty("Nenhuma exposição de dados pessoais", "As regras de PII e o Taint Analysis não encontraram CPF, dados de saúde ou senhas em risco. Isso não prova ausência de risco.", "", true)}</div></div>
+      <div class="citizen-bottom"><div class="panel"><div class="panel-heading"><div><h2>Evolução por análise</h2><p>Abra uma análise para comparar antes e depois</p></div></div><div class="trend-list">${history || '<p class="field-help trend-empty">Sem histórico com o indicador.</p>'}</div></div><div class="panel"><div class="panel-heading"><div><h2>Como o indicador é calculado</h2><p>Determinístico e auditável</p></div></div><div class="panel-body"><p class="muted">${escape(risk.formula)}</p><p class="field-help">É um indicador de <strong>risco de exposição</strong> encontrado no código, não a prova de que um vazamento ocorreu. Os valores são fictícios na demonstração.</p></div></div></div>`;
+  }
+  async function runCitizenFix() {
+    const scan = state.active;
+    if (!scan || state.citizenFixBusy) return;
+    state.citizenFixBusy = true;
+    renderCitizen();
+    try {
+      const fix = await api(`/api/v1/scans/${scan.scan_id}/citizen-fix`, { method: "POST" });
+      state.citizenFix[scan.scan_id] = fix;
+      if (fix.fixed_scan_id) await refreshHistory();
+      toast(fix.verified ? `Correção provada: Risco Cidadão de ${fix.before.score} para ${fix.after.score}.` : fix.summary, !fix.verified);
+    } catch (error) { toast(error.message, true); }
+    finally { state.citizenFixBusy = false; if (state.view === "citizen") renderCitizen(); }
+  }
+  async function translateFinding(index) {
+    const scan = state.active;
+    const finding = scan?.findings[index];
+    if (!finding || state.citizenBusy.size) return;
+    const key = `${scan.scan_id}:${index}`;
+    state.citizenBusy.add(key);
+    renderCitizen();
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 115000);
+    try {
+      const alert = await api("/api/v1/citizen-alert", { ...jsonOptions({ ...finding, scan_id: scan.scan_id }), signal: controller.signal });
+      if (state.active?.scan_id === scan.scan_id) state.active.citizen_alerts = [alert, ...(state.active.citizen_alerts || [])];
+      toast(alert.provider === "ollama" ? "Alerta ao cidadão gerado pela IA." : "IA indisponível: alerta gerado pelo motor determinístico.", alert.provider !== "ollama");
+    } catch (error) { toast(error.name === "AbortError" ? "A IA excedeu o tempo de resposta." : error.message, true); }
+    finally { clearTimeout(timer); state.citizenBusy.delete(key); if (state.view === "citizen") renderCitizen(); }
+  }
+  async function translateTop() {
+    const scan = state.active;
+    if (!scan || state.citizenBusy.size) return;
+    const rank = Object.fromEntries(severityOrder.map((item, position) => [item, position]));
+    const queue = scan.findings.map((finding, index) => ({ finding, index })).filter(({ finding }) => finding.data_categories?.length && !citizenAlertFor(finding))
+      .sort((a, b) => rank[a.finding.severity] - rank[b.finding.severity] || a.index - b.index).slice(0, 3);
+    for (const { index } of queue) {
+      if (state.active?.scan_id !== scan.scan_id) break;
+      await translateFinding(index);
+    }
+  }
+
   function renderHistory() {
     const query = $("history-search").value.trim().toLowerCase();
     const items = state.scans.filter((scan) => `${scan.project_name} ${scan.scan_id}`.toLowerCase().includes(query));
@@ -226,6 +340,7 @@
       renderScanOptions();
       renderFindings();
       renderPolicy();
+      if (state.view === "citizen") renderCitizen();
       if (shouldNavigate) navigate("findings");
     } catch (error) { toast(error.message, true); }
   }
@@ -337,7 +452,7 @@
   }
   function busy(value) {
     state.busy = value;
-    ["file-upload", "folder-upload", "load-demo", "load-secure", "load-vulnerable", "load-corrected", "project-name", "gate-threshold", "code-filename", "code-language", "code-editor"].forEach((id) => { $(id).disabled = value; });
+    ["file-upload", "folder-upload", "load-demo", "load-secure", "load-vulnerable", "load-corrected", "load-pii-vulnerable", "load-pii-corrected", "project-name", "gate-threshold", "code-filename", "code-language", "code-editor"].forEach((id) => { $(id).disabled = value; });
     ["choose-file", "choose-folder"].forEach((id) => $(id).setAttribute("aria-disabled", String(value)));
     document.querySelectorAll("[data-mode]").forEach((button) => { button.disabled = value; });
     $("dropzone").setAttribute("aria-busy", String(value));
@@ -474,7 +589,7 @@
     const result = state.aiResults.get(key);
     const pending = state.aiBusy?.key === key;
     const cweId = /^CWE-(\d+)$/.exec(finding.cwe)?.[1];
-    $("finding-detail").innerHTML = `<div class="detail-heading"><div class="detail-tags">${severityBadge(finding.severity)}<code>${escape(finding.rule_id)}</code><span class="outline-tag">${escape(finding.cwe)}</span>${owaspBadge(finding.owasp)}</div><h2>${escape(finding.rule_name)}</h2><div class="detail-location">${icon("file")}<span>${escape(finding.file_path)}<strong> : ${finding.line_number}</strong></span></div></div><div class="detail-body"><p class="detail-description">${escape(finding.message)}</p><div class="detail-section-title"><span>Trecho de código</span><button class="icon-button" data-copy-snippet aria-label="Copiar trecho de código">${icon("copy")}</button></div>${sourceMarkup(finding)}<div class="detail-section-title">Orientação da regra</div><div class="remediation-advice">${escape(finding.remediation_advice)}</div><div class="detail-meta-row"><span>Regra ${escape(finding.rule_id)} · Coluna ${finding.column_number + 1}</span>${cweId ? `<a class="text-link" href="https://cwe.mitre.org/data/definitions/${cweId}.html" target="_blank" rel="noopener">Consultar ${escape(finding.cwe)} ${icon("external", "small")}</a>` : ""}</div>${semanticMarkup(finding, key)}<section class="ai-section"><div class="ai-heading"><div><h3>${icon("spark")}Remediação assistida</h3><p>Sugestão de correção para revisão</p></div><button class="button primary small-button ai-generate" data-generate-ai ${state.aiBusy || state.semanticBusy ? "disabled" : ""}>${pending ? '<span class="spinner"></span>Gerando…' : state.aiBusy || state.semanticBusy ? "IA em uso" : result ? "Gerar novamente" : icon("spark") + "Gerar remediação"}</button></div><div class="ai-body" id="ai-body">${pending ? '<div class="ai-loading">Consultando o modelo local…<p>O primeiro uso pode levar até 90 segundos para carregar o modelo e gerar a resposta.</p><progress aria-label="Gerando remediação"></progress></div>' : result ? renderAI(result, key) : '<p class="field-help">Ollama gera uma sugestão contextual. Se o modelo estiver indisponível ou a resposta não passar nas validações, o resultado será identificado como fallback determinístico.</p>'}</div></section></div>`;
+    $("finding-detail").innerHTML = `<div class="detail-heading"><div class="detail-tags">${severityBadge(finding.severity)}<code>${escape(finding.rule_id)}</code><span class="outline-tag">${escape(finding.cwe)}</span>${owaspBadge(finding.owasp)}</div><h2>${escape(finding.rule_name)}</h2><div class="detail-location">${icon("file")}<span>${escape(finding.file_path)}<strong> : ${finding.line_number}</strong></span></div></div><div class="detail-body"><p class="detail-description">${escape(finding.message)}</p>${traceMarkup(finding)}<div class="detail-section-title"><span>Trecho de código</span><button class="icon-button" data-copy-snippet aria-label="Copiar trecho de código">${icon("copy")}</button></div>${sourceMarkup(finding)}<div class="detail-section-title">Orientação da regra</div><div class="remediation-advice">${escape(finding.remediation_advice)}</div><div class="detail-meta-row"><span>Regra ${escape(finding.rule_id)} · Coluna ${finding.column_number + 1}</span>${cweId ? `<a class="text-link" href="https://cwe.mitre.org/data/definitions/${cweId}.html" target="_blank" rel="noopener">Consultar ${escape(finding.cwe)} ${icon("external", "small")}</a>` : ""}</div>${semanticMarkup(finding, key)}<section class="ai-section"><div class="ai-heading"><div><h3>${icon("spark")}Remediação assistida</h3><p>Sugestão de correção para revisão</p></div><button class="button primary small-button ai-generate" data-generate-ai ${state.aiBusy || state.semanticBusy ? "disabled" : ""}>${pending ? '<span class="spinner"></span>Gerando…' : state.aiBusy || state.semanticBusy ? "IA em uso" : result ? "Gerar novamente" : icon("spark") + "Gerar remediação"}</button></div><div class="ai-body" id="ai-body">${pending ? '<div class="ai-loading">Consultando o modelo local…<p>O primeiro uso pode levar até 90 segundos para carregar o modelo e gerar a resposta.</p><progress aria-label="Gerando remediação"></progress></div>' : result ? renderAI(result, key) : '<p class="field-help">Ollama gera uma sugestão contextual. Se o modelo estiver indisponível ou a resposta não passar nas validações, o resultado será identificado como fallback determinístico.</p>'}</div></section></div>`;
     loadSource(finding);
   }
   function semanticMarkup(finding, key) {
@@ -667,6 +782,9 @@
   $("load-demo").addEventListener("click", () => loadDemo());
   $("load-vulnerable").addEventListener("click", () => loadDemo(false, "vulneravel"));
   $("load-corrected").addEventListener("click", () => loadDemo(false, "corrigido"));
+  $("load-pii-vulnerable").addEventListener("click", () => loadDemo(false, "pii-vulneravel"));
+  $("load-pii-corrected").addEventListener("click", () => loadDemo(false, "pii-corrigido"));
+  $("citizen-scan-select").addEventListener("change", (event) => { if (event.target.value) openScan(event.target.value, false); });
   $("load-secure").addEventListener("click", () => loadDemo(true));
   $("run-scan").addEventListener("click", runScan);
   ["findings-search", "severity-filter", "file-filter", "finding-sort", "semantic-filter"].forEach((id) => $(id).addEventListener(id === "findings-search" ? "input" : "change", () => { state.page = 0; renderFindings(); }));
@@ -725,6 +843,17 @@
     if (event.target.closest("[data-show-findings]")) navigate("findings");
     if (event.target.closest("[data-generate-ai]")) generateAI();
     if (event.target.closest("[data-review-semantic]")) reviewSemantic();
+    const citizenAlert = event.target.closest("[data-citizen-alert]");
+    if (citizenAlert) translateFinding(Number(citizenAlert.dataset.citizenAlert));
+    if (event.target.closest("[data-citizen-top]")) translateTop();
+    if (event.target.closest("[data-citizen-fix]")) runCitizenFix();
+    const fixDownload = event.target.closest("[data-fix-download]");
+    if (fixDownload) {
+      const file = state.citizenFix[state.active?.scan_id]?.files[Number(fixDownload.dataset.fixDownload)];
+      if (file) downloadText(file.fixed_code, file.file_path.split("/").pop());
+    }
+    const citizenScan = event.target.closest("[data-citizen-scan]");
+    if (citizenScan) { event.preventDefault(); await openScan(citizenScan.dataset.citizenScan, false); }
     if (event.target.closest("[data-copy-snippet]")) copy(state.active.findings[state.selected].code_snippet);
     if (event.target.closest("[data-copy-patch]")) copy(state.aiResults.get(findingKey()).suggested_patch);
     if (event.target.closest("[data-download-patch]")) downloadText(state.aiResults.get(findingKey()).diff, `sast-${state.active.findings[state.selected].rule_id}.patch`);

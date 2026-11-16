@@ -7,8 +7,8 @@
   <meta name="description" content="SAST Studio — análise estática de código com rastreabilidade, política de bloqueio e remediação assistida por IA local.">
   <title>SAST Studio · Segurança do código</title>
   <link rel="icon" type="image/svg+xml" href="/static/brand.svg">
-  <link rel="stylesheet" href="/static/css/dashboard.css?v=cp3-5">
-  <script src="/static/js/dashboard.js?v=cp3-5" defer></script>
+  <link rel="stylesheet" href="/static/css/dashboard.css?v=gs-2">
+  <script src="/static/js/dashboard.js?v=gs-2" defer></script>
   <script src="/static/js/diff-viewer.js?v=cp3-2" defer></script>
 </head>
 <body>
@@ -40,6 +40,7 @@
     <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7m0-7L10 14M10 3H3v18h18v-7"/></symbol>
     <symbol id="i-flask" viewBox="0 0 24 24"><path d="M8 3h8M9 3v7l-6 9a1 1 0 0 0 1 2h16a1 1 0 0 0 1-2l-6-9V3M7 15h10"/></symbol>
     <symbol id="i-bar" viewBox="0 0 24 24"><path d="M4 20V10m8 10V4m8 16v-7"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.6 3-5.5 6.5-5.5s6 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5c2.6.2 4.2 1.8 4.5 4.5"/></symbol>
   </svg>
   <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
   <div class="app-shell">
@@ -51,6 +52,7 @@
         <a class="nav-item active" href="#overview" data-view="overview"><svg class="icon"><use href="#i-grid"/></svg>Visão geral</a>
         <a class="nav-item" href="#scanner" data-view="scanner"><svg class="icon"><use href="#i-scan"/></svg>Scanner</a>
         <a class="nav-item" href="#findings" data-view="findings"><svg class="icon"><use href="#i-alert"/></svg>Achados<span class="nav-counter" id="nav-findings-count">0</span></a>
+        <a class="nav-item" href="#citizen" data-view="citizen"><svg class="icon"><use href="#i-people"/></svg>Risco Cidadão</a>
         <a class="nav-item" href="#history" data-view="history"><svg class="icon"><use href="#i-clock"/></svg>Histórico</a>
         <a class="nav-item" href="#rules" data-view="rules"><svg class="icon"><use href="#i-rules"/></svg>Regras de análise</a>
         <a class="nav-item" href="#integrations" data-view="integrations"><svg class="icon"><use href="#i-plug"/></svg>Integrações</a>
@@ -78,6 +80,7 @@
                 <div id="files-mode">
                   <div class="upload-zone" id="dropzone"><span class="upload-illustration"><svg class="icon"><use href="#i-upload"/></svg></span><h3>Seu próximo código mais seguro começa aqui</h3><p>Arraste arquivos de código ou selecione uma pasta do projeto.</p><div class="upload-actions"><label class="button primary file-picker" id="choose-folder"><svg class="icon"><use href="#i-folder"/></svg>Escolher pasta<input type="file" id="folder-upload" webkitdirectory directory multiple aria-label="Escolher pasta" aria-describedby="upload-hint"></label><label class="button secondary file-picker" id="choose-file"><svg class="icon"><use href="#i-file"/></svg>Escolher arquivo<input type="file" id="file-upload" accept=".py,.js,.jsx,.ts,.tsx,.java" aria-label="Escolher arquivo" aria-describedby="upload-hint"></label></div><small id="upload-hint">Até 200 arquivos · 25 MB por projeto · 5 MB por arquivo</small></div>
                   <div class="demo-shortcuts"><div><strong>Teste com os projetos preparados</strong><p>3 arquivos em cada versão · Python, JavaScript e Java</p></div><div class="demo-shortcut-actions"><button class="button secondary small-button" id="load-vulnerable">Carregar pasta vulnerável</button><button class="button secondary small-button" id="load-corrected">Carregar pasta corrigida</button></div><small>Carregue uma versão e clique em Executar análise.</small></div>
+                  <div class="demo-shortcuts"><div><strong>Demonstração Risco Cidadão (UBS)</strong><p>2 arquivos Python · CPF, dados de saúde e senhas · dados fictícios</p></div><div class="demo-shortcut-actions"><button class="button secondary small-button" id="load-pii-vulnerable">Carregar UBS com dados expostos</button><button class="button secondary small-button" id="load-pii-corrected">Carregar UBS protegida</button></div><small>Depois da análise, abra Risco Cidadão no menu.</small></div>
                   <div id="selection-preview" hidden></div>
                 </div>
                 <div id="editor-mode" hidden><div class="editor-toolbar"><label>Nome do arquivo<input id="code-filename" value="snippet.py" maxlength="200" autocomplete="off" spellcheck="false"></label><label>Linguagem<select id="code-language"><option value="python">Python</option><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="java">Java</option></select></label><button class="button subtle small-button" id="load-secure">Carregar exemplo seguro</button></div><div class="code-editor-wrap"><pre id="editor-lines" aria-hidden="true">1</pre><textarea id="code-editor" spellcheck="false" aria-label="Código-fonte para análise" placeholder="Cole seu código-fonte aqui…"></textarea></div><div class="editor-footer"><span id="editor-meta">1 linha · 0 B</span><span>O código não é executado</span></div></div>
@@ -93,6 +96,10 @@
           <div id="findings-summary"></div>
           <div class="filter-bar" id="findings-filters"><label class="search-input"><svg class="icon"><use href="#i-search"/></svg><input id="findings-search" type="search" placeholder="Buscar regra, arquivo, CWE ou OWASP…" aria-label="Buscar achados"></label><select id="severity-filter" aria-label="Filtrar por severidade"><option value="">Todas as severidades</option><option value="CRITICAL">Crítica</option><option value="HIGH">Alta</option><option value="MEDIUM">Média</option><option value="LOW">Baixa</option><option value="INFO">Informativa</option></select><select id="file-filter" aria-label="Filtrar por arquivo"><option value="">Todos os arquivos</option></select><select id="semantic-filter" aria-label="Filtrar revisão semântica"><option value="">Todas as revisões IA</option><option value="confirmed">Risco confirmado pela IA</option><option value="likely_false_positive">Possível falso positivo</option><option value="needs_review">Precisa de revisão</option><option value="unreviewed">Ainda não revisado</option></select><select id="finding-sort" aria-label="Ordenar achados"><option value="severity">Maior severidade</option><option value="file">Arquivo e linha</option></select></div>
           <div class="findings-workspace"><div class="panel findings-list-panel"><div class="list-heading"><strong id="filtered-count">0 achados</strong><span>SEVERIDADE</span></div><div id="findings-list"></div><div id="finding-pagination"></div></div><div id="finding-detail" class="panel finding-detail"></div></div>
+        </section>
+        <section class="view" id="view-citizen" aria-labelledby="citizen-title" hidden>
+          <div class="page-heading"><div><div class="eyebrow">PRIVACIDADE · CITIZENTECH</div><h1 id="citizen-title">Risco Cidadão</h1><p>Quanto o código expõe os dados pessoais de quem usa o serviço: CPF, saúde e senhas.</p></div><div class="heading-actions"><select id="citizen-scan-select" aria-label="Análise selecionada"></select></div></div>
+          <div id="citizen-content"><div class="loading-state"><span class="spinner"></span>Carregando indicador…</div></div>
         </section>
         <section class="view" id="view-history" aria-labelledby="history-title" hidden>
           <div class="page-heading"><div><div class="eyebrow">RASTREABILIDADE</div><h1 id="history-title">Histórico de análises</h1><p>Reabra análises anteriores e acompanhe a evolução de cada projeto.</p></div><button class="button secondary" id="refresh-history"><svg class="icon"><use href="#i-refresh"/></svg>Atualizar</button></div><div class="panel"><div class="panel-heading"><h2>Análises salvas <span class="count-chip" id="history-count">0</span></h2><label class="search-input"><svg class="icon"><use href="#i-search"/></svg><input id="history-search" type="search" placeholder="Buscar projeto…" aria-label="Buscar no histórico"></label></div><div id="history-table"></div></div>

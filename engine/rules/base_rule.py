@@ -52,6 +52,8 @@ class BaseRule(ast.NodeVisitor, ABC):
         cwe: Optional[str] = None,
         rule_id: Optional[str] = None,
         rule_name: Optional[str] = None,
+        data_categories: Optional[List[str]] = None,
+        taint_trace: Optional[List[str]] = None,
     ) -> None:
         """Registra uma violação identificada em um nó específico da AST."""
         lineno = getattr(node, "lineno", 1)
@@ -72,5 +74,7 @@ class BaseRule(ast.NodeVisitor, ABC):
             column_number=col_offset,
             code_snippet=snippet,
             remediation_advice=remediation or self.remediation,
+            data_categories=sorted(data_categories or []),
+            taint_trace=list(taint_trace or []),
         )
         self.findings.append(finding)
