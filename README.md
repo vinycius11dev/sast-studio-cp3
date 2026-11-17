@@ -17,7 +17,8 @@ Depois de iniciar o aplicativo, abra a [tela de apresentação](http://127.0.0.1
 O motor agora também protege **dados pessoais**: mapeia CPF, dados de saúde e senhas no código (regras `PY-P001…P003`, `JS-P001/002`, `JAVA-P001/002`),
 rastreia por Taint Analysis se eles chegam a logs, respostas HTTP, arquivos ou serviços externos (`PY-T004…T007`), traduz cada falha em um alerta de
 risco ao cidadão com IA local e resume tudo no indicador **Risco Cidadão** (0 a 100), na tela de mesmo nome. Detalhes, critérios e roteiro de demonstração:
-[docs/GS_CYBERSECURITY.md](docs/GS_CYBERSECURITY.md) · evidência do taint: [AUDITORIA_TAINT_PII.md](docs/evidencias/AUDITORIA_TAINT_PII.md).
+[docs/GS_CYBERSECURITY.md](docs/GS_CYBERSECURITY.md) · evidência do taint: [AUDITORIA_TAINT_PII.md](docs/evidencias/AUDITORIA_TAINT_PII.md) ·
+**mapa da entrega com prints e vídeo: [ENTREGA_GS.md](ENTREGA_GS.md)** · uso de IA: [prompts.md](prompts.md).
 
 ```powershell
 python cli.py scan demonstracao/04-pii-vulneravel --fail-on HIGH   # UBS com dados expostos: código 1

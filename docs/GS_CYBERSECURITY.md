@@ -128,7 +128,8 @@ funciona sem Ollama e não inventa código.
 5. Opcional, para mostrar CNS, cartão e contato: no Scanner, escolha a pasta `demonstracao/06-pii-cartao-e-contato`, execute a análise
    (6 achados, Risco 84) e use **Corrigir e provar** (84 → 0).
 6. **Scanner → Carregar UBS protegida → Executar análise**: 0 achados, Risco **0/100**, gate aprovado.
-7. Print de tela da tela Risco Cidadão (antes e depois) para a entrega.
+7. Print de tela da tela Risco Cidadão (antes e depois) para a entrega. Os prints da entrega já estão em
+   [`docs/evidencias/prints/`](evidencias/prints/) e o vídeo em [`docs/video/`](video/); o mapa completo está em [`ENTREGA_GS.md`](../ENTREGA_GS.md).
 
 Terminal: `python cli.py scan demonstracao/04-pii-vulneravel --fail-on HIGH` termina com código 1; a pasta `05-pii-corrigido`, com 0.
 
