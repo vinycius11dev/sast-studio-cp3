@@ -9,7 +9,7 @@ Todos os dados de exemplo (CPF, cartões, diagnósticos) são fictícios.
 | --- | --- |
 | **Código do novo módulo** com as regras PII | [`engine/pii.py`](engine/pii.py), [`engine/rules/pii_rule.py`](engine/rules/pii_rule.py), [`engine/rules/pii_taint_rule.py`](engine/rules/pii_taint_rule.py), [`engine/citizen_risk.py`](engine/citizen_risk.py), [`engine/citizen_alert.py`](engine/citizen_alert.py), [`engine/citizen_fix.py`](engine/citizen_fix.py) |
 | **Auditoria do protótipo**: Taint Analysis em ação | [`docs/evidencias/AUDITORIA_TAINT_PII.md`](docs/evidencias/AUDITORIA_TAINT_PII.md) e os prints 03 e 06 abaixo |
-| **Dashboard atualizado**: vídeo e print do painel gerando o Risco Cidadão | Vídeo [`docs/video/SAST_Studio_GS_CitizenTech.mp4`](docs/video/SAST_Studio_GS_CitizenTech.mp4) (2min41s) e prints 04, 05 e 10 abaixo |
+| **Dashboard atualizado**: vídeo e print do painel gerando o Risco Cidadão | Vídeo [`docs/video/SAST_Studio_GS_CitizenTech.mp4`](docs/video/SAST_Studio_GS_CitizenTech.mp4) (3min14, voz do Gemini; roteiro em [`docs/video/ROTEIRO.md`](docs/video/ROTEIRO.md)) e prints 04, 05 e 10 abaixo |
 | Regras do grupo: uso de IA | [`prompts.md`](prompts.md) |
 
 ## Como a nota de cada parte é atendida

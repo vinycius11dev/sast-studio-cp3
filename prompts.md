@@ -19,7 +19,7 @@ Resumo fiel do pedido de cada etapa (texto original em português, abreviado):
 2. *"Você baixou o Llama para ver se está tudo funcionando? Pode ir instalando e já testando"*. Instalou o Ollama e o modelo `llama3.2:3b` e testou a IA de verdade.
 3. *"Roda o sistema e abre aqui no seu navegador"*. Subiu o servidor e abriu o dashboard.
 4. *"Tem mais alguma coisa que precisa ser feito para o professor?"* e *"Tem como melhorar o projeto para surpreender?"*. A equipe escolheu **A** (novos tipos de dado: CNS, cartão, e-mail, telefone) e **B** ("Corrigir e provar").
-5. *"Prepare um vídeo também com a voz do Gemini"*. Roteiro, gravação automática da tela e montagem com FFmpeg.
+5. *"Prepare um vídeo também com a voz do Gemini"*. Roteiro, gravação automática da tela e montagem com FFmpeg. Depois: *"o áudio ficou meio inglês e meio português e não pareceu uma apresentação, será que você consegue melhorar?"*. Gerou a versão atual, com abertura, partes, legendas e destaques.
 6. *"Quero nota 10, tire os prints que forem necessários, quero tudo completo"*. Prints, este arquivo e o pacote final.
 
 ## 3. Prompt que roda dentro do produto (Ollama)
@@ -54,7 +54,21 @@ Controles humanos e de código sobre a saída da IA (por que não confiamos cega
 
 ## 4. Narração do vídeo (voz do Gemini)
 
-O texto lido pela voz está em [`docs/video/ROTEIRO.md`](docs/video/ROTEIRO.md), em 8 blocos. Modelo: Gemini 3.8 Flash TTS (AI Studio), voz "Fola".
+O texto lido pela voz está em [`docs/video/ROTEIRO.md`](docs/video/ROTEIRO.md), em 10 blocos. Modelo: Gemini 3.8 Flash TTS (AI Studio), voz "Cleo".
+
+A primeira versão do vídeo usou a voz padrão e saiu com sotaque misturado, porque o texto tinha muitos termos em inglês. Na segunda versão:
+
+- a equipe pediu: *"o áudio ficou meio inglês e meio português e não pareceu uma apresentação, mostra para eles explicitamente"*;
+- os termos em inglês foram escritos como se pronunciam em português (por exemplo "Lama três", "M D cinco", "bicrípt");
+- a instrução de estilo dada à voz foi (em inglês, que o modelo entende melhor):
+
+```text
+Native Brazilian Portuguese speaker from Sao Paulo. Speak entirely in Brazilian Portuguese (pt-BR) with a natural Brazilian accent
+and no English accent, pronouncing every word the way a Brazilian would. Warm, confident and enthusiastic, like a university student
+presenting a project. Clear diction, moderate pace, short pauses between sentences.
+```
+
+- o vídeo ganhou abertura, as quatro partes anunciadas, legendas, destaques na tela e um cartão final com os critérios. A equipe ouviu e aprovou o resultado.
 
 ## 5. O que foi verificado por pessoas e por testes
 
