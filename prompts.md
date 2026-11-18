@@ -68,7 +68,12 @@ and no English accent, pronouncing every word the way a Brazilian would. Warm, c
 presenting a project. Clear diction, moderate pace, short pauses between sentences.
 ```
 
-- o vídeo ganhou abertura, as quatro partes anunciadas, legendas, destaques na tela e um cartão final com os critérios. A equipe ouviu e aprovou o resultado.
+- o vídeo ganhou abertura, as quatro partes anunciadas, legendas, destaques na tela e um cartão final com os critérios. A equipe ouviu e aprovou a voz.
+
+Na terceira versão, a equipe pediu: *"tem partes que ficaram muito vazias, a parte de mostrar as 4 partes demorou muito, ficou confuso em momentos, faça um vídeo profissional"*.
+A voz aprovada foi mantida e a imagem foi refeita em 1080p, sincronizada frase a frase com a fala (pausas medidas em cada áudio). O cartão do problema e o das
+quatro partes passaram a aparecer no ritmo da narração, e a espera da IA (~10 s) passou a mostrar um painel explicando que o modelo roda localmente.
+Antes da entrega, o vídeo foi conferido com `freezedetect`/`silencedetect` e quadro a quadro em cada marcação da fala.
 
 ## 5. O que foi verificado por pessoas e por testes
 
