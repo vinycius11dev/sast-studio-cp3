@@ -72,6 +72,9 @@ def test_health_literal_in_assignment_dict_and_keyword(engine):
 def test_health_placeholders_and_non_health_names_are_ignored(engine):
     code = 'diagnostico = ""\nlaudo = "teste"\nnome = "Hipertensão arterial"\n'
     assert engine.scan_code(code, "ok.py").findings == []
+    # Rótulos que repetem o próprio nome (como as categorias em engine/pii.py) não são dado de saúde.
+    labels = 'SAUDE = "saude"\nCAMPOS = {"diagnostico": "diagnóstico"}\ndiagnostico = "Hipertensão arterial"\n'
+    assert [item.line_number for item in engine.scan_code(labels, "rotulos.py").findings] == [3]
 
 
 @pytest.mark.parametrize("expression", [

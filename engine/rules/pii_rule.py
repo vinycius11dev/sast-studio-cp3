@@ -5,7 +5,7 @@ from typing import List
 from engine.models import RuleMetadata, Severity
 from engine.pii import (
     CATEGORIES, CONTATO, DOCUMENTO, FINANCEIRO, SAUDE, SENHA, classify_identifier, find_cards, find_cns, find_cpfs,
-    find_emails, find_phones, mask_card, mask_cns, mask_cpf, mask_email, mask_phone,
+    find_emails, find_phones, identifier_tokens, mask_card, mask_cns, mask_cpf, mask_email, mask_phone,
 )
 from .base_rule import BaseRule
 
@@ -131,8 +131,14 @@ class PiiExposureRule(BaseRule):
         return (isinstance(node, ast.Constant) and isinstance(node.value, str)
                 and len(node.value.strip()) >= 3 and node.value.strip().lower() not in _PLACEHOLDERS)
 
+    @staticmethod
+    def _is_own_label(name, value) -> bool:
+        """`SAUDE = "saude"` ou `{"diagnostico": "diagnostico"}`: o texto repete o nome, é rótulo e não dado."""
+        return identifier_tokens(value.value) == identifier_tokens(name)
+
     def _check_health_literal(self, name, value, at) -> None:
-        if classify_identifier(name) == SAUDE and self._meaningful_literal(value):
+        if (classify_identifier(name) == SAUDE and self._meaningful_literal(value)
+                and not self._is_own_label(name, value)):
             self.add_finding(
                 node=at, rule_id="PY-P002", rule_name="Dado de saúde hardcoded no código-fonte",
                 cwe="CWE-359", severity=Severity.HIGH,
