@@ -1,6 +1,7 @@
 import re
 from typing import List, Tuple
 from engine.models import Finding, RuleMetadata, Severity
+from engine.pii import SAUDE, classify_identifier, find_cards, find_cns, find_cpfs
 from .base import LanguageScanner
 from .syntax_tree import parse, walk, text, field, args, Expressions, syntax_error, finding_location
 
@@ -54,6 +55,42 @@ PATTERNS_JS = [
         "message": "Requisição HTTP externa com URL dinâmica ou interpolada sem validação de allow-list (CWE-918 / CVE-2020-13379).",
         "remediation": "Valide a URL de destino contra uma lista restrita de domínios confiáveis e impeça conexões para a rede local (localhost, 127.0.0.1, 169.254.169.254).",
     },
+    {
+        "rule_id": "JS-P001",
+        "name": "CPF em texto claro no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Documento] CPF válido escrito como literal no código JavaScript/TypeScript.",
+        "remediation": "Remova o CPF do código; use dados sintéticos em testes e mascare na exibição (***.***.***-NN).",
+        "categories": ["documento"],
+    },
+    {
+        "rule_id": "JS-P002",
+        "name": "Dado de saúde hardcoded no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Saúde] Valor de saúde (diagnóstico, prontuário, exame…) escrito direto no código. Dado pessoal sensível (LGPD art. 5º, II).",
+        "remediation": "Não grave dados de saúde no código; use dados sintéticos em testes e guarde registros reais criptografados.",
+        "categories": ["saude"],
+    },
+    {
+        "rule_id": "JS-P003",
+        "name": "CNS (Cartão Nacional de Saúde) em texto claro no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Documento] CNS válido (dígito verificador do SUS correto) escrito como literal no código JavaScript/TypeScript.",
+        "remediation": "Remova o CNS do código; use números sintéticos inválidos em testes e mascare na exibição (*** **** **** NNNN).",
+        "categories": ["documento"],
+    },
+    {
+        "rule_id": "JS-P004",
+        "name": "Cartão de pagamento em texto claro no código-fonte",
+        "severity": Severity.HIGH,
+        "cwe": "CWE-359",
+        "message": "[PII · Financeiro] Número de cartão de pagamento válido (Luhn) escrito como literal no código JavaScript/TypeScript.",
+        "remediation": "Remova o número do código; use os números de teste do provedor de pagamento e nunca armazene o cartão completo.",
+        "categories": ["financeiro"],
+    },
 ]
 
 
@@ -92,9 +129,25 @@ class JavaScriptScanner(LanguageScanner):
             if key in seen:
                 return
             seen.add(key)
-            findings.append(self.create_finding(rule["rule_id"], rule["name"], rule["severity"], rule["cwe"], rule["message"], file_path, line, column, snippet, rule["remediation"]))
+            findings.append(self.create_finding(rule["rule_id"], rule["name"], rule["severity"], rule["cwe"], rule["message"], file_path, line, column, snippet, rule["remediation"], rule.get("categories")))
+
+        def health_literal(name, value):
+            return (value is not None and value.type in {"string", "template_string"} and not expressions.dynamic(value)
+                    and len(text(value).strip("'\"` ")) >= 3 and classify_identifier(text(name).strip("'\"")) == SAUDE)
 
         for node in walk(root):
+            if node.type in {"string", "template_string"} and find_cpfs(text(node).strip("'\"`")):
+                add(7, node)
+            if node.type in {"string", "template_string"}:
+                literal = text(node).strip("'\"`")
+                if find_cns(literal):
+                    add(9, node)
+                if find_cards(literal):
+                    add(10, node)
+            if node.type == "pair" and health_literal(field(node, "key"), field(node, "value")):
+                add(8, node)
+            if node.type == "variable_declarator" and health_literal(field(node, "name"), field(node, "value")):
+                add(8, node)
             if node.type == "variable_declarator":
                 name, value = field(node, "name"), field(node, "value")
                 if re.search(r"password|passwd|api[_-]?key|secret|token", text(name), re.I) and value is not None:

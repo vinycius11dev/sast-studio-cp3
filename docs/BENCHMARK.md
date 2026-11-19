@@ -3,11 +3,10 @@
 Corpus curado do projeto; métricas não representam todos os códigos ou vulnerabilidades do mercado.
 
 - Unidade de avaliação: par (caso, regra).
-- Casos: 53; controles sem falhas esperadas: 24.
+- Casos: 89; controles sem falhas esperadas: 40.
 - Precisão: 100.0%; recall: 100.0%.
 - Falsos positivos: 0; falsos negativos: 0.
-- Latência mediana: 0.1769 ms; p95: 0.6102 ms; repetições: 5 (medição local em 18/10/2026).
-- Tempos variam por computador; consulte `reports/benchmark.json` para a última execução local.
+- Latência mediana: 0.1546 ms; p95: 0.5416 ms; repetições: 5.
 
 Os rótulos são explícitos em benchmarks/cases.json. Este conjunto não substitui uma avaliação externa nem mede a precisão do LLM.
 
@@ -66,3 +65,39 @@ Os rótulos são explícitos em benchmarks/cases.json. Este conjunto não substi
 | java-command-array | Nenhum | Nenhum | OK |
 | java-static-file | Nenhum | Nenhum | OK |
 | java-static-url | Nenhum | Nenhum | OK |
+| pii-cpf-literal | PY-P001 | PY-P001 | OK |
+| pii-health-literal | PY-P002 | PY-P002 | OK |
+| pii-weak-hash | PY-P003 | PY-P003 | OK |
+| pii-log-param | PY-T004 | PY-T004 | OK |
+| pii-log-fstring | PY-T004 | PY-T004 | OK |
+| pii-response-route | PY-T005 | PY-T005 | OK |
+| pii-storage-file | PY-T006 | PY-T006 | OK |
+| pii-external-post | PY-T007 | PY-T007 | OK |
+| pii-interprocedural | PY-T004 | PY-T004 | OK |
+| pii-js-cpf | JS-P001 | JS-P001 | OK |
+| pii-java-health | JAVA-P002 | JAVA-P002 | OK |
+| safe-pii-masked-log | Nenhum | Nenhum | OK |
+| safe-pii-password-hash | Nenhum | Nenhum | OK |
+| safe-pii-short-slice | Nenhum | Nenhum | OK |
+| safe-pii-non-sensitive | Nenhum | Nenhum | OK |
+| safe-pii-invalid-cpf | Nenhum | Nenhum | OK |
+| safe-pii-masked-response | Nenhum | Nenhum | OK |
+| safe-pii-db-cpf | Nenhum | Nenhum | OK |
+| py-cns-literal | PY-P004 | PY-P004 | OK |
+| py-card-literal | PY-P005 | PY-P005 | OK |
+| py-email-literal | PY-P006 | PY-P006 | OK |
+| py-phone-literal | PY-P006 | PY-P006 | OK |
+| py-card-log-flow | PY-T004 | PY-T004 | OK |
+| py-card-response-flow | PY-T005 | PY-T005 | OK |
+| py-email-log-flow | PY-T004 | PY-T004 | OK |
+| js-cns-literal | JS-P003 | JS-P003 | OK |
+| java-card-literal | JAVA-P004 | JAVA-P004 | OK |
+| safe-pii-test-card | Nenhum | Nenhum | OK |
+| safe-pii-invalid-card | Nenhum | Nenhum | OK |
+| safe-pii-invalid-cns | Nenhum | Nenhum | OK |
+| safe-pii-role-mailbox | Nenhum | Nenhum | OK |
+| safe-pii-example-email | Nenhum | Nenhum | OK |
+| safe-pii-invalid-ddd | Nenhum | Nenhum | OK |
+| safe-pii-doc-email | Nenhum | Nenhum | OK |
+| safe-pii-card-masked-log | Nenhum | Nenhum | OK |
+| safe-pii-email-response | Nenhum | Nenhum | OK |

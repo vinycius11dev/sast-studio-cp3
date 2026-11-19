@@ -24,6 +24,8 @@ class Finding(BaseModel):
     code_snippet: str = Field(..., description="Trecho de código com a violação")
     remediation_advice: str = Field(..., description="Orientação de como corrigir a falha de forma segura")
     owasp: Optional[OwaspCategory] = Field(default=None, description="Categoria OWASP Top 10:2025 associada ao CWE")
+    data_categories: List[str] = Field(default_factory=list, description="Categorias de dados pessoais envolvidas (documento, saude, senha)")
+    taint_trace: List[str] = Field(default_factory=list, description="Caminho do dado sensível da origem até o sink (Taint Analysis)")
 
     @model_validator(mode="after")
     def map_owasp_category(self):
@@ -82,6 +84,49 @@ class SemanticReview(BaseModel):
     fallback_reason: Optional[str] = None
 
 
+class CitizenRiskDriver(BaseModel):
+    category: str
+    label: str
+    findings: int
+    leaks: int = Field(description="Achados em que o dado sensível chega a uma saída insegura (Taint Analysis)")
+    points: float
+
+
+class CitizenRisk(BaseModel):
+    """Indicador executivo: quanto os achados expõem dados pessoais dos cidadãos atendidos."""
+    score: int = Field(ge=0, le=100)
+    level: Literal["none", "low", "moderate", "high", "critical"]
+    level_label: str
+    pii_findings: int
+    confirmed_leaks: int
+    affected_data: List[str] = Field(default_factory=list)
+    drivers: List[CitizenRiskDriver] = Field(default_factory=list)
+    summary: str
+    formula: str
+    complete: bool = True
+
+
+class CitizenAlert(BaseModel):
+    """Falha técnica traduzida em um alerta de risco real ao cidadão."""
+    alert_id: Optional[str] = None
+    scan_id: str
+    created_at: Optional[str] = None
+    finding_key: str
+    rule_id: str
+    file_path: str
+    line_number: int
+    headline: str
+    what_happened: str
+    risk_for_citizen: str
+    who_is_affected: str
+    what_to_do: str
+    risk_level: Literal["baixo", "moderado", "alto", "critico"]
+    lgpd_reference: str
+    provider: Literal["ollama", "deterministic"]
+    model_used: str
+    fallback_reason: Optional[str] = None
+
+
 class ScanResult(BaseModel):
     scan_id: Optional[str] = None
     created_at: Optional[str] = None
@@ -90,6 +135,8 @@ class ScanResult(BaseModel):
     files: List[ScannedFile] = Field(default_factory=list)
     ignored_files_count: int = 0
     semantic_reviews: List[SemanticReview] = Field(default_factory=list)
+    citizen_alerts: List[CitizenAlert] = Field(default_factory=list)
+    citizen_risk: Optional[CitizenRisk] = None
     target_path: str = Field(..., description="Caminho ou identificador do alvo analisado")
     scanned_files_count: int = Field(..., description="Quantidade de arquivos analisados com sucesso")
     total_findings: int = Field(..., description="Total de vulnerabilidades encontradas")
@@ -107,3 +154,10 @@ class ScanResult(BaseModel):
     scan_duration_ms: float = Field(..., description="Tempo de varredura em milissegundos")
     has_errors: bool = Field(default=False, description="Indica se houve arquivos com erro de sintaxe")
     errors: List[str] = Field(default_factory=list, description="Mensagens de erro de parsing ou IO")
+
+    @model_validator(mode="after")
+    def compute_citizen_risk(self):
+        # Determinístico: recalculado também ao reabrir análises antigas do SQLite.
+        from engine.citizen_risk import compute_citizen_risk
+        self.citizen_risk = compute_citizen_risk(self.findings, complete=not self.has_errors)
+        return self

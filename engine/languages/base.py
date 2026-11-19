@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 from engine.models import Finding, RuleMetadata, Severity
 
 
@@ -30,6 +30,7 @@ class LanguageScanner(ABC):
         column_number: int,
         code_snippet: str,
         remediation_advice: str,
+        data_categories: Optional[List[str]] = None,
     ) -> Finding:
         """Cria e retorna uma instância padronizada de Finding."""
         return Finding(
@@ -43,4 +44,5 @@ class LanguageScanner(ABC):
             column_number=column_number,
             code_snippet=code_snippet.strip(),
             remediation_advice=remediation_advice,
+            data_categories=sorted(data_categories or []),
         )

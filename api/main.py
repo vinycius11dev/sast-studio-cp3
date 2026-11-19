@@ -17,9 +17,11 @@ from starlette.concurrency import run_in_threadpool
 from api.store import ScanStore
 from api.jobs import JobStore, ScanJob
 from engine.ai_remediation import AIRemediationEngine, AIRemediationResponse
+from engine.citizen_fix import CitizenFix, fix_project
 from engine.engine import IGNORE_DIRS, SASTEngine
 from engine.languages import SUPPORTED_EXTENSIONS
-from engine.models import Finding, RuleMetadata, ScannedFile, ScanResult, SemanticReview
+from engine.citizen_alert import CitizenAlertEngine
+from engine.models import CitizenAlert, CitizenRisk, Finding, RuleMetadata, ScannedFile, ScanResult, SemanticReview
 from engine.semantic_review import AISemanticReviewEngine
 from engine.reporter import Reporter
 
@@ -59,6 +61,7 @@ app.add_middleware(
 sast_engine = SASTEngine()
 ai_engine = AIRemediationEngine()
 semantic_engine = AISemanticReviewEngine(ai_engine)
+citizen_engine = CitizenAlertEngine(ai_engine)
 scan_store = ScanStore(Path(os.getenv("SAST_DATA_DIR", str(ROOT_DIR / "data"))) / "scans.sqlite3")
 job_store = JobStore(Path(os.getenv("SAST_DATA_DIR", str(ROOT_DIR / "data"))) / "jobs.sqlite3")
 
@@ -100,7 +103,7 @@ def capabilities():
         "limits": {"file_bytes": MAX_FILE_SIZE_BYTES, "project_bytes": MAX_PROJECT_SIZE_BYTES, "project_files": MAX_PROJECT_FILES},
         "extensions": sorted(SUPPORTED_UPLOAD_EXTENSIONS), "ignored_directories": sorted(IGNORE_DIRS),
         "languages": [
-            {"id": "python", "name": "Python", "technique": "AST + análise básica de fluxo de dados", "extensions": [".py"]},
+            {"id": "python", "name": "Python", "technique": "AST + Taint Analysis (injeção e vazamento de PII)", "extensions": [".py"]},
             {"id": "javascript", "name": "JavaScript / TypeScript", "technique": "AST Tree-sitter e regras estruturais", "extensions": [".js", ".jsx", ".ts", ".tsx"]},
             {"id": "java", "name": "Java", "technique": "AST Tree-sitter e regras estruturais", "extensions": [".java"]},
         ],
@@ -229,13 +232,15 @@ async def scan_uploaded_project(files: List[UploadFile] = File(...), project_nam
 
 
 @app.get("/api/v1/samples", tags=["Demonstração"])
-def sample_sources(variant: Literal["all", "vulneravel", "corrigido"] = "all"):
-    folders = {"vulneravel": "01-vulneravel", "corrigido": "02-corrigido"}
+def sample_sources(variant: Literal["all", "vulneravel", "corrigido", "pii-vulneravel", "pii-corrigido"] = "all"):
+    folders = {"vulneravel": "01-vulneravel", "corrigido": "02-corrigido",
+               "pii-vulneravel": "04-pii-vulneravel", "pii-corrigido": "05-pii-corrigido"}
     directory = ROOT_DIR / "demonstracao" / folders[variant] if variant in folders else ROOT_DIR / "samples"
     if not directory.is_dir():
         raise HTTPException(404, "Pasta de exemplo indisponível nesta instalação.")
     return {
-        "project_name": {"vulneravel": "Demonstração · Antes da correção", "corrigido": "Demonstração · Depois da correção"}.get(variant, "Projeto de demonstração"),
+        "project_name": {"vulneravel": "Demonstração · Antes da correção", "corrigido": "Demonstração · Depois da correção",
+                         "pii-vulneravel": "UBS Cidadã · Antes (dados expostos)", "pii-corrigido": "UBS Cidadã · Depois (dados protegidos)"}.get(variant, "Projeto de demonstração"),
         "files": [{"path": f"{directory.name}/{path.relative_to(directory).as_posix()}",
                    "content": path.read_text(encoding="utf-8"),
                    "language": SUPPORTED_EXTENSIONS[path.suffix.lower()]}
@@ -328,6 +333,56 @@ def workflow_template():
 
 class SemanticReviewRequest(Finding):
     scan_id: str = Field(min_length=32, max_length=32)
+
+
+class CitizenAlertRequest(SemanticReviewRequest):
+    pass
+
+
+class CitizenRiskResponse(BaseModel):
+    scan_id: str
+    citizen_risk: CitizenRisk
+    exposures: List[Finding]
+    alerts: List[CitizenAlert]
+
+
+@app.get("/api/v1/scans/{scan_id}/citizen-risk", response_model=CitizenRiskResponse, tags=["Risco Cidadão"])
+def citizen_risk(scan_id: str):
+    """Indicador Risco Cidadão da análise, com os achados que envolvem dados pessoais."""
+    saved = _get_scan(scan_id)
+    exposures = sorted((item for item in saved.findings if item.data_categories),
+                       key=lambda item: ("CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO").index(item.severity.value))
+    return CitizenRiskResponse(scan_id=scan_id, citizen_risk=saved.citizen_risk, exposures=exposures, alerts=saved.citizen_alerts)
+
+
+@app.post("/api/v1/citizen-alert", response_model=CitizenAlert, tags=["Risco Cidadão"])
+def citizen_alert_endpoint(payload: CitizenAlertRequest):
+    """Traduz um achado técnico em alerta de risco ao cidadão (Ollama, com fallback identificado)."""
+    saved = _get_scan(payload.scan_id)
+    original = next((finding for finding in saved.findings if finding.rule_id == payload.rule_id
+                     and finding.file_path == payload.file_path and finding.line_number == payload.line_number
+                     and finding.column_number == payload.column_number and finding.code_snippet == payload.code_snippet), None)
+    if original is None:
+        raise HTTPException(400, "O achado não pertence à análise informada.")
+    source = scan_store.source(payload.scan_id, original.file_path)
+    if source is None:
+        raise HTTPException(404, "Código-fonte indisponível para gerar o alerta.")
+    return scan_store.save_alert(citizen_engine.translate(original, source, payload.scan_id))
+
+
+@app.post("/api/v1/scans/{scan_id}/citizen-fix", response_model=CitizenFix, tags=["Risco Cidadão"])
+def citizen_fix_endpoint(scan_id: str):
+    """Corrige as exposições de PII dos arquivos Python da análise, reanalisa o resultado e o salva como nova análise."""
+    saved = _get_scan(scan_id)
+    sources = scan_store.sources(scan_id)
+    if not sources:
+        raise HTTPException(404, "Código-fonte indisponível para corrigir.")
+    fix, fixed_sources = fix_project(scan_id, sources)
+    if fix.applied_count:
+        threshold = saved.security_gate.threshold if saved.security_gate else "HIGH"
+        name = f"{saved.project_name or saved.target_path or 'Projeto'} · corrigido"[:120]
+        fix.fixed_scan_id = _execute_scan(fixed_sources, name, threshold).scan_id
+    return fix
 
 
 @app.get("/api/v1/jobs/status", tags=["Fila"])

@@ -45,6 +45,9 @@ class Reporter:
             f"  {c('BAIXO:', COLOR_GRAY)} {summary.get('LOW', 0)}"
         )
         lines.append(summary_str)
+        if result.citizen_risk and result.findings:
+            risk = result.citizen_risk
+            lines.append(f"  Risco Cidadão: {c(f'{risk.score}/100 ({risk.level_label})', COLOR_BOLD)} — {risk.summary}")
         lines.append("-" * 80)
 
         if not result.findings:
@@ -60,6 +63,8 @@ class Reporter:
                 )
                 lines.append(f"    Arquivo: {f.file_path}:{f.line_number}:{f.column_number}")
                 lines.append(f"    Mensagem: {f.message}")
+                if f.taint_trace:
+                    lines.append(f"    Caminho do dado: {' → '.join(f.taint_trace)}")
                 if f.code_snippet:
                     lines.append(f"    Código:   {c(f.code_snippet, COLOR_GRAY)}")
                 lines.append(f"    Correção: {c(f.remediation_advice, COLOR_GREEN)}")
@@ -99,6 +104,12 @@ class Reporter:
         for sev in [Severity.CRITICAL, Severity.HIGH, Severity.MEDIUM, Severity.LOW]:
             badge = "🔴" if sev == Severity.CRITICAL else ("🟠" if sev == Severity.HIGH else "🟡")
             md.append(f"| {badge} **{sev.value}** | {result.summary_by_severity.get(sev.value, 0)} |")
+        if result.citizen_risk:
+            risk = result.citizen_risk
+            md.append(f"\n### 🧑‍🤝‍🧑 Risco Cidadão: {risk.score}/100 ({risk.level_label})\n")
+            md.append(f"{risk.summary}\n")
+            md.append(f"- Achados com dados pessoais: **{risk.pii_findings}** · vazamentos confirmados por taint: **{risk.confirmed_leaks}**")
+            md.append(f"- Fórmula: `{risk.formula}`")
         md.append("\n---\n")
 
         if not result.findings:
@@ -113,6 +124,8 @@ class Reporter:
                     md.append("- **OWASP Top 10:2025:** Sem mapeamento para este CWE.")
                 md.append(f"- **Localização:** `{f.file_path}:{f.line_number}`")
                 md.append(f"- **Descrição:** {f.message}")
+                if f.taint_trace:
+                    md.append(f"- **Caminho do dado (Taint Analysis):** {' → '.join(f.taint_trace)}")
                 if f.code_snippet:
                     extension = f.file_path.rsplit(".", 1)[-1].lower()
                     language = {"py": "python", "js": "javascript", "jsx": "jsx", "ts": "typescript", "tsx": "tsx", "java": "java"}.get(extension, "text")
@@ -186,6 +199,10 @@ class Reporter:
                 ],
                 "properties": {"cwe": f.cwe},
             }
+            if f.data_categories:
+                sarif_result["properties"]["dataCategories"] = f.data_categories
+            if f.taint_trace:
+                sarif_result["properties"]["taintTrace"] = f.taint_trace
             if f.owasp:
                 sarif_result["properties"]["owaspTop10"] = f.owasp.model_dump(mode="json")
             sarif_results.append(sarif_result)
@@ -203,7 +220,8 @@ class Reporter:
                         }
                     },
                     "results": sarif_results,
-                    "properties": {"semanticReviews": [review.model_dump(mode="json") for review in result.semantic_reviews]},
+                    "properties": {"semanticReviews": [review.model_dump(mode="json") for review in result.semantic_reviews],
+                                   "citizenRisk": result.citizen_risk.model_dump(mode="json") if result.citizen_risk else None},
                     "invocations": [{"executionSuccessful": not result.has_errors,
                                      "toolExecutionNotifications": [{"level": "error", "message": {"text": error}} for error in result.errors]}],
                 }

@@ -12,6 +12,21 @@ Depois de iniciar o aplicativo, abra a [tela de apresentação](http://127.0.0.1
 
 <p align="center"><em>Visão geral real do sistema: comparação entre 9 achados bloqueantes e uma análise corrigida com 0 achados pelas regras atuais.</em></p>
 
+## GS CitizenTech: privacidade do cidadão (novo)
+
+O motor agora também protege **dados pessoais**: mapeia CPF, dados de saúde e senhas no código (regras `PY-P001…P003`, `JS-P001/002`, `JAVA-P001/002`),
+rastreia por Taint Analysis se eles chegam a logs, respostas HTTP, arquivos ou serviços externos (`PY-T004…T007`), traduz cada falha em um alerta de
+risco ao cidadão com IA local e resume tudo no indicador **Risco Cidadão** (0 a 100), na tela de mesmo nome. Detalhes, critérios e roteiro de demonstração:
+[docs/GS_CYBERSECURITY.md](docs/GS_CYBERSECURITY.md) · evidência do taint: [AUDITORIA_TAINT_PII.md](docs/evidencias/AUDITORIA_TAINT_PII.md) ·
+**mapa da entrega com prints e vídeo: [ENTREGA_GS.md](ENTREGA_GS.md)** · uso de IA: [prompts.md](prompts.md).
+
+```powershell
+python cli.py scan demonstracao/04-pii-vulneravel --fail-on HIGH   # UBS com dados expostos: código 1
+python cli.py scan demonstracao/05-pii-corrigido --fail-on HIGH    # UBS protegida: código 0
+python -m scripts.taint_audit                                      # regenera a evidência do taint
+python -m scripts.package_gs                                       # ZIP da entrega
+```
+
 ## Demonstração em imagens
 
 As capturas abaixo foram feitas na interface local do projeto. A análise de IA mostrada foi retornada pelo Ollama com o modelo `llama3.2:3b`; não é uma resposta escrita para ilustrar a tela.
@@ -72,7 +87,7 @@ No modo local, a API inicia um worker embutido para facilitar o uso no Windows. 
 
 | Linguagem | Técnica | Observação |
 | --- | --- | --- |
-| Python (`.py`) | AST nativa e análise básica de fluxo de dados | A cobertura de fluxo é limitada; não há análise completa entre arquivos. |
+| Python (`.py`) | AST nativa, Taint Analysis (injeção e vazamento de PII) | O fluxo é intra-arquivo; não há análise completa entre arquivos. |
 | JavaScript/TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`) | AST Tree-sitter e regras estruturais | Gramáticas JS, TS e TSX. |
 | Java (`.java`) | AST Tree-sitter e regras estruturais | A análise não substitui compilação ou resolução de tipos/dependências. |
 
@@ -141,6 +156,9 @@ Rotas principais sob `/api/v1`:
 | `/remediate` | Gerar uma sugestão assistida. |
 | `/ai/status` | Consultar a disponibilidade do serviço e do modelo. |
 | `/rules` | Consultar o catálogo de regras. |
+| `GET /scans/{id}/citizen-risk` | Indicador Risco Cidadão, exposições de PII e alertas salvos. |
+| `POST /citizen-alert` | Traduzir um achado em alerta de risco ao cidadão (Ollama, com fallback identificado). |
+| `POST /scans/{id}/citizen-fix` | Corrigir as exposições de PII dos arquivos Python, reanalisar o resultado e salvá-lo como nova análise. |
 
 Para os contratos e os exemplos de payload, execute a aplicação e abra `/docs`.
 
@@ -192,7 +210,7 @@ python -m scripts.smoke --require-llm
 
 Inicie primeiro o app com `iniciar.bat`. `python -m scripts.smoke` valida API, worker, exemplos vulnerável/corrigido, gates e formatos de relatório, sem chamar o LLM. `python -m scripts.smoke --require-llm` também faz inferências reais de triagem e remediação e falha se retornar fallback.
 
-Na revalidação local de 18/10/2026: 98 testes Python aprovados; 4 testes Node aprovados; smoke com 9 achados/bloqueado contra 0/aprovado; e triagem/remediação reais por Ollama. O corpus interno tem 53 casos, incluindo 24 controles seguros: obteve precisão e recall de 100% nessa amostra delimitada. Isso não é uma avaliação independente nem garante os mesmos resultados em qualquer projeto. O iniciador também detecta uma versão antiga do servidor na porta 8000. Docker e persistência entre reinícios foram validados em execução anterior, conforme detalhado em [VALIDACAO.md](docs/VALIDACAO.md).
+Na revalidação da GS CitizenTech (16/11/2026): 230 testes Python aprovados e benchmark com 89 casos (40 controles seguros) com precisão e recall de 100% nesse corpus delimitado; os alertas ao cidadão foram gerados pelo Ollama real (`llama3.2:3b`) nos 9 achados da UBS vulnerável, sem cair no fallback. Na revalidação local de 18/10/2026: 98 testes Python aprovados; 4 testes Node aprovados; smoke com 9 achados/bloqueado contra 0/aprovado; e triagem/remediação reais por Ollama. O corpus interno tem 53 casos, incluindo 24 controles seguros: obteve precisão e recall de 100% nessa amostra delimitada. Isso não é uma avaliação independente nem garante os mesmos resultados em qualquer projeto. O iniciador também detecta uma versão antiga do servidor na porta 8000. Docker e persistência entre reinícios foram validados em execução anterior, conforme detalhado em [VALIDACAO.md](docs/VALIDACAO.md).
 
 ## Limites conhecidos
 
@@ -204,6 +222,7 @@ Na revalidação local de 18/10/2026: 98 testes Python aprovados; 4 testes Node 
 
 ## Documentação da entrega
 
+- [GS CitizenTech: PII, Taint Analysis, alertas ao cidadão e Risco Cidadão](docs/GS_CYBERSECURITY.md)
 - [Roteiro de apresentação e perguntas para a defesa](docs/APRESENTACAO.md)
 - [Arquitetura do sistema](docs/c4_model.md)
 - [Aderência ao enunciado](docs/ADERENCIA_AO_ENUNCIADO.md)

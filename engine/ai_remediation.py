@@ -49,7 +49,7 @@ class AIRemediationEngine:
         status = {"service_available": False, "model_available": False, "model_loaded": False,
                   "model": self.model_name, "status": "unavailable"}
         try:
-            with httpx.Client(timeout=2.0) as client:
+            with httpx.Client(timeout=5.0) as client:  # máquinas ocupadas ou o Ollama acordando levam mais de 2 s
                 res = client.get(f"{self.ollama_url}/api/tags")
                 if res.status_code != 200:
                     return status
