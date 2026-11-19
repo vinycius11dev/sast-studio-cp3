@@ -14,9 +14,8 @@ regras: ela não executa o programa nem substitui revisão e testes de comportam
 """
 import ast
 import difflib
-import sys
 import textwrap
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 from pydantic import BaseModel, Field
@@ -107,6 +106,8 @@ class _Edit:
     line: int
     action: str
     before: str
+    # Quando uma edição cobre várias proteções (f-string reescrita inteira), cada uma é listada à parte.
+    parts: List["FixAction"] = field(default_factory=list)
 
 
 def _span(node) -> Tuple[Tuple[int, int], Tuple[int, int]]:
@@ -117,12 +118,43 @@ def _segment(source: str, node) -> str:
     return ast.get_source_segment(source, node) or ""
 
 
-def _inside_fstring(node, parents) -> bool:
+def _outer_fstring(node, parents) -> Optional[ast.JoinedStr]:
+    """A f-string mais externa que contém o nó, ou None."""
+    found = None
     while node in parents:
         node = parents[node]
         if isinstance(node, ast.JoinedStr):
-            return True
-    return False
+            found = node
+    return found
+
+
+def _span_matches(source: str, node) -> bool:
+    """Confere se o trecho na posição do nó é mesmo a expressão dele.
+
+    Antes do Python 3.12 as posições dentro de f-strings podem vir deslocadas; só editamos no lugar quando elas batem.
+    """
+    segment = _segment(source, node)
+    if not segment:
+        return False
+    try:
+        return ast.dump(ast.parse(segment.strip(), mode="eval").body) == ast.dump(node)
+    except SyntaxError:
+        return False
+
+
+def _wrap_in_place(leaf, parents, helper: str):
+    """Troca o nó por helper(nó) no próprio AST e devolve uma função que desfaz a troca."""
+    parent = parents[leaf]
+    call = ast.Call(func=ast.Name(id=helper, ctx=ast.Load()), args=[leaf], keywords=[])
+    for name, value in ast.iter_fields(parent):
+        if value is leaf:
+            setattr(parent, name, call)
+            return lambda: setattr(parent, name, leaf)
+        if isinstance(value, list) and any(item is leaf for item in value):
+            index = next(i for i, item in enumerate(value) if item is leaf)
+            value[index] = call
+            return lambda: value.__setitem__(index, leaf)
+    return lambda: None
 
 
 class _Fixer:
@@ -173,7 +205,8 @@ class _Fixer:
             elif isinstance(node, ast.Call):
                 pairs += [(keyword.arg, keyword.value) for keyword in node.keywords if keyword.arg]
         for name, value in pairs:
-            if pii.classify_identifier(name) == pii.SAUDE and PiiExposureRule._meaningful_literal(value):
+            if (pii.classify_identifier(name) == pii.SAUDE and PiiExposureRule._meaningful_literal(value)
+                    and not PiiExposureRule._is_own_label(name, value)):
                 start, end = _span(value)
                 self.edits.append(_Edit(start, end, "None", "PY-P002", value.lineno,
                                         "Valor de saúde removido do código (None): carregue-o de uma base protegida", _segment(self.source, value)))
@@ -201,17 +234,34 @@ class _Fixer:
     def taint_flows(self) -> None:
         rule = PiiTaintRule()
         rule.scan(self.tree, self.file_path, self.source)
+        rewrites: Dict[int, Tuple[ast.JoinedStr, list]] = {}  # f-strings que precisam ser reescritas inteiras
         for site in rule.fix_sites:
-            if _inside_fstring(site.leaf, self.parents) and sys.version_info < (3, 12):
-                continue  # antes do Python 3.12 as posições dentro de f-strings são imprecisas: fica para revisão manual
             helper = HASH_HELPER if site.helper == "hash" else MASK_HELPER
-            leaf_text = _segment(self.source, site.leaf)
             self.uses_hash |= helper == HASH_HELPER
             self.uses_mask |= helper == MASK_HELPER
-            start, end = _span(site.leaf)
             action = ("Senha gravada como hash bcrypt (hash_senha), não em texto claro" if helper == HASH_HELPER
                       else "Dado mascarado antes de sair do sistema (mascarar_pii)")
-            self.edits.append(_Edit(start, end, f"{helper}({leaf_text})", site.rule_id, site.line, action, leaf_text))
+            joined = _outer_fstring(site.leaf, self.parents)
+            if joined is None or _span_matches(self.source, site.leaf):
+                leaf_text = _segment(self.source, site.leaf)
+                start, end = _span(site.leaf)
+                self.edits.append(_Edit(start, end, f"{helper}({leaf_text})", site.rule_id, site.line, action, leaf_text))
+            else:
+                rewrites.setdefault(id(joined), (joined, []))[1].append((site, helper, action))
+        for joined, sites in rewrites.values():
+            # Posição imprecisa (Python < 3.12): a f-string inteira é regerada a partir do AST, com o dado protegido.
+            undo = [_wrap_in_place(site.leaf, self.parents, helper) for site, helper, _ in sites]
+            try:
+                text = ast.unparse(joined)
+            finally:
+                for restore in reversed(undo):
+                    restore()
+            start, end = _span(joined)
+            parts = [FixAction(rule_id=site.rule_id, line=site.line, action=action,
+                               before=ast.unparse(site.leaf), after=f"{helper}({ast.unparse(site.leaf)})")
+                     for site, helper, action in sites]
+            self.edits.append(_Edit(start, end, text, sites[0][0].rule_id, sites[0][0].line, sites[0][2],
+                                    _segment(self.source, joined), parts))
 
     # ---- aplicação -----------------------------------------------------------------------------
     def apply(self) -> Tuple[str, List[_Edit]]:
@@ -287,8 +337,8 @@ def fix_file(source: str, file_path: str, engine: Optional[SASTEngine] = None) -
     fixed, edits = fixer.apply()
     if edits:
         try:
-            fixed = fixer.with_helpers(fixed, any(e.text.startswith(MASK_HELPER + "(") for e in edits),
-                                       any(e.text.startswith(HASH_HELPER + "(") for e in edits))
+            fixed = fixer.with_helpers(fixed, any(MASK_HELPER + "(" in e.text for e in edits),
+                                       any(HASH_HELPER + "(" in e.text for e in edits))
             ast.parse(fixed)
         except SyntaxError:
             result.syntax_ok = False
@@ -297,8 +347,10 @@ def fix_file(source: str, file_path: str, engine: Optional[SASTEngine] = None) -
     after = engine.scan_code(fixed, file_path)
     result.changed = fixed != source
     result.fixed_code = fixed
-    result.applied = [FixAction(rule_id=e.rule_id, line=e.line, action=e.action, before=e.before.strip(), after=e.text.strip())
-                      for e in sorted(edits, key=lambda e: (e.line, e.rule_id))]
+    actions = [part for e in edits for part in e.parts] + [
+        FixAction(rule_id=e.rule_id, line=e.line, action=e.action, before=e.before.strip(), after=e.text.strip())
+        for e in edits if not e.parts]
+    result.applied = sorted(actions, key=lambda a: (a.line, a.rule_id))
     result.remaining = [RemainingFinding(rule_id=i.rule_id, line=i.line_number, message=i.message) for i in _pii_findings(after.findings)]
     if result.changed:
         result.diff = "".join(difflib.unified_diff(source.splitlines(True), fixed.splitlines(True), f"a/{file_path}", f"b/{file_path}"))
