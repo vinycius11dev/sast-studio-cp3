@@ -12,6 +12,16 @@ Depois de iniciar o aplicativo, abra a [tela de apresentação](http://127.0.0.1
 
 <p align="center"><em>Visão geral real do sistema: comparação entre 9 achados bloqueantes e uma análise corrigida com 0 achados pelas regras atuais.</em></p>
 
+## Integrantes
+
+| Integrante | RM |
+| --- | --- |
+| Enzo Dias | 558225 |
+| Gabriel Dias | 556830 |
+| Gabriel Galerani | 557421 |
+| Gustavo Alves | 557876 |
+| Leonardo Taschin | 554583 |
+
 ## GS CitizenTech: privacidade do cidadão (novo)
 
 O motor agora também protege **dados pessoais**: mapeia CPF, dados de saúde e senhas no código (regras `PY-P001…P003`, `JS-P001/002`, `JAVA-P001/002`),
