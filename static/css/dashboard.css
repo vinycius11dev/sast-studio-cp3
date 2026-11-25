@@ -576,3 +576,4 @@ html,body{max-width:100%;overflow-x:clip}
 @media(max-width:760px){.fix-compare{gap:12px}.fix-arrow{display:none}.fix-panel .panel-body{padding:16px}}
 
 #citizen-scan-select{width:auto;max-width:min(460px,52vw);text-overflow:ellipsis}
+.ai-heading{flex-wrap:wrap}.ai-heading>div{flex:1 1 170px;min-width:0}.ai-heading h3{overflow-wrap:normal;word-break:normal}
